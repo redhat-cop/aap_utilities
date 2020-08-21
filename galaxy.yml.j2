@@ -1,0 +1,27 @@
+---
+namespace: {{ collection_namespace }}
+name: {{ collection_name }}
+version: {{ collection_version }}
+description: A collection of utility roles for usage with Ansible Tower
+readme: README.md
+authors:
+    - Jonathan Lozada De La Matta @jlozadad
+    - Kedar Kulkarni @kedark3
+    - Tom Page @Tompage1994
+    - Sean Sullivan @sean-m-sullivan
+repository: {{ collection_repo }}
+issues: {{ collection_repo }}/issues
+build_ignore:
+    - galaxy.yml.j2
+    - release.yml
+    - .github
+license:
+    - GPL-3.0-or-later
+tags:
+    - tower
+    - collection
+    - utilities
+    - utils
+    - tower_utilities
+    - tower_utils
+dependencies: {}
