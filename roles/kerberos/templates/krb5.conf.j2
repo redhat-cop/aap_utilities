@@ -1,0 +1,28 @@
+# To opt out of the system crypto-policies configuration of krb5, remove the
+# symlink at /etc/krb5.conf.d/crypto-policies which will not be recreated.
+includedir /etc/krb5.conf.d/
+
+[logging]
+ default = FILE:/var/log/krb5libs.log
+ kdc = FILE:/var/log/krb5kdc.log
+ admin_server = FILE:/var/log/kadmind.log
+
+[libdefaults]
+
+  default_realm = {{ krb_realm_name|upper() }}
+  dns_lookup_realm = {{ krb_dns_lookup_realm }}
+  dns_lookup_kdc = {{ krb_dns_lookup_kdc }}
+  ticket_lifetime = {{ krb_ticket_lifetime }}
+  renew_lifetime = {{ krb_renew_lifetime }}
+  rdns = {{ krb_rdns }}
+  forwardable = {{ krb_forwardable }}
+
+ [realms]
+  {{ krb_realm_name| upper() }} = {
+   kdc_server = {{ krb_kdc_hostname }}.{{ krb_realm_name|lower() }}
+   admin_server = {{ krb_admin_hostname }}.{{ krb_realm_name|lower() }}
+  }
+
+ [domain_realm]
+  .{{ krb_realm_name|lower() }} = {{ krb_realm_name|upper() }}
+ {{ krb_realm_name|lower() }} = {{ krb_realm_name|upper() }}
