@@ -1,6 +1,6 @@
 ---
 galaxy_info:
-  role_name: redhat_cop.tower_utilities.backup
+  role_name: redhat_cop.tower_utilities.restore
   author: Sean Sullivan
   description: Role to install Ansible Tower
   company: Red Hat

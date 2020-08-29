@@ -1,0 +1,13 @@
+[tower_installer]
+localhost
+
+[tower_installer:vars]
+tower_release_version="3.7.2-1"
+tower_admin_password="r3dh4t!"
+tower_single_node=false
+
+[tower]
+192.168.122.239
+
+[db]
+192.168.122.239

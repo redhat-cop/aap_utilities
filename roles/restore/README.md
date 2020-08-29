@@ -1,6 +1,6 @@
-# redhat_cop.tower_utilities.Backup
+# redhat_cop.tower_utilities.restore
 
-Ansible role to backup Ansible Tower.
+Ansible role to restore a backup of Ansible Tower.
 
 ## Requirements
 
@@ -12,7 +12,7 @@ Available variables are listed below, along with default values defined (see def
 
 ```yaml
 tower_working_location: "/root/"
-backup_dest: "{{ tower_working_location }}/"
+restore_location: "{{playbook_dir}}/tower-backup-latest.tar.gz"
 # Tower variables
 tower_admin_password: "password"
 
@@ -51,7 +51,7 @@ $ ansible-playbook playbook.yml -e @tower_vars.yml tower
 ---
 # Playbook to install Ansible Tower as a cluster
 
-- name: Backup Ansible Tower
+- name: Restore Ansible Tower
   hosts: localhost
   become: true
   vars:
@@ -59,8 +59,9 @@ $ ansible-playbook playbook.yml -e @tower_vars.yml tower
       - "clusternode[1:3].example.com"
     tower_database: "dbnode.example.com"
     tower_working_location: "{{playbook_dir}}"
+    restore_location: "{{playbook_dir}}/tower-backup-latest.tar.gz"
   roles:
-    - redhat_cop.tower_utilities.backup
+    - redhat_cop.tower_utilities.restore
 ```
 
 ## License

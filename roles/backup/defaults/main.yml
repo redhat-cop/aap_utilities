@@ -4,4 +4,4 @@
 ############################################################
 
 # Default backup vars, these are default from installer
-backup_dest: "{{ playbook_dir }}/"
+backup_dest: "{{ tower_working_location }}/"

@@ -1,38 +1,86 @@
-Role Name
-=========
+# redhat_cop.tower_utilities.pre_tasks
 
-A brief description of the role goes here.
+Ansible role to prep to use the setup of Ansible Tower.
 
-Requirements
-------------
+## Requirements
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+None
 
-Role Variables
---------------
+## Role Variables
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+Available variables are listed below, along with default values defined (see defaults/main.yml)
 
-Dependencies
-------------
+```yaml
+tower_working_location: "/root/"
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+# Tower variables
+tower_admin_password: "password"
 
-Example Playbook
-----------------
+# Postgresql variables
+tower_pg_database: "awx"
+tower_pg_username: "awx"
+tower_pg_password: "password"
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
+# RabbitMQ variables
+tower_rabbitmq_username: tower
+tower_rabbitmq_password: "password"
+tower_rabbitmq_cookie: "cookiemonster"
+tower_rabbitmq_port: 5672
+tower_rabbitmq_vhost: tower
+tower_rabbitmq_use_long_name: false
 
-    - hosts: servers
-      roles:
-         - { role: username.rolename, x: 42 }
+tower_releases_url: https://releases.ansible.com/ansible-tower/setup
+tower_setup_file: ansible-tower-setup-{{ tower_release_version }}.tar.gz
 
-License
--------
+tower_hosts:
+  - "localhost ansible_connection=local"
 
-BSD
+tower_database: ""
+tower_database_port: ""
+```
 
-Author Information
-------------------
+## Example Playbook
 
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+The following playbook and accompanying vars file containing the defined seed objects can be invoked in the following manner. This is role is meant to be used by other roles for setup.
+
+```sh
+$ ansible-playbook playbook.yml -e @tower_vars.yml tower
+```
+
+```yaml
+---
+# Playbook to install Ansible Tower as a single node
+
+- name: Install Ansible Tower
+  hosts: tower
+  become: true
+  vars:
+    tower_tower_releases_url: https://releases.ansible.com/ansible-tower/setup-bundle
+    tower_tower_release_version: bundle-3.6.3-1.tar.gz
+  roles:
+    - ansible-tower-install
+```
+
+```yaml
+---
+# Playbook to install Ansible Tower as a cluster
+
+- name: Setup Ansible Tower
+  hosts: localhost
+  become: true
+  vars:
+    tower_hosts:
+      - "clusternode[1:3].example.com"
+    tower_database: "dbnode.example.com"
+    tower_database_port: "5432"
+  roles:
+    - ansible-tower-install
+```
+
+## License
+
+MIT
+
+## Author Information
+
+Tom Page

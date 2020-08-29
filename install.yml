@@ -1,0 +1,17 @@
+---
+# Playbook to deploy Ansible Tower
+
+- name: Install Tower
+  hosts: tower_installer
+  gather_facts: False
+  vars:
+    tower_hosts: "{{ groups.tower }}"
+    tower_database: "{{ groups.db.0 | default('') }}"
+    tower_server: "https://{{ groups.tower.0 }}"
+    tower_working_location: "/home/excalibrax/Documents/cop_work/tower_utilities/"
+    tower_releases_url: "https://releases.ansible.com/ansible-tower/setup-bundle"
+    tower_setup_file: "ansible-tower-setup-bundle-3.7.2-1.tar.gz  "
+    restore_location: "{{playbook_dir}}/tower-backup-latest.tar.gz"
+  roles:
+    - restore
+

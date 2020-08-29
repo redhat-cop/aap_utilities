@@ -1,6 +1,6 @@
-# ansible-tower-install
+# redhat_cop.tower_utilities.install
 
-Ansible role to install Ansible Tower.
+Ansible role to prep to install Ansible Tower.
 
 ## Requirements
 
