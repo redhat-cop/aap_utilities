@@ -3,13 +3,13 @@
 - name: Install kerberos packages
   yum:
     name: '{{ item }}'
-    state: latest
+    state: present
   with_items: "{{ redhat_pkg }}"
 
 - name: Install pip packages
   pip:
     name: "{{ item }}"
-    state: latest
+    state: present
   with_items: "{{ redhat_pip }}"
 
 - name: Copy the client configuration file
