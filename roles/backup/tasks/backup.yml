@@ -1,3 +1,4 @@
+---
 # Run the Setup to backup tower
 - name: "[Tower] Run the Ansible Tower Setup Program with backup option"
   become: true
