@@ -1,3 +1,4 @@
+---
 # Run the Setup to restore tower
 - name: "[Tower] Run the Ansible Tower Setup Program with restore option"
   become: true

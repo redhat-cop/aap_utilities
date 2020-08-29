@@ -1,3 +1,4 @@
+---
 # Assert tower version specified
 - name: "Assert tower version specified"
   assert:

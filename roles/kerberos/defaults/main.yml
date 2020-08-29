@@ -1,13 +1,13 @@
 ---
 # defaults file for win_rm_kerb_role
 
-#Domain name
+# Domain name
 krb_realm_name: YOURDOMAIN.LCL
-#hostname of Domain Server
+# hostname of Domain Server
 krb_kdc_hostname: yourkdc
 krb_admin_hostname: youradmin
 
-#defaults for Kerberos
+# defaults for Kerberos
 krb_dns_lookup_realm: "true"
 krb_dns_lookup_kdc: "true"
 krb_ticket_lifetime: "24h"
