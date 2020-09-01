@@ -1,6 +1,6 @@
 # redhat_cop.tower_utilities.pre_tasks
 
-Ansible role to prep to use the setup of Ansible Tower.
+Ansible role to prep to use the setup of Ansible Tower. This role is used by other roles in the collection to create inventories and download tower files needed. The meta dependencies pull this role and it is not needed to be referenced in a playbook to use those roles. 
 
 ## Requirements
 
@@ -58,7 +58,7 @@ $ ansible-playbook playbook.yml -e @tower_vars.yml tower
     tower_tower_releases_url: https://releases.ansible.com/ansible-tower/setup-bundle
     tower_tower_release_version: bundle-3.6.3-1.tar.gz
   roles:
-    - ansible-tower-install
+    - redhat_cop.tower_utilities.install
 ```
 
 ```yaml
@@ -74,7 +74,7 @@ $ ansible-playbook playbook.yml -e @tower_vars.yml tower
     tower_database: "dbnode.example.com"
     tower_database_port: "5432"
   roles:
-    - ansible-tower-install
+    - redhat_cop.tower_utilities.install
 ```
 
 ## License

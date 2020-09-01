@@ -11,8 +11,11 @@ None
 Available variables are listed below, along with default values defined (see defaults/main.yml)
 
 ```yaml
+# Role Vars
 tower_working_location: "/root/"
-restore_location: "{{playbook_dir}}/tower-backup-latest.tar.gz"
+restore_file: "tower-backup-latest.tar.gz"
+restore_location: "{{ tower_working_location }}/{{ restore_file }}"
+
 # Tower variables
 tower_admin_password: "password"
 
