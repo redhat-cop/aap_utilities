@@ -82,4 +82,4 @@ MIT
 
 ## Author Information
 
-Tom Page
+[Sean Sullivan](https://github.com/Wilk42)
