@@ -1,0 +1,15 @@
+---
+# vars file for win_rm_kerb_role
+redhat_pkg:
+  - libselinux-python
+  - krb5-libs
+  - krb5-workstation
+  - cyrus-sasl-gssapi
+  - krb5-devel
+  - python-pip
+  - gcc
+  - ntlm
+
+redhat_pip:
+  - "pywinrm>=0.2.2"
+  - kerberos
