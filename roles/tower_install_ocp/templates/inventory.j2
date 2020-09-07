@@ -4,7 +4,7 @@ localhost ansible_connection=local ansible_python_interpreter="/usr/bin/env pyth
 
 # This will create or update a default admin (superuser) account in Tower
 admin_user='{{ tower_admin_user }}'
-admin_password='{{ tower_password }}'
+admin_password='{{ tower_admin_password }}'
 
 # Tower Secret key
 # It's *very* important that this stay the same between upgrades or you will lose
@@ -24,11 +24,11 @@ pg_hostname='{{ pg_hostname }}'
 # If using an external database, provide your existing credentials.
 # If you choose to use the provided containerized Postgres depolyment, these
 # values will be used when provisioning the database.
-pg_database='{{ pg_database }}'
-pg_username='{{ pg_username }}'
-pg_password='{{ pg_password }}'
-pg_port='{{ pg_port }}'
-pg_sslmode='{{ pg_sslmode }}'  # set to 'verify-full' for client-side enforced SSL
+pg_database='{{ tower_pg_database }}'
+pg_username='{{ tower_pg_username }}'
+pg_password='{{ tower_pg_password }}'
+pg_port='{{ tower_pg_port }}'
+pg_sslmode='{{ tower_pg_sslmode }}'  # set to 'verify-full' for client-side enforced SSL
 
 # Note: The user running this installer will need cluster-admin privileges.
 # Tower's job execution container requires running in privileged mode,

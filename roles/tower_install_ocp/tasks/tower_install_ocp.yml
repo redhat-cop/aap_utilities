@@ -50,7 +50,7 @@
       k8s:
         namespace: '{{ openshift_project }}'
         state: present
-        src: postgres-pvc.yml
+        src: "{{ tower_setup_dir }}/postgres-pvc.yml"
         api_key: "{{ k8s_auth_results.k8s_auth.api_key }}"
 
   always:

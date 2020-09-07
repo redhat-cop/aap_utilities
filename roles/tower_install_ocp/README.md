@@ -92,7 +92,7 @@ $ ansible-playbook playbook.yml -e @tower_vars.yml
   hosts: localhost
   become: true
   vars:
-    tower_tower_release_version: 3.7.2-1.tar.gz
+    tower_release_version: 3.7.2-1
   roles:
     - tower_install_ocp
 ```
