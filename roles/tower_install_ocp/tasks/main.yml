@@ -1,0 +1,12 @@
+---
+# tasks file for ansible-tower-manage
+
+#
+# -----------------------------------------------------------------------------
+# Install Tasks
+# -----------------------------------------------------------------------------
+#
+
+- include: tower_install_ocp.yml
+  tags:
+    - tower-install-ocp

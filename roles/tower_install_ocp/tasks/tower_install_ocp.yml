@@ -1,0 +1,91 @@
+---
+# Assert tower version specified
+- name: "Assert tower version specified"
+  assert:
+    that:
+      - tower_release_version is version(3.7, '>=')
+    fail_msg: "tower_release_version must be 3.7 or greater"
+
+# Download and Extract
+- name: "[Tower] Download and Extract Tower"
+  unarchive:
+    src: "{{ tower_releases_url }}/{{ tower_setup_file }}"
+    dest: "{{ tower_working_location }}"
+    list_files: true
+    remote_src: true
+    exclude: "inventory"
+  register: tower_download_extract
+
+- name: Set tower_setup_dir
+  set_fact:
+    tower_setup_dir: "{{ tower_working_location }}/{{ tower_download_extract.files[0] }}"
+
+#Configure OCP
+- block:
+    - name: Log in (obtain access token)
+      k8s_auth:
+        host: '{{ openshift_host }}'
+        username: '{{ openshift_user }}'
+        password: "{{ openshift_password }}"
+        validate_certs: '{{ not openshift_skip_tls_verify }}'
+      register: k8s_auth_results
+
+    # Create tower project
+    - name: Create a k8s namespace
+      k8s:
+        name: '{{ openshift_project }}'
+        api_version: v1
+        api_key: "{{ k8s_auth_results.k8s_auth.api_key }}"
+        kind: Namespace
+        state: present
+    
+    #Template out Persistant Volume Claim
+    - name: "Template out Persistant Volume Claim"
+      template:
+        src: postgres-pvc.j2
+        dest: "{{ tower_setup_dir }}/postgres-pvc.yml"
+
+    # Create Persistant Volume Claim
+    - name: Create a Persistant Volume Claim
+      k8s:
+        namespace: '{{ openshift_project }}'
+        state: present
+        src: postgres-pvc.yml
+        api_key: "{{ k8s_auth_results.k8s_auth.api_key }}"
+
+  always:
+  - name: If login succeeded, try to log out (revoke access token)
+    when: k8s_auth_results.k8s_auth.api_key is defined
+    k8s_auth:
+      host: '{{ openshift_host }}'
+      state: absent
+      api_key: "{{ k8s_auth_results.k8s_auth.api_key }}"
+      validate_certs: '{{ not openshift_skip_tls_verify }}'
+
+
+# Create Inventory
+- name: "[Tower] Populate Tower Setup Inventory from Template"
+  template:
+    src: inventory.j2
+    dest: "{{ tower_setup_dir }}/inventory"
+
+# Run the Setup
+- name: "[Tower] Run the Ansible Tower Setup Program"
+  become: true
+  command: ./setup.sh
+  args:
+    chdir: "{{ tower_setup_dir }}"
+  async: 10000
+  poll: 20
+  changed_when: false   # these will always run and will always report “changed” otherwise
+
+- name: Wait for ansible tower to be running.
+  uri:
+    url: "{{ tower_server }}"
+    status_code: 200
+    validate_certs: false
+  register: result
+  until: result.status == 200
+  retries: 90
+  delay: 10
+...
