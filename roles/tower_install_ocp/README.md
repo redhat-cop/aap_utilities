@@ -16,8 +16,10 @@ requests-oauthlib
 
 ```yaml
 
-#Directory from which Tower installation will launch
-tower_working_location: "/root/"
+# The following must be set to ensure successful deployment
+
+# Directory from which Tower installation will launch
+tower_working_location: "/var/tmp"
 
 # Location of tower version to install
 tower_releases_url: https://releases.ansible.com/ansible-tower/setup_openshift/
@@ -78,10 +80,10 @@ pvc_claim_size: 10Gi
 
 ## Example Playbook
 
-The following playbook and accompanying vars file containing the defined seed objects can be invoked in the following manner.
+The following playbook and accompanying vars file containing the defined seed objects can be invoked in the following manner. It is best practice to give the password at runtime to ensure the password is not saved in the inventory.
 
 ```sh
-$ ansible-playbook playbook.yml -e @tower_vars.yml
+$ ansible-playbook playbook.yml -e @tower_vars.yml -e -e openshift_token=password
 ```
 
 ```yaml

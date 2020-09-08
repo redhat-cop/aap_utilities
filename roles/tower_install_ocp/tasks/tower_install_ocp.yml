@@ -62,7 +62,7 @@
     # Run the Setup
     - name: "[Tower] Run the Ansible Tower Setup Program"
       become: true
-      command: ./setup_openshift.sh
+      command: ./setup_openshift.sh -e "{{ openshift_token }}"
       args:
         chdir: "{{ tower_setup_dir }}"
       async: 10000
@@ -79,7 +79,7 @@
 
     - name: "[Tower] Wait for Ansible tower to be running."
       uri:
-        url: "{{ route_details.resources.0.spec.host }}"
+        url: "https://{{ route_details.resources.0.spec.host }}"
         status_code: 200
         validate_certs: false
       register: result
