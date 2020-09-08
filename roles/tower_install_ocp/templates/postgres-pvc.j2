@@ -1,7 +1,7 @@
 apiVersion: "v1"
 kind: "PersistentVolumeClaim"
 metadata:
-  name: "postgresql"
+  name: "{{ openshift_pg_pvc_name }}"
 spec:
   accessModes:
     - "ReadWriteOnce"

@@ -22,7 +22,7 @@
 
 #Configure OCP
 - block:
-    - name: Log in (obtain access token)
+    - name: "[Openshift] Log in (obtain access token)"
       k8s_auth:
         host: '{{ openshift_host }}'
         username: '{{ openshift_user }}'
@@ -31,7 +31,7 @@
       register: k8s_auth_results
 
     # Create tower project
-    - name: Create a k8s namespace
+    - name: "[Openshift] Create a k8s namespace"
       k8s:
         name: '{{ openshift_project }}'
         api_version: v1
@@ -46,46 +46,57 @@
         dest: "{{ tower_setup_dir }}/postgres-pvc.yml"
 
     # Create Persistant Volume Claim
-    - name: Create a Persistant Volume Claim
+    - name: "[Openshift] Create a Persistant Volume Claim"
       k8s:
         namespace: '{{ openshift_project }}'
         state: present
         src: "{{ tower_setup_dir }}/postgres-pvc.yml"
         api_key: "{{ k8s_auth_results.k8s_auth.api_key }}"
 
+    # Create Inventory
+    - name: "[Tower] Populate Tower Setup Inventory from Template"
+      template:
+        src: inventory.j2
+        dest: "{{ tower_setup_dir }}/inventory"
+
+    # Run the Setup
+    - name: "[Tower] Run the Ansible Tower Setup Program"
+      become: true
+      command: ./setup_openshift.sh
+      args:
+        chdir: "{{ tower_setup_dir }}"
+      async: 10000
+      poll: 20
+      changed_when: false   # these will always run and will always report “changed” otherwise
+
+    # Get route for Ansibe Tower
+    - name: "[Openshift] Get route for Ansible Tower"
+      k8s_info:
+        kind: Route
+        namespace: '{{ openshift_project }}'
+        api_key: "{{ k8s_auth_results.k8s_auth.api_key }}"
+      register: route_details
+
+    - debug:
+        msg: "{{ route_details }}"
+
+    - name: "[Tower] Wait for Ansible tower to be running."
+      uri:
+        url: "{{ tower_server }}"
+        status_code: 200
+        validate_certs: false
+      register: result
+      until: result.status == 200
+      retries: 90
+      delay: 10
+
+
   always:
-  - name: If login succeeded, try to log out (revoke access token)
-    when: k8s_auth_results.k8s_auth.api_key is defined
-    k8s_auth:
-      host: '{{ openshift_host }}'
-      state: absent
-      api_key: "{{ k8s_auth_results.k8s_auth.api_key }}"
-      validate_certs: '{{ not openshift_skip_tls_verify }}'
-
-
-# Create Inventory
-- name: "[Tower] Populate Tower Setup Inventory from Template"
-  template:
-    src: inventory.j2
-    dest: "{{ tower_setup_dir }}/inventory"
-
-# Run the Setup
-- name: "[Tower] Run the Ansible Tower Setup Program"
-  become: true
-  command: ./setup.sh
-  args:
-    chdir: "{{ tower_setup_dir }}"
-  async: 10000
-  poll: 20
-  changed_when: false   # these will always run and will always report “changed” otherwise
-
-- name: Wait for ansible tower to be running.
-  uri:
-    url: "{{ tower_server }}"
-    status_code: 200
-    validate_certs: false
-  register: result
-  until: result.status == 200
-  retries: 90
-  delay: 10
+    - name: If login succeeded, try to log out (revoke access token)
+      when: k8s_auth_results.k8s_auth.api_key is defined
+      k8s_auth:
+        host: '{{ openshift_host }}'
+        state: absent
+        api_key: "{{ k8s_auth_results.k8s_auth.api_key }}"
+        validate_certs: '{{ not openshift_skip_tls_verify }}'
 ...
