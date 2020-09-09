@@ -34,7 +34,7 @@
     - name: "[Openshift] Set API token fact"
       set_fact:
         openshift_token: "{{ k8s_auth_results.k8s_auth.api_key }}"
-      when: k8s_auth_results is defined
+      when: openshift_password is defined
       
 
     # Create tower project

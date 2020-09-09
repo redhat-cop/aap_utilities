@@ -93,8 +93,12 @@ pvc_claim_size: 10Gi
 
 The following playbook and accompanying vars file containing the defined seed objects above, can be invoked in the following manner. It is best practice to give the password at runtime to ensure the password is not saved in the inventory.
 
+The playbook should be run in one of the following ways, dependant upon if you are using a token or password to access the openshift cluster
 ```sh
 $ ansible-playbook playbook.yml -e @tower_vars.yml -e openshift_password=password
+```
+```sh
+$ ansible-playbook playbook.yml -e @tower_vars.yml -e openshift_token=example-token
 ```
 
 ```yaml
