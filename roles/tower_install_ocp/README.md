@@ -7,17 +7,17 @@ Ansible role to install Ansible Tower on OCP.
 python >= 2.7
 
 ---PYTHON MODULES---
-openshift
-kubernetes
-PyYAML >= 3.11
-requests-oauthlib
+* openshift
+* kubernetes
+* PyYAML >= 3.11
+* requests-oauthlib
 
 # OCP Requirements
 OpenShift 3.11+
 
 Per pod default resource requirements:
-6GB RAM
-3CPU cores
+* 6GB RAM,
+* 3CPU cores
 
 A setup and running Openshift cluster
 
@@ -37,7 +37,7 @@ tower_releases_url: https://releases.ansible.com/ansible-tower/setup_openshift/
 tower_setup_file: ansible-tower-openshift-setup-{{ tower_release_version }}.tar.gz
 
 # This will create or update a default admin (superuser) account in Tower
-admin_user: admin
+admin_user: 'admin'
 admin_password: 'mypassword'
 
 # Tower Secret key
@@ -72,8 +72,6 @@ openshift_host: https://openshift.example.com
 openshift_skip_tls_verify: false
 openshift_project: tower
 openshift_user: admin
-# If you don't want to hardcode a password here, just do:
-# ./setup_openshift.sh -e openshift_token=$TOKEN
 
 # Optional containerised Postgres DB settings
 # =============================
