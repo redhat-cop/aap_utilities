@@ -38,9 +38,9 @@ pg_sslmode='{{ tower_pg_sslmode }}'  # set to 'verify-full' for client-side enfo
 # =====================
 
 openshift_host='{{ openshift_host }}'
-openshift_skip_tls_verify='{{ openshift_skip_tls_verify }}'
-openshift_project='{{ openshift_project }}'
 openshift_user='{{ openshift_user }}'
+openshift_project='{{ openshift_project }}'
+openshift_skip_tls_verify='{{ openshift_skip_tls_verify }}'
 
 # Skip this section if you BYO database. This is only used when you want the
 # installer to deploy a containerized Postgres deployment inside of your
