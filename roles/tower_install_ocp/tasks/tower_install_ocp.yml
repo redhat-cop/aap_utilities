@@ -20,7 +20,7 @@
   set_fact:
     tower_setup_dir: "{{ tower_working_location }}/{{ tower_download_extract.files[0] }}"
 
-#Configure OCP
+# Configure Tower on OCP
 - block:
     - name: "[Openshift] Log in (obtain access token)"
       k8s_auth:
@@ -39,11 +39,12 @@
         kind: Namespace
         state: present
     
-    #Template out Persistant Volume Claim
+    # Template out Persistant Volume Claim
     - name: "Template out Persistant Volume Claim"
       template:
         src: postgres-pvc.j2
         dest: "{{ tower_setup_dir }}/postgres-pvc.yml"
+      when:  openshift_pg_pvc_name is defined
 
     # Create Persistant Volume Claim
     - name: "[Openshift] Create a Persistant Volume Claim"
@@ -52,6 +53,7 @@
         state: present
         src: "{{ tower_setup_dir }}/postgres-pvc.yml"
         api_key: "{{ k8s_auth_results.k8s_auth.api_key }}"
+      when: openshift_pg_pvc_name is defined
 
     # Create Inventory
     - name: "[Tower] Populate Tower Setup Inventory from Template"
@@ -62,7 +64,7 @@
     # Run the Setup
     - name: "[Tower] Run the Ansible Tower Setup Program"
       become: true
-      command: ./setup_openshift.sh -e "{{ openshift_token }}"
+      command: ./setup_openshift.sh -e "openshift_token={{ k8s_auth_results.k8s_auth.api_key }}"
       args:
         chdir: "{{ tower_setup_dir }}"
       async: 10000

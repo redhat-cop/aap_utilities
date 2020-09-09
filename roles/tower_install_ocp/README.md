@@ -12,11 +12,22 @@ kubernetes
 PyYAML >= 3.11
 requests-oauthlib
 
+# OCP Requirements
+OpenShift 3.11+
+
+Per pod default resource requirements:
+6GB RAM
+3CPU cores
+
+A setup and running Openshift cluster
+
+Admin privileges for the account running the openshift installer (cluster-admin role is required)
+
 ## Role Variables
 
 ```yaml
 
-# The following must be set to ensure successful deployment
+# The following parameters must be set to ensure a successful deployment
 
 # Directory from which Tower installation will launch
 tower_working_location: "/var/tmp"
@@ -61,17 +72,17 @@ openshift_host: https://openshift.example.com
 openshift_skip_tls_verify: false
 openshift_project: tower
 openshift_user: admin
-openshift_password: password
 # If you don't want to hardcode a password here, just do:
 # ./setup_openshift.sh -e openshift_token=$TOKEN
 
+# Optional containerised Postgres DB settings
+# =============================
 # Skip this section if you BYO database. This is only used when you want the
 # installer to deploy a containerized Postgres deployment inside of your
 # OpenShift cluster. This is only recommended if you have experience storing and
 # managing persistent data in containerized environments.
 #
-#
-# Name of a PVC you've already provisioned for database:
+# Choose a name for the pg persistant volume claim to be created:
 openshift_pg_pvc_name: postgresql
 # Openshift Persistant Volume Claim Size
 pvc_claim_size: 10Gi
@@ -80,10 +91,10 @@ pvc_claim_size: 10Gi
 
 ## Example Playbook
 
-The following playbook and accompanying vars file containing the defined seed objects can be invoked in the following manner. It is best practice to give the password at runtime to ensure the password is not saved in the inventory.
+The following playbook and accompanying vars file containing the defined seed objects above, can be invoked in the following manner. It is best practice to give the password at runtime to ensure the password is not saved in the inventory.
 
 ```sh
-$ ansible-playbook playbook.yml -e @tower_vars.yml -e -e openshift_token=password
+$ ansible-playbook playbook.yml -e @tower_vars.yml -e openshift_password=password
 ```
 
 ```yaml
@@ -106,4 +117,3 @@ MIT
 ## Author Information
 
 Chris Renwick
-
