@@ -14,7 +14,7 @@
       set_fact:
         openshift_token: "{{ k8s_auth_results.k8s_auth.api_key }}"
       when: openshift_password is defined
-      
+
 
     # Create tower project
     - name: "[Openshift] Create a k8s namespace"
@@ -24,13 +24,13 @@
         api_key: "{{ openshift_token }}"
         kind: Namespace
         state: present
-    
+  
     # Template out Persistant Volume Claim
     - name: "Template out Persistant Volume Claim"
       template:
         src: postgres-pvc.j2
         dest: "{{ tower_setup_dir }}/postgres-pvc.yml"
-      when:  openshift_pg_pvc_name is defined
+      when: openshift_pg_pvc_name is defined
 
     # Create Persistant Volume Claim
     - name: "[Openshift] Create a Persistant Volume Claim"

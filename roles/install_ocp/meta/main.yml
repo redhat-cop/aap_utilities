@@ -1,4 +1,4 @@
- ---
+---
 galaxy_info:
   role_name: redhat_cop.tower_utilities.ocp_install
   author: Chris Renwick
@@ -20,4 +20,7 @@ galaxy_info:
     - ansible
 
 dependencies:
-  - redhat_cop.tower_utilities.pre_tasks
+  - role: redhat_cop.tower_utilities.pre_tasks
+    vars:
+      tower_releases_url: "{{ tower_releases_url }}"
+      tower_setup_file: "{{ tower_setup_file }}"

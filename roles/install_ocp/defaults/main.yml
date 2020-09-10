@@ -8,6 +8,10 @@
 # Working location for installation files
 tower_working_location: "/var/tmp"
 
+# vars file for install_ocp
+tower_releases_url: https://releases.ansible.com/ansible-tower/setup_openshift/
+tower_setup_file: ansible-tower-openshift-setup-{{ tower_release_version }}.tar.gz
+
 # Tower variables
 tower_admin_user: "admin"
 tower_admin_password: "password"
@@ -39,4 +43,4 @@ openshift_user: kubeadmin
 
 # persistant volume for pg database details
 openshift_pg_pvc_name: postgresql
-pvc_claim_size: 10gi
+pvc_claim_size: 10Gi

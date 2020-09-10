@@ -1,4 +1,4 @@
-# ansible-tower-install
+# redhat_cop.tower_utilities.install_ocp
 
 Ansible role to install Ansible Tower on OCP.
 
