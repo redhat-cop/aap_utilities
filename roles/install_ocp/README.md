@@ -109,7 +109,7 @@ $ ansible-playbook playbook.yml -e @tower_vars.yml -e openshift_token=example-to
   vars:
     tower_release_version: 3.7.2-1
   roles:
-    - tower_install_ocp
+    - install_ocp
 ```
 
 ## License

@@ -7,6 +7,6 @@
 # -----------------------------------------------------------------------------
 #
 
-- include: tower_install_ocp.yml
+- include: install_ocp.yml
   tags:
     - tower-install-ocp

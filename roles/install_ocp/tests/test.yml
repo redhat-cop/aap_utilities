@@ -2,4 +2,4 @@
 - hosts: localhost
   remote_user: root
   roles:
-    - tower_install_ocp
+    - install_ocp
