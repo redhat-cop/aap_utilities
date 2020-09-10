@@ -9,8 +9,8 @@
 tower_working_location: "/var/tmp"
 
 # vars file for install_ocp
-tower_releases_url: https://releases.ansible.com/ansible-tower/setup_openshift/
-tower_setup_file: ansible-tower-openshift-setup-{{ tower_release_version }}.tar.gz
+tower_ocp_releases_url: https://releases.ansible.com/ansible-tower/setup_openshift/
+tower_ocp_setup_file: ansible-tower-openshift-setup-{{ tower_release_version }}.tar.gz
 
 # Tower variables
 tower_admin_user: "admin"

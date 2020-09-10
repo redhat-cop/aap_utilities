@@ -33,8 +33,8 @@ Admin privileges for the account running the openshift installer (cluster-admin 
 tower_working_location: "/var/tmp"
 
 # Location of tower version to install
-tower_releases_url: https://releases.ansible.com/ansible-tower/setup_openshift/
-tower_setup_file: ansible-tower-openshift-setup-{{ tower_release_version }}.tar.gz
+tower_ocp_releases_url: https://releases.ansible.com/ansible-tower/setup_openshift/
+tower_ocp_setup_file: ansible-tower-openshift-setup-{{ tower_release_version }}.tar.gz
 
 # This will create or update a default admin (superuser) account in Tower
 admin_user: 'admin'
