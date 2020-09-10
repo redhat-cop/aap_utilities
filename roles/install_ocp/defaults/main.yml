@@ -24,9 +24,6 @@ tower_pg_password: "password"
 tower_pg_port: 5432
 tower_pg_sslmode: "prefer" # set to 'verify-full' for client-side enforced SSL
 
-tower_releases_url: https://releases.ansible.com/ansible-tower/setup_openshift/
-tower_setup_file: ansible-tower-openshift-setup-{{ tower_release_version }}.tar.gz
-
 ############################################################
 #               Openshift vars.                 #
 ############################################################

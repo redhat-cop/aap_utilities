@@ -9,4 +9,4 @@
 
 - include: install_ocp.yml
   tags:
-    - tower-install-ocp
+    - install-ocp

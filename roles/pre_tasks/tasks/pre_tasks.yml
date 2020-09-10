@@ -29,3 +29,4 @@
   template:
     src: inventory.j2
     dest: "{{ tower_setup_dir }}/inventory"
+  when: pre_tasks_process_template
