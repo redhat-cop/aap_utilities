@@ -24,7 +24,7 @@
         api_key: "{{ openshift_token }}"
         kind: Namespace
         state: present
-  
+
     # Template out Persistant Volume Claim
     - name: "Template out Persistant Volume Claim"
       template:
