@@ -1,6 +1,6 @@
-# ansible-tower-install
+# redhat_cop.tower_utilities.Backup
 
-Ansible role to install Ansible Tower.
+Ansible role to backup Ansible Tower.
 
 ## Requirements
 
@@ -12,7 +12,7 @@ Available variables are listed below, along with default values defined (see def
 
 ```yaml
 tower_working_location: "/root/"
-
+backup_dest: "{{ tower_working_location }}/"
 # Tower variables
 tower_admin_password: "password"
 
@@ -49,32 +49,18 @@ $ ansible-playbook playbook.yml -e @tower_vars.yml tower
 
 ```yaml
 ---
-# Playbook to install Ansible Tower as a single node
-
-- name: Install Ansible Tower
-  hosts: tower
-  become: true
-  vars:
-    tower_tower_releases_url: https://releases.ansible.com/ansible-tower/setup-bundle
-    tower_tower_release_version: bundle-3.6.3-1.tar.gz
-  roles:
-    - ansible-tower-install
-```
-
-```yaml
----
 # Playbook to install Ansible Tower as a cluster
 
-- name: Setup Ansible Tower
+- name: Backup Ansible Tower
   hosts: localhost
   become: true
   vars:
     tower_hosts:
       - "clusternode[1:3].example.com"
     tower_database: "dbnode.example.com"
-    tower_database_port: "5432"
+    tower_working_location: "{{playbook_dir}}"
   roles:
-    - ansible-tower-install
+    - redhat_cop.tower_utilities.backup
 ```
 
 ## License
@@ -83,4 +69,4 @@ MIT
 
 ## Author Information
 
-Tom Page
+Sean Sullivan

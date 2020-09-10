@@ -38,4 +38,4 @@ tower_hosts:
   - "localhost ansible_connection=local"
 
 tower_database: ""
-tower_database_port: ""
+tower_database_port: "5432"

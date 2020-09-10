@@ -1,6 +1,6 @@
 ---
 galaxy_info:
-  role_name: ansible-tower-install
+  role_name: redhat_cop.tower_utilities.install
   author: Tom Page
   description: Role to install Ansible Tower
   company: Red Hat
@@ -19,4 +19,5 @@ galaxy_info:
     - system
     - ansible
 
-dependencies: []
+dependencies:
+  - redhat_cop.tower_utilities.pre_tasks

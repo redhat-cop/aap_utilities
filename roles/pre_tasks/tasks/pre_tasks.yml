@@ -29,24 +29,3 @@
   template:
     src: inventory.j2
     dest: "{{ tower_setup_dir }}/inventory"
-
-# Run the Setup
-- name: "[Tower] Run the Ansible Tower Setup Program"
-  become: true
-  command: ./setup.sh
-  args:
-    chdir: "{{ tower_setup_dir }}"
-  async: 10000
-  poll: 20
-  changed_when: false   # these will always run and will always report “changed” otherwise
-
-- name: Wait for ansible tower to be running.
-  uri:
-    url: "{{ tower_server }}"
-    status_code: 200
-    validate_certs: false
-  register: result
-  until: result.status == 200
-  retries: 90
-  delay: 10
-...
