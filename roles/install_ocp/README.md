@@ -108,6 +108,8 @@ $ ansible-playbook playbook.yml -e @tower_vars.yml -e openshift_token=example-to
   become: true
   vars:
     tower_release_version: 3.7.2-1
+    tower_releases_url: https://releases.ansible.com/ansible-tower/setup_openshift/
+    tower_setup_file: ansible-tower-openshift-setup-{{ tower_release_version }}.tar.gz    
   roles:
     - install_ocp
 ```
