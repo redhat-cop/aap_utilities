@@ -11,6 +11,9 @@ tower_working_location: "/var/tmp"
 # Tower variables
 tower_admin_password: "password"
 
+# Use the default tower installation template
+pre_tasks_process_template: True
+
 # Postgresql variables
 tower_pg_database: "awx"
 tower_pg_username: "awx"
