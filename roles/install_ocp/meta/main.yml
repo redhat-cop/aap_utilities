@@ -22,5 +22,5 @@ galaxy_info:
 dependencies:
   - role: redhat_cop.tower_utilities.pre_tasks
     vars:
-      tower_ocp_releases_url: "{{ tower_releases_url }}"
-      tower_ocp_setup_file: "{{ tower_setup_file }}"
+      tower_releases_url: "{{ tower_ocp_releases_url }}"
+      tower_setup_file: "{{ tower_ocp_setup_file }}"
