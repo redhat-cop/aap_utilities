@@ -37,6 +37,24 @@ tower_hosts:
 
 tower_database: ""
 tower_database_port: ""
+
+tower_ssh_connection_vars: ''
+```
+
+## tower_ssh_connection_vars
+
+connection vars can be set in the inventory file through a list of vars
+
+```yaml
+tower_ssh_connection_vars:
+  - name: ansible_connection
+    value: ssh
+  - name: ansible_user
+    value: vagrant
+  - name: ansible_ssh_pass
+    value: vagrant
+  - name: ansible_ssh_private_key_file
+    value: /path/to/file
 ```
 
 ## Example Playbook
