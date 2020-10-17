@@ -17,4 +17,4 @@ skip_list:
   - '106'
   # [E208]: "File permissions not mentioned. Issue created to fix"
   # (Disabled in Oct 2020)
-  - '208' 
+  - '208'
