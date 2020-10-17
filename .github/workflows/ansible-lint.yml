@@ -33,7 +33,7 @@ jobs:
       run: |
         sudo apt install software-properties-common
         sudo apt-add-repository --yes --update ppa:ansible/ansible
-        sudo apt install ansible=2.10.2
+        sudo apt install ansible=2.10.0
 
     - name: Lint Ansible Playbook
       # replace "master" with any valid ref
