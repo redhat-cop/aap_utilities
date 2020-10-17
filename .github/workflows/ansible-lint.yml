@@ -30,7 +30,7 @@ jobs:
     - uses: actions/checkout@v2
 
     - name: Install Collections
-      run: |  
+      run: |
         sudo apt install software-properties-common
         sudo apt-add-repository --yes --update ppa:ansible/ansible
         sudo apt install ansible
@@ -54,7 +54,7 @@ jobs:
         # Arguments to override a package and its version to be set explicitly.
         # Must follow the example syntax.
         override-deps: |
-          ansible-base=2.10.2
+          ansible==2.9
           ansible-lint==4.2.0
         # [optional]
         # Arguments to be passed to the ansible-lint
