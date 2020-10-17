@@ -33,9 +33,7 @@ jobs:
       run: |  
         sudo apt install software-properties-common
         sudo apt-add-repository --yes --update ppa:ansible/ansible
-        sudo apt list -a ansible-base
-        sudo apt list -a ansible
-        sudo apt install ansible-base
+        sudo apt install ansible
 
     - name: Lint Ansible Playbook
       # replace "master" with any valid ref
@@ -56,7 +54,6 @@ jobs:
         # Arguments to override a package and its version to be set explicitly.
         # Must follow the example syntax.
         override-deps: |
-          ansible==2.10
           ansible-base=2.10.2
           ansible-lint==4.2.0
         # [optional]
