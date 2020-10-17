@@ -15,3 +15,6 @@ skip_list:
   # [E106]: "Role name {} does not match ^[a-z][a-z0-9_]+$ pattern" Issue with galaxy.yml file being variable based.
   # (Disabled in Oct 2020)
   - '106'
+  # [E208]: "File permissions not mentioned. Issue created to fix"
+  # (Disabled in Oct 2020)
+  - '208' 
