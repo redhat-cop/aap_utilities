@@ -35,7 +35,7 @@ jobs:
         sudo apt-add-repository --yes --update ppa:ansible/ansible
         sudo apt list -a ansible-base
         sudo apt list -a ansible
-        sudo apt install ansible-base=2.10.2
+        sudo apt install ansible-base
 
     - name: Lint Ansible Playbook
       # replace "master" with any valid ref
