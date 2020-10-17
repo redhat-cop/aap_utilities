@@ -1,6 +1,6 @@
 # redhat_cop.tower_utilities.pre_tasks
 
-Ansible role to prep to use the setup of Ansible Tower. This role is used by other roles in the collection to create inventories and download tower files needed. The meta dependencies pull this role and it is not needed to be referenced in a playbook to use those roles. 
+Ansible role to prep to use the setup of Ansible Tower. This role is used by other roles in the collection to create inventories and download tower files needed. The meta dependencies pull this role and it is not needed to be referenced in a playbook to use those roles.
 
 ## Requirements
 
