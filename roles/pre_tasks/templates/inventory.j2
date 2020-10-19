@@ -9,6 +9,12 @@
 [all:vars]
 admin_password='{{ tower_admin_password }}'
 
+{% if tower_ssh_connection_vars is defined %}
+{% for item in tower_ssh_connection_vars %}
+{{ item.name}}='{{ item.value }}'
+{% endfor %}
+{% endif %}
+
 # Define Remote PostgreSQL for Tower
 pg_host='{{ tower_database }}'
 pg_port='{{ tower_database_port }}'

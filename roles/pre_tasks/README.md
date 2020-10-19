@@ -1,6 +1,6 @@
 # redhat_cop.tower_utilities.pre_tasks
 
-Ansible role to prep to use the setup of Ansible Tower. This role is used by other roles in the collection to create inventories and download tower files needed. The meta dependencies pull this role and it is not needed to be referenced in a playbook to use those roles. 
+Ansible role to prep to use the setup of Ansible Tower. This role is used by other roles in the collection to create inventories and download tower files needed. The meta dependencies pull this role and it is not needed to be referenced in a playbook to use those roles.
 
 ## Requirements
 
@@ -37,6 +37,24 @@ tower_hosts:
 
 tower_database: ""
 tower_database_port: ""
+
+tower_ssh_connection_vars: ''
+```
+
+## tower_ssh_connection_vars
+
+connection vars can be set in the inventory file through a list of vars
+
+```yaml
+tower_ssh_connection_vars:
+  - name: ansible_connection
+    value: ssh
+  - name: ansible_user
+    value: vagrant
+  - name: ansible_ssh_pass
+    value: vagrant
+  - name: ansible_ssh_private_key_file
+    value: /path/to/file
 ```
 
 ## Example Playbook
