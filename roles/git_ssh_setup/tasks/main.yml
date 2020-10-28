@@ -4,7 +4,7 @@
 - name: install some additional convenience software on the control node
   package:
     name: "{{ git_needed_software }}"
-    state: latest
+    state: present
 
 - name: make sure git-shell is in /etc/shells
   lineinfile:
@@ -38,7 +38,7 @@
     state: directory
 
 - name: Create empty bare repositories if missing
-  command: git init --bare --shared=group {{ full_projects_dir }}/{{ item }}.git
+  command: git init --bare --shared=group {{ full_projects_dir }}/{{ item }}.git  # noqa 303
   args:
     creates: "{{ full_projects_dir }}/{{ item }}.git"
   become: true
