@@ -1,5 +1,5 @@
 ---
 - hosts: localhost
-  remote_user: root
+  remote_user: ansible
   roles:
     - git_ssh_setup
