@@ -5,6 +5,9 @@
 #               Tower Installation Vars                    #
 ############################################################
 
+# Tower release version, either fixed e.g. 3.7.2 or "latest"
+tower_release_version: latest
+
 # Working location for installation files
 tower_working_location: "/var/tmp"
 
