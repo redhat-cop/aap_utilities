@@ -4,7 +4,12 @@
 ![Galaxy Release](https://github.com/redhat-cop/tower_utilities/workflows/galaxy-release/badge.svg)
 <!-- Further CI badges go here as above -->
 
-This ansible collection includes a number of roles which can be useful for installing and managing AWX or Ansible Tower.
+This ansible collection includes a number of roles which can be useful for installing and managing AWX or Ansible Tower. Using this collection, you'll be able to automate following tasks:
+
+* prepare and install Tower (on a normal OS, or in OpenStack)
+* configure the OS to support Kerberos (if you plan to manage Windows hosts using AD credentials)
+* backup and restore Ansible Tower
+* install a minimal Git repo over SSH, for demonstration and learning purposes
 
 ## Included content
 

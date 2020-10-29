@@ -1,8 +1,8 @@
-Role Name
-=========
+redhat_cop.tower_utilities.git_ssh_setup
+========================================
 
 Creates a minimal Git server which can be used over SSH. It isn't meant as a full blown Git server,
-but just for demonstration and learning purposes.
+but just for demonstration and learning purposes, and can be installed directly on the Tower server.
 
 Requirements
 ------------
@@ -34,7 +34,7 @@ We've assumed that it will be created directly on the Tower server for demonstra
 License
 -------
 
-BSD
+MIT
 
 Author Information
 ------------------
