@@ -8,7 +8,7 @@
 
 - name: "Determine whether RabbitMQ vars are required"
   set_fact:
-    rabbitmq_required: "{{ not ((tower_release_version is version(3.7, '>=')) or (tower_release_version == 'latest')) }}"
+    rabbitmq_required: "{{ not ((tower_release_version == 'latest') or (tower_release_version is version(3.7, '>='))) }}"
 
 # Download and Extract
 - name: "[Tower] Download and Extract Tower"

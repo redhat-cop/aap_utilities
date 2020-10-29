@@ -15,5 +15,5 @@ collections/*
 galaxy.yml
 *.tar.gz
 
-# Vim working files
+# Ignore Vim working files
 .*.swp
