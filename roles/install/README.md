@@ -44,7 +44,11 @@ tower_ssh_connection_vars: ''
 isolated_groups:
   - name: dmz1
     hostnames:
-    - isolatednode.example.com
+    - isolatednode0.dmz1example.com
+  - name: dmz2
+    hostnames:
+    - isolatednode0.dmz2.example.com
+    - isolatednode1.dmz2.example.com
 
 ```
 
