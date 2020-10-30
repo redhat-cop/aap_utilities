@@ -39,6 +39,13 @@ tower_database: ""
 tower_database_port: ""
 
 tower_ssh_connection_vars: ''
+
+# Set isolated groups for isolated nodes if required
+isolated_groups:
+  - name: dmz1
+    hostnames:
+    - isolatednode.example.com
+
 ```
 
 ## tower_ssh_connection_vars
