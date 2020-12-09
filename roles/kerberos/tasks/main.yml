@@ -6,6 +6,6 @@
 # -----------------------------------------------------------------------------
 #
 
-- include: kerb.yml
+- include_tasks: kerb.yml
   tags:
     - kerberos
