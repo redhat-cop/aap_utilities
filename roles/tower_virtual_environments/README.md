@@ -1,14 +1,11 @@
-# tower_configuration.tower_virtual_environments
+# tower_utilities.tower_virtual_environments
 
 ## Description
 An Ansible Role to manage Python virtual environments in Ansible Tower.
 
 ## Variables
-|Variable Name|Default Value|Required|Description|Type|
-|---|:---:|:---:|---|:---:|
-|tower_venv_pylibs | ["ansible-tower-cli"] | yes | List of Python libraries to install from pip.  This should be a list of Python libraries that certain Ansible modules require to run. If just the package name is provided (i.e. without [package-name]-[version] **example:** *`ansible-tower-cli-3.3.2`*) the latest version will be installed (**example:** *`ansible-tower-cli`* will get latest version available). | list |
-| tower_venv_path | "/var/lib/awx/venv/ansible" | no | Path to the Ansible Tower virtual environment you would like to operate on. If the path does not exist, the directory, along with the required Ansible Tower base depencenies (`python-memcached psutil`).| string |
-| tower_venv_umask | "0022" | no | System umask to apply before installing the pip package. | string |
+
+See the [defaults/main.yml](defaults/main.yml) for a list of available variables and their meaning
 
 ## Playbook Examples
 ### Standard Role Usage
@@ -17,7 +14,7 @@ An Ansible Role to manage Python virtual environments in Ansible Tower.
 - hosts: "all"
   roles:
     - role: "tower_virtual_environments"
-      tower_venv_pylibs:
+      tower_venv_online_installs:
         - "ansible-tower-cli"
         - "boto"
 ```
@@ -26,7 +23,7 @@ An Ansible Role to manage Python virtual environments in Ansible Tower.
 ---
 - hosts: "all"
   vars:
-    tower_venv_pylibs:
+    tower_venv_online_installs:
       - "ansible-tower-cli"
       - "boto"
   tasks:
@@ -43,7 +40,7 @@ An Ansible Role to manage Python virtual environments in Ansible Tower.
       include_role:
         name: "tower_virtual_environments"
       vars:
-        tower_venv_pylibs:
+        tower_venv_online_installs:
           - "ansible-tower-cli"
           - "boto"
 ```
@@ -52,3 +49,4 @@ An Ansible Role to manage Python virtual environments in Ansible Tower.
 
 ## Author
 [Andrew J. Huffman](https://github.com/ahuffman)
+[Eric Lavarde](https://github.com/ericzolf)
