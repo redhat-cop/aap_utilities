@@ -1,6 +1,6 @@
 ---
 galaxy_info:
-  role_name: "kerberos"
+  role_name: redhat_cop.tower_utilities.kerberos
   author: "Andrew J. Huffman"
   description: "An Ansible role to configure Ansible Tower nodes to manage Windows systems."
   company: "Red Hat"
