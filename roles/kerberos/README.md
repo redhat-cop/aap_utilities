@@ -1,6 +1,6 @@
 # redhat_cop.tower_utilities.kerberos
 ## Description
-An Ansible role to setup authentication to a windows domain server with kerberos 
+An Ansible role to setup authentication to a windows domain server with kerberos.
 
 ## Requirements
 This role installs all required packages in order to facilitate authentication.
