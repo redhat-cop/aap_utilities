@@ -12,7 +12,7 @@ This role installs all required packages in order to facilitate authentication.
 |`krb_realms`|yes|N/A|List of Dictionaries|Used for storing the realm(domain) name and its domain controllers.  A single domain controller can be specified if that is the only available option, but more than one is preferable. See example usage below.|
 |`krb_default_realm`|no|undefined|string|If a default realm(domain) is required to be specified this can be set.  Otherwise it remains unset in the krb5.conf.|
 |`krb_dns_lookup_realm`|yes|"false"|string|Whether or not to lookup DNS via realm.|
-|`dns_lookup_kdc`|no|"true"|string|Indicate whether DNS SRV records should be used to locate the KDCs and other servers for a realm.|
+|`krb_dns_lookup_kdc`|no|"true"|string|Indicate whether DNS SRV records should be used to locate the KDCs and other servers for a realm.|
 |`krb_ticket_lifetime`|yes|"24h"|string|Sets the default lifetime for initial ticket requests.|
 |`krb_renew_lifetime`|yes|"7d"|string|Kerberos renewable ticket lifetime.|
 |`krb_forwardable`|yes|"true"|string|Forwardable kerberos tickets.|
