@@ -33,3 +33,19 @@ rabbitmq_vhost="{{ tower_rabbitmq_vhost }}"
 rabbitmq_use_long_name="{{ tower_rabbitmq_use_long_name }}"
 
 {% endif %}
+
+{% if isolated_groups is defined %}
+
+{% for item in isolated_groups %}
+[isolated_group_{{ item.name }}]
+{% for host in item.hostnames %}
+{{ host }}
+{% endfor %}
+{% endfor %}
+
+{% for item in isolated_groups %}
+[isolated_group_{{ item.name }}:vars]
+controller=tower
+{% endfor %}
+
+{% endif %}
