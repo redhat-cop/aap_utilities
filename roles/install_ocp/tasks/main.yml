@@ -7,6 +7,6 @@
 # -----------------------------------------------------------------------------
 #
 
-- include: install_ocp.yml
+- include_tasks: install_ocp.yml
   tags:
     - install-ocp

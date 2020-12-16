@@ -7,6 +7,6 @@
 # -----------------------------------------------------------------------------
 #
 
-- include: tower_install.yml
+- include_tasks: tower_install.yml
   tags:
     - tower-install
