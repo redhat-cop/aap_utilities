@@ -31,6 +31,6 @@
       until: result.status == 200
       retries: 90
       delay: 10
-  when: 
+  when:
     - tower_install_check.status != 200
 ...
