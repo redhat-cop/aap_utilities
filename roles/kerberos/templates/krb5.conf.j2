@@ -9,6 +9,7 @@ admin_server = FILE:/var/log/kadmind.log
 
 [libdefaults]
 dns_lookup_realm = {{ krb_dns_lookup_realm }}
+dns_lookup_kdc = {{ krb_dns_lookup_kdc }}
 ticket_lifetime = {{ krb_ticket_lifetime }}
 renew_lifetime = {{ krb_renew_lifetime }}
 forwardable = {{ krb_forwardable }}

@@ -8,6 +8,7 @@ krb_realms:
 
 # defaults for Kerberos
 krb_dns_lookup_realm: "false"
+krb_dns_lookup_kdc: "true"
 krb_ticket_lifetime: "24h"
 krb_renew_lifetime: "7d"
 krb_forwardable: "true"
