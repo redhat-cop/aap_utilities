@@ -21,7 +21,7 @@
       async: 10000
       poll: 20
       changed_when: false   # these will always run and will always report “changed” otherwise
-    
+
     - name: Wait for ansible tower to be running.
       uri:
         url: "{{ tower_url }}"
