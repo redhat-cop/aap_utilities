@@ -1,16 +1,15 @@
 ---
-# defaults file for win_rm_kerb_role
+krb_realms:
+  - name: ""
+    dc_fqdns: []
 
-# Domain name
-krb_realm_name: YOURDOMAIN.LCL
-# hostname of Domain Server
-krb_kdc_hostname: yourkdc
-krb_admin_hostname: youradmin
+# Set the following if you need to define a default realm
+# krb_default_realm: ""
 
 # defaults for Kerberos
-krb_dns_lookup_realm: "true"
+krb_dns_lookup_realm: "false"
 krb_dns_lookup_kdc: "true"
 krb_ticket_lifetime: "24h"
 krb_renew_lifetime: "7d"
 krb_forwardable: "true"
-krb_rdns : "false"
+krb_rdns: "false"
