@@ -12,6 +12,7 @@ Available variables are listed below, along with default values defined (see def
 
 ```yaml
 tower_working_location: "/root/"
+tower_force_setup: true
 
 # Tower variables
 tower_admin_password: "password"

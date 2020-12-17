@@ -10,6 +10,7 @@
   register: tower_install_check
   ignore_errors: true
   failed_when: false
+  when: not tower_force_setup
 
 - block:
     # Run the Setup
@@ -32,5 +33,5 @@
       retries: 90
       delay: 10
   when:
-    - tower_install_check.status != 200
+    - tower_force_setup or tower_install_check.status != 200
 ...
