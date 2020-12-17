@@ -7,6 +7,6 @@
 # -----------------------------------------------------------------------------
 #
 
-- include_tasks: tower_install.yml
+- include_tasks: install_ocp.yml
   tags:
-    - tower-install
+    - install-ocp

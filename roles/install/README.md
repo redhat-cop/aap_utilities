@@ -39,6 +39,17 @@ tower_database: ""
 tower_database_port: ""
 
 tower_ssh_connection_vars: ''
+
+# Set isolated groups for isolated nodes if required
+isolated_groups:
+  - name: dmz1
+    hostnames:
+    - isolatednode0.dmz1.example.com
+  - name: dmz2
+    hostnames:
+    - isolatednode0.dmz2.example.com
+    - isolatednode1.dmz2.example.com
+
 ```
 
 ## tower_ssh_connection_vars
@@ -76,7 +87,7 @@ $ ansible-playbook playbook.yml -e @tower_vars.yml tower
     tower_tower_releases_url: https://releases.ansible.com/ansible-tower/setup-bundle
     tower_tower_release_version: bundle-3.6.3-1.tar.gz
   roles:
-    - ansible-tower-install
+    - redhat_cop.tower_utilities.install
 ```
 
 ```yaml
@@ -92,7 +103,7 @@ $ ansible-playbook playbook.yml -e @tower_vars.yml tower
     tower_database: "dbnode.example.com"
     tower_database_port: "5432"
   roles:
-    - ansible-tower-install
+    - redhat_cop.tower_utilities.install
 ```
 
 ## License

@@ -5,11 +5,17 @@
 #               Tower Installation Vars                    #
 ############################################################
 
+# Tower release version, either fixed e.g. 3.7.2 or "latest"
+tower_release_version: latest
+
 # Working location for installation files
 tower_working_location: "/var/tmp"
 
 # Tower variables
 tower_admin_password: "password"
+
+# Use the default tower installation template
+pre_tasks_process_template: True
 
 # Postgresql variables
 tower_pg_database: "awx"

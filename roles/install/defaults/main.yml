@@ -5,4 +5,5 @@
 #               Tower Installation Vars                    #
 ############################################################
 
-tower_server: "https://localhost"
+tower_url: "https://localhost"
+tower_server: "{{ tower_url }}"
