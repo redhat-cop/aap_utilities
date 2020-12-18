@@ -5,6 +5,7 @@
   yum:
     name: "{{ tower_pre_tasks_packages }}"
     state: present
+  when: pre_tasks_install_packages
 
 # Assert tower version specified
 - name: "Assert tower version specified"
