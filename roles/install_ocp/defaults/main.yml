@@ -16,6 +16,9 @@ tower_ocp_setup_file: ansible-tower-openshift-setup-{{ tower_release_version }}.
 tower_admin_user: "admin"
 tower_admin_password: "password"
 
+# Tower Install Verbosity
+tower_verbose_install: false
+
 # Tower secret key
 tower_secret_key: "mysecret"
 
