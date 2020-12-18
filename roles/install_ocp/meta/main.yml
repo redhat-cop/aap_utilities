@@ -20,7 +20,7 @@ galaxy_info:
     - ansible
 
 dependencies:
-  - role: sean_m_sullivan.tower_utilities.pre_tasks
+  - role: redhat_cop.tower_utilities.pre_tasks
     vars:
       tower_releases_url: "{{ tower_ocp_releases_url }}"
       tower_setup_file: "{{ tower_ocp_setup_file }}"
