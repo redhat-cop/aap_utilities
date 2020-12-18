@@ -17,6 +17,9 @@ tower_admin_password: "password"
 # Use the default tower installation template
 pre_tasks_process_template: True
 
+# Option to install required packages
+pre_tasks_install_packages: True
+
 # Postgresql variables
 tower_pg_database: "awx"
 tower_pg_username: "awx"
