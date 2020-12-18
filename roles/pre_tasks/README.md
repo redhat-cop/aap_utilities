@@ -16,9 +16,6 @@ tower_working_location: "/root/"
 # Use the default tower installation template
 pre_tasks_process_template: True
 
-# Option to install required packages
-pre_tasks_install_packages: True
-
 # Tower variables
 tower_admin_password: "password"
 

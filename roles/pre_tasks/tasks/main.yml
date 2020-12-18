@@ -1,11 +1,23 @@
 ---
 
 # Install absolutely necessary packages
+
+- name: Check if the oc command is installed
+  shell: "type {{ item }}"
+  with_items: "{{ tower_pre_tasks_packages }}"
+  register: type_packages
+  ignore_errors: yes
+
 - name: "Install absolutely necessary packages"
   yum:
-    name: "{{ tower_pre_tasks_packages }}"
-    state: present
-  when: pre_tasks_install_packages
+    name: "{{ package_item.item }}"
+    state: latest
+  ignore_errors: true
+  loop: "{{ type_packages.results }}"
+  loop_control:
+    loop_var: package_item
+  when:
+    - package_item.rc != 0
 
 # Assert tower version specified
 - name: "Assert tower version specified"
