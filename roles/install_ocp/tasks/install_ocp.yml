@@ -49,8 +49,8 @@
 
     # Run the Setup
     - name: "[Tower] Run the Ansible Tower Setup Program"
-      become: true
-      command: ./setup_openshift.sh -e "openshift_token={{ openshift_token }}"
+      command: |
+            ./setup_openshift.sh -e "openshift_token={{ openshift_token }}" {% if tower_verbose_install %}-- -vvv{% endif %}
       args:
         chdir: "{{ tower_setup_dir }}"
       async: 10000
