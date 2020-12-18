@@ -2,7 +2,7 @@
 
 # Install absolutely necessary packages
 
-- name: Check if the oc command is installed
+- name: Check if the absolutely necessary packages are installed
   shell: "type {{ item }}"
   with_items: "{{ tower_pre_tasks_packages }}"
   register: type_packages
