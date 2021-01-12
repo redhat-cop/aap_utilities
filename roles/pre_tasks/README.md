@@ -14,7 +14,7 @@ Available variables are listed below, along with default values defined (see def
 tower_working_location: "/root/"
 
 # Use the default tower installation template
-pre_tasks_process_template: True
+pre_tasks_process_template: true
 
 # Tower variables
 tower_admin_password: "password"

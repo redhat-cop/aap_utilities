@@ -3,17 +3,18 @@
 # Install absolutely necessary packages
 
 - name: Check if the absolutely necessary packages are installed
-  shell: "type {{ item }}"
-  with_items: "{{ tower_pre_tasks_packages }}"
-  register: type_packages
+  command: "type {{ item }}"
+  with_items: "{{ __towerutils_check_packages }}"
+  register: __towerutils_type_packages
   ignore_errors: yes
+  changed_when: false
 
 - name: "Install absolutely necessary packages"
   yum:
     name: "{{ package_item.item }}"
-    state: latest
+    state: present
   ignore_errors: true
-  loop: "{{ type_packages.results }}"
+  loop: "{{ __towerutils_type_packages.results }}"
   loop_control:
     loop_var: package_item
   when:
