@@ -3,8 +3,7 @@
 # Install absolutely necessary packages
 
 - name: Check if the absolutely necessary packages are installed
-  command: "type {{ item }}"
-  with_items: "{{ __towerutils_check_packages }}"
+  command: "rpm -q {{ __towerutils_check_packages | join(' ') }}"
   register: __towerutils_type_packages
   ignore_errors: yes
   changed_when: false
@@ -13,12 +12,11 @@
   yum:
     name: "{{ package_item.item }}"
     state: present
-  ignore_errors: true
-  loop: "{{ __towerutils_type_packages.results }}"
+  loop: "{{ __towerutils_check_packages }}"
   loop_control:
     loop_var: package_item
   when:
-    - package_item.rc != 0
+    - ('package ' + item + ' is not installed') in __towerutils_type_packages.stdout
 
 # Assert tower version specified
 - name: "Assert tower version specified"
