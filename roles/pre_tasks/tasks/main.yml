@@ -3,7 +3,7 @@
 # Install absolutely necessary packages
 
 - name: Check if the absolutely necessary packages are installed
-  command: "rpm -q {{ __towerutils_check_packages | join(' ') }}" # noqa 303
+  raw: "rpm -q {{ __towerutils_check_packages | join(' ') }}" # noqa 303
   register: __towerutils_type_packages
   ignore_errors: yes
   changed_when: false
