@@ -1,10 +1,22 @@
 ---
 
 # Install absolutely necessary packages
+
+- name: Check if the absolutely necessary packages are installed
+  raw: "rpm -q {{ __towerutils_check_packages | join(' ') }}" # noqa 303
+  register: __towerutils_type_packages
+  ignore_errors: yes
+  changed_when: false
+
 - name: "Install absolutely necessary packages"
   yum:
-    name: "{{ tower_pre_tasks_packages }}"
+    name: "{{ package_item }}"
     state: present
+  loop: "{{ __towerutils_check_packages }}"
+  loop_control:
+    loop_var: package_item
+  when:
+    - ('package ' + package_item + ' is not installed') in __towerutils_type_packages.stdout
 
 # Assert tower version specified
 - name: "Assert tower version specified"
