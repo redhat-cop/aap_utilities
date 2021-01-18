@@ -47,7 +47,7 @@ $ ansible-playbook playbook.yml -e @tower_vars.yml tower
   vars:
     tower_hosts:
       - "clusternode[1:3].example.com"
-    tower_database: "dbnode.example.com"
+    tower_database_host: "dbnode.example.com"
     tower_database_port: "5432"
   roles:
     - ansible-tower-install

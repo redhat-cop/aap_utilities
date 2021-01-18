@@ -36,7 +36,7 @@ tower_setup_file: ansible-tower-setup-{{ tower_release_version }}.tar.gz
 tower_hosts:
   - "localhost ansible_connection=local"
 
-tower_database: ""
+tower_database_host: ""
 tower_database_port: ""
 
 tower_ssh_connection_vars: ''
