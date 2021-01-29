@@ -36,7 +36,7 @@ tower_setup_file: ansible-tower-setup-{{ tower_release_version }}.tar.gz
 tower_hosts:
   - "localhost ansible_connection=local"
 
-tower_database: ""
+tower_database_host: ""
 tower_database_port: ""
 
 tower_ssh_connection_vars: ''
@@ -101,7 +101,7 @@ $ ansible-playbook playbook.yml -e @tower_vars.yml tower
   vars:
     tower_hosts:
       - "clusternode[1:3].example.com"
-    tower_database: "dbnode.example.com"
+    tower_database_host: "dbnode.example.com"
     tower_database_port: "5432"
   roles:
     - redhat_cop.tower_utilities.install

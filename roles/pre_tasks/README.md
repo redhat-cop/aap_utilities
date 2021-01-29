@@ -38,11 +38,29 @@ tower_setup_file: ansible-tower-setup-{{ tower_release_version }}.tar.gz
 tower_hosts:
   - "localhost ansible_connection=local"
 
-tower_database: ""
+tower_database_host: ""
 tower_database_port: ""
 
 tower_ssh_connection_vars: ''
+
+# as long as the host name is empty, Automation Hub will NOT be installed
+tower_ah_hosts: []
+
+# the default configures an AH using the default database with similar defaults
+# as Tower
+tower_ah_admin_password: "{{ tower_admin_password }}"
+# if tower_database_host isn't defined or is empty,
+# the host where the installation takes place is deemed to host the DB
+tower_ah_pg_host: "{{ tower_database_host | default(ansible_host | default(inventory_hostname), true) }}"
+tower_ah_pg_port: "{{ tower_database_port }}"
+tower_ah_pg_database: 'automationhub'  # it is NOT supported to use the same name as for Tower!
+tower_ah_pg_username: "{{ tower_pg_username }}"
+tower_ah_pg_password: "{{ tower_pg_password }}"
+tower_ah_pg_sslmode: prefer
 ```
+
+> **CAUTION:** even if it is a list, it hasn't been tested that the installation of more than one AH is possible,
+	especially as it would surely require a mean to have multiple database names.
 
 ## tower_ssh_connection_vars
 
@@ -92,7 +110,7 @@ $ ansible-playbook playbook.yml -e @tower_vars.yml tower
   vars:
     tower_hosts:
       - "clusternode[1:3].example.com"
-    tower_database: "dbnode.example.com"
+    tower_database_host: "dbnode.example.com"
     tower_database_port: "5432"
   roles:
     - redhat_cop.tower_utilities.install
