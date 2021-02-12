@@ -24,3 +24,4 @@ dependencies:
     vars:
       tower_releases_url: "{{ tower_ocp_releases_url }}"
       tower_setup_file: "{{ tower_ocp_setup_file }}"
+...

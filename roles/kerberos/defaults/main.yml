@@ -13,3 +13,4 @@ krb_ticket_lifetime: "24h"
 krb_renew_lifetime: "7d"
 krb_forwardable: "true"
 krb_rdns: "false"
+...

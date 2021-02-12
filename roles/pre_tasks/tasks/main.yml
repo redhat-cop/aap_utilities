@@ -62,3 +62,4 @@
 #   - not tower_database_host|bool
 #   - tower_database_port == tower_ah_pg_port  # if the ports are different, something is at least fishy
 #   - tower_ah_pg_host == ansible_host or tower_ah_pg_host == inventory_hostname
+...

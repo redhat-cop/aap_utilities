@@ -8,3 +8,4 @@ krb_req_pkgs:
 krb_pip_pkgs:
   - "pywinrm>=0.3.0"
   - "pywinrm[kerberos]"
+...

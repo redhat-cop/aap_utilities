@@ -8,3 +8,4 @@
 # Restore location for tower restore
 restore_file: "tower-backup-latest.tar.gz"
 restore_location: "{{ tower_working_location }}/{{ restore_file }}"
+...

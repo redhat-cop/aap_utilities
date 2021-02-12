@@ -57,3 +57,4 @@
     msg: >
       Git repos can be used with e.g.
       'git clone {{ git_client_users[0].name }}@{{ ansible_host }}:{{ full_projects_dir }}/{{ git_projects[0] }}.git'
+...

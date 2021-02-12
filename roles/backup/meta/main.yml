@@ -21,3 +21,4 @@ galaxy_info:
 
 dependencies:
   - redhat_cop.tower_utilities.pre_tasks
+...

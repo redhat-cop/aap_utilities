@@ -14,3 +14,4 @@
     dest: /etc/tower/tower.key
   notify:
     - Restart Ansible tower service
+...

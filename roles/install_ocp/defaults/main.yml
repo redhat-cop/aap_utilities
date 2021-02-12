@@ -47,3 +47,4 @@ openshift_user: kubeadmin
 # persistant volume for pg database details
 openshift_pg_pvc_name: postgresql
 pvc_claim_size: 10Gi
+...
