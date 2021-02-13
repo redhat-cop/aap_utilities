@@ -7,3 +7,4 @@
   - name: Example assertion
     assert:
       that: true
+...

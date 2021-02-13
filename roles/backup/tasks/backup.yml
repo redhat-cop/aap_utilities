@@ -8,3 +8,4 @@
   async: 10000
   poll: 20
   changed_when: false   # these will always run and will always report “changed” otherwise
+...

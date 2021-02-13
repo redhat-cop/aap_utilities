@@ -8,3 +8,4 @@
   yum:
     name: "{{ tower_venv_rpms[ansible_distribution + ansible_distribution_major_version] }}"
     state: installed
+...

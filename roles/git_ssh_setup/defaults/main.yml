@@ -16,3 +16,4 @@ git_projects_dir: projects
 git_projects:
 - first-git-project
 - second-git-project
+...

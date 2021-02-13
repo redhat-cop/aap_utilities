@@ -15,3 +15,4 @@
     user: "{{ git_server_user }}"
     state: present
     key: "{{ user_result.ssh_public_key }}"
+...

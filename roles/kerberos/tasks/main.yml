@@ -53,3 +53,4 @@
       - "    ansible_winrm_server_cert_validation: 'ignore'"
       - "  If you are communicating with a single domain and don't want to enter usernames as username@MYDOMAIN.COM, but instead username:"
       - "    ansible_winrm_realm: 'YOURDOMAINHERE.COM'"
+...

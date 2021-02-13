@@ -24,3 +24,4 @@
     state: "present"
   become: true
   loop: "{{ tower_venv_offline_installs }}"
+...
