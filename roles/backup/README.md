@@ -55,6 +55,8 @@ tower_ssh_connection_vars:
     value: vagrant
   - name: ansible_ssh_private_key_file
     value: /path/to/file
+  - name: ansible_become
+    value: true
 ```
 
 ## Example Playbook
