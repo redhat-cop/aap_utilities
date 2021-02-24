@@ -55,7 +55,7 @@ isolated_groups:
 
 ## tower_ssh_connection_vars
 
-connection vars can be set in the inventory file through a list of vars
+Connection vars can be set in the inventory file through a list of vars. Please note, at minimum ansible_become should be set to true here as the Tower installation requires root access.
 
 ```yaml
 tower_ssh_connection_vars:
@@ -67,6 +67,8 @@ tower_ssh_connection_vars:
     value: vagrant
   - name: ansible_ssh_private_key_file
     value: /path/to/file
+  - name: ansible_become
+    value: true
 ```
 
 ## Example Playbook
