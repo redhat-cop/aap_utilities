@@ -1,6 +1,6 @@
 # redhat_cop.tower_utilities.install
 
-Ansible role to prep to install Ansible Tower.
+Ansible role to prep to install Ansible Tower and Ansible automation hub.
 
 ## Requirements
 
@@ -8,7 +8,7 @@ None
 
 ## Role Variables
 
-Available variables are listed below, along with default values defined (see defaults/main.yml)
+Available variables are listed below, along with default values defined (see defaults/main.yml) and the pre_tasks role which runs as a dependency of this role.
 
 ```yaml
 tower_working_location: "/root/"
