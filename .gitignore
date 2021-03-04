@@ -17,3 +17,6 @@ galaxy.yml
 
 # Ignore Vim working files
 .*.swp
+
+# Ignore test directory
+test
