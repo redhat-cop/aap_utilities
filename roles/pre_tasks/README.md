@@ -94,8 +94,23 @@ $ ansible-playbook playbook.yml -e @tower_vars.yml tower
   hosts: tower
   become: true
   vars:
-    tower_tower_releases_url: https://releases.ansible.com/ansible-tower/setup-bundle
-    tower_tower_release_version: bundle-3.6.3-1.tar.gz
+    tower_releases_url: https://releases.ansible.com/ansible-tower/setup-bundle
+    tower_release_version: bundle-3.8.1-1
+  roles:
+    - redhat_cop.tower_utilities.install
+```
+
+```yaml
+---
+# Playbook to install Ansible Automation Hub only
+
+- name: Install Automation Hub
+  hosts: tower
+  become: true
+  vars:
+    tower_hosts: []
+    tower_ah_hosts:
+      - "localhost ansible_connection=local"
   roles:
     - redhat_cop.tower_utilities.install
 ```

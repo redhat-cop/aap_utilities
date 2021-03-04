@@ -1,6 +1,6 @@
 # redhat_cop.tower_utilities.install
 
-Ansible role to prep to install Ansible Tower.
+Ansible role to prep to install Ansible Tower and Ansible automation hub.
 
 ## Requirements
 
@@ -8,7 +8,7 @@ None
 
 ## Role Variables
 
-Available variables are listed below, along with default values defined (see defaults/main.yml)
+Available variables are listed below, along with default values defined (see defaults/main.yml) and the pre_tasks role which runs as a dependency of this role.
 
 ```yaml
 tower_working_location: "/root/"
@@ -38,6 +38,21 @@ tower_hosts:
 
 tower_database_host: ""
 tower_database_port: ""
+
+# as long as the host name is empty, Automation Hub will NOT be installed
+tower_ah_hosts: []
+
+# the default configures an AH using the default database with similar defaults
+# as Tower
+tower_ah_admin_password: "{{ tower_admin_password }}"
+# if tower_database_host isn't defined or is empty,
+# the host where the installation takes place is deemed to host the DB
+tower_ah_pg_host: "{{ tower_database_host | default(ansible_host | default(inventory_hostname), true) }}"
+tower_ah_pg_port: "{{ tower_database_port }}"
+tower_ah_pg_database: 'automationhub'  # it is NOT supported to use the same name as for Tower!
+tower_ah_pg_username: "{{ tower_pg_username }}"
+tower_ah_pg_password: "{{ tower_pg_password }}"
+tower_ah_pg_sslmode: prefer
 
 tower_ssh_connection_vars: ''
 
@@ -85,8 +100,24 @@ $ ansible-playbook playbook.yml -e @tower_vars.yml tower
   hosts: tower
   become: true
   vars:
-    tower_tower_releases_url: https://releases.ansible.com/ansible-tower/setup-bundle
-    tower_tower_release_version: bundle-3.6.3-1.tar.gz
+    tower_releases_url: https://releases.ansible.com/ansible-tower/setup-bundle
+    tower_release_version: bundle-3.8.1-1
+  roles:
+    - redhat_cop.tower_utilities.install
+```
+
+
+```yaml
+---
+# Playbook to install Ansible Automation Hub only
+
+- name: Install Automation Hub
+  hosts: tower
+  become: true
+  vars:
+    tower_hosts: []
+    tower_ah_hosts:
+      - "localhost ansible_connection=local"
   roles:
     - redhat_cop.tower_utilities.install
 ```
