@@ -15,7 +15,6 @@
 - block:
     # Run the Setup
     - name: "[Tower] Run the Ansible Tower Setup Program"
-      become: true
       command: ./setup.sh
       args:
         chdir: "{{ tower_setup_dir }}"
