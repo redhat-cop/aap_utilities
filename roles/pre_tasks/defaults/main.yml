@@ -66,7 +66,24 @@ tower_ah_pg_username: "{{ tower_pg_username }}"
 tower_ah_pg_password: "{{ tower_pg_password }}"
 tower_ah_pg_sslmode: prefer
 
-# TODO add SSL handling variables to automation
+# It makes no sense to set the cert vaules in defaults,
+# these are example values only.
+#
+# Certificate and key to install in Automation Hub node
+# tower_ah_ssl_cert: ~/certs/{{ tower_ah_server | urlsplit('hostname') }}.crt
+# tower_ah_ssl_key: ~/certs/{{ tower_ah_server | urlsplit('hostname') }}.key
+
+# Certificate and key to install in nginx for the web UI and API
+# tower_ssl_cert: ~/certs/{{ tower_server | urlsplit('hostname') }}.crt
+# tower_ssl_key: ~/certs/{{ tower_server | urlsplit('hostname') }}.key
+
+# Server-side SSL settings for PostgreSQL (when we are installing it).
+# tower_pg_ssl_cert: ~/certs/{{ tower_database_host }}.crt
+# tower_pg_ssl_key: ~/certs/{{ tower_database_host }}.key
+
+# If set, this will install a custom CA certificate to the system trust store.
+# tower_custom_ca_cert: /etc/ipa/ca.crt
+
 # The default install will deploy a TLS enabled Automation Hub.
 # If for some reason this is not the behavior wanted one can
 # disable TLS enabled deployment.
@@ -80,17 +97,4 @@ tower_ah_pg_sslmode: prefer
 # Isolated Tower nodes automatically generate an RSA key for authentication;
 # To disable this behavior, set this value to false
 # isolated_key_generation=true
-# SSL-related variables
-# If set, this will install a custom CA certificate to the system trust store.
-# custom_ca_cert=/path/to/ca.crt
-# Certificate and key to install in nginx for the web UI and API
-# web_server_ssl_cert=/path/to/tower.cert
-# web_server_ssl_key=/path/to/tower.key
-# Certificate and key to install in Automation Hub node
-# tower_ah_ssl_cert: /path/to/automationhub.cert
-# tower_ah_ssl_key: /path/to/automationhub.key
-# Server-side SSL settings for PostgreSQL (when we are installing it).
-# postgres_use_ssl=False
-# postgres_ssl_cert=/path/to/pgsql.crt
-# postgres_ssl_key=/path/to/pgsql.key
 ...
