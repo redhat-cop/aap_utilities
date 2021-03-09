@@ -1,6 +1,6 @@
-# ansible-tower-cert
+# redhat_cop.tower_utilities.tower_cert
 
-Ansible role to install Ansible Tower Certificate.
+Ansible role to install a new Ansible Tower Certificate. Note it is also possible to use the `install` role to deploy a certificate at install time using `tower_ssl_cert` and `tower_ssl_key`
 
 ## Requirements
 
@@ -11,8 +11,8 @@ None
 Available variables are listed below, along with default values defined (see defaults/main.yml)
 
 ```yaml
-tower_cert_location: "{{ playbook_dir }}/tower.cert"
-tower_cert_key_location: "{{ playbook_dir }}/tower.key"
+tower_ssl_cert: "{{ playbook_dir }}/tower.cert"
+tower_ssl_key: "{{ playbook_dir }}/tower.key"
 ```
 
 ## Example Playbook
@@ -27,28 +27,12 @@ $ ansible-playbook playbook.yml -e @tower_vars.yml tower
 ---
 # Playbook to install Ansible Tower as a single node
 
-- name: Install Ansible Tower
+- name: Install Ansible Tower Certificate
   hosts: tower
   become: true
   vars:
-    tower_tower_releases_url: https://releases.ansible.com/ansible-tower/setup-bundle
-    tower_tower_release_version: bundle-3.6.3-1.tar.gz
-  roles:
-    - ansible-tower-install
-```
-
-```yaml
----
-# Playbook to install Ansible Tower as a cluster
-
-- name: Setup Ansible Tower
-  hosts: localhost
-  become: true
-  vars:
-    tower_hosts:
-      - "clusternode[1:3].example.com"
-    tower_database_host: "dbnode.example.com"
-    tower_database_port: "5432"
+    tower_ssl_cert: /var/tmp/tower.cert
+    tower_ssl_key: /var/tmp/tower.key
   roles:
     - ansible-tower-install
 ```
