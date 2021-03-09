@@ -24,7 +24,7 @@ tower_pg_database: "awx"
 tower_pg_username: "awx"
 tower_pg_password: "password"
 
-# RabbitMQ variables
+# RabbitMQ variables (Tower<=3.6)
 tower_rabbitmq_username: tower
 tower_rabbitmq_password: "password"
 tower_rabbitmq_cookie: "cookiemonster"
@@ -57,6 +57,25 @@ tower_ah_pg_database: 'automationhub'  # it is NOT supported to use the same nam
 tower_ah_pg_username: "{{ tower_pg_username }}"
 tower_ah_pg_password: "{{ tower_pg_password }}"
 tower_ah_pg_sslmode: prefer
+
+# The below variables are unset, but can be used to affect certificates within the automation platform
+tower_ah_ssl_cert: <unset>
+tower_ah_ssl_key: <unset>
+tower_ssl_cert: <unset>
+tower_ssl_key: <unset>
+tower_pg_ssl_cert: <unset>
+tower_pg_ssl_key: <unset>
+tower_custom_ca_cert: <unset>
+
+# Set isolated groups for isolated nodes if required (commented out, an example setting)
+isolated_groups: <unset>
+  # - name: dmz1
+  #   hostnames:
+  #   - isolatednode0.dmz1.example.com
+  # - name: dmz2
+  #   hostnames:
+  #   - isolatednode0.dmz2.example.com
+  #   - isolatednode1.dmz2.example.com
 ```
 
 > **CAUTION:** even if it is a list, it hasn't been tested that the installation of more than one AH is possible,
