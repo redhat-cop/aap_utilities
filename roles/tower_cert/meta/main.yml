@@ -1,6 +1,6 @@
 ---
 galaxy_info:
-  role_name: ansible-tower-cert
+  role_name: redhat_cop.tower_utilities.tower_certs
   author: Tom Page
   description: Role to install Ansible Tower Certificates
   company: Red Hat

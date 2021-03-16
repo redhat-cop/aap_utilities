@@ -1,4 +1,8 @@
 ---
+# Deprecated variables kept for backwards compatability
 tower_cert_location: "{{ playbook_dir }}/tower.cert"
 tower_cert_key_location: "{{ playbook_dir }}/tower.key"
+
+tower_ssl_cert: "{{ tower_cert_location }}"
+tower_ssl_key: "{{ tower_cert_key_location }}"
 ...
