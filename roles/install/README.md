@@ -1,6 +1,8 @@
 # redhat_cop.tower_utilities.install
 
-Ansible role to prep to install Ansible Tower and Ansible automation hub.
+Ansible role to prep to install Ansible Tower and Ansible Automation Hub.
+
+The role utilises the Ansible Automation Platform installer. For more information see [the Ansible Automation Platform Installation Guide](https://docs.ansible.com/ansible-tower/latest/html/installandreference/index.html).
 
 ## Requirements
 
