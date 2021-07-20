@@ -40,10 +40,10 @@ tower_server: "https://localhost"
 ############################################################
 
 # Default setup for a single node instance with internal DB
-tower_hosts:
+tower_nodes:
   - "localhost ansible_connection=local"
 
-tower_database_host: ""
+tower_database_node: ""
 tower_database_port: "5432"
 
 ############################################################
@@ -52,14 +52,14 @@ tower_database_port: "5432"
 
 # as long as the host name is empty, Automation Hub will NOT be installed
 # FIXME: not sure if more than one automation hub is really possible
-tower_ah_hosts: []
+tower_ah_nodes: []
 
 # the default configures an AH using the default database with similar defaults
 # as Tower
 tower_ah_admin_password: "{{ tower_admin_password }}"
-# if tower_database_host isn't defined or is empty,
+# if tower_database_node isn't defined or is empty,
 # the host where the installation takes place is deemed to host the DB
-tower_ah_pg_host: "{{ tower_database_host | default(ansible_host | default(inventory_hostname), true) }}"
+tower_ah_pg_node: "{{ tower_database_node | default(ansible_host | default(inventory_hostname), true) }}"
 tower_ah_pg_port: "{{ tower_database_port }}"
 tower_ah_pg_database: 'automationhub'  # it is NOT supported to use the same name as for Tower!
 tower_ah_pg_username: "{{ tower_pg_username }}"
@@ -78,8 +78,8 @@ tower_ah_pg_sslmode: prefer
 # tower_ssl_key: ~/certs/{{ tower_server | urlsplit('hostname') }}.key
 
 # Server-side SSL settings for PostgreSQL (when we are installing it).
-# tower_pg_ssl_cert: ~/certs/{{ tower_database_host }}.crt
-# tower_pg_ssl_key: ~/certs/{{ tower_database_host }}.key
+# tower_pg_ssl_cert: ~/certs/{{ tower_database_node }}.crt
+# tower_pg_ssl_key: ~/certs/{{ tower_database_node }}.key
 
 # If set, this will install a custom CA certificate to the system trust store.
 # tower_custom_ca_cert: /etc/ipa/ca.crt

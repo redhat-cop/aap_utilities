@@ -1,16 +1,16 @@
 [tower]
-{% for item in tower_hosts %}
+{% for item in tower_nodes %}
 {{ item }}
 {% endfor %}
 
-{% if tower_database_host %}
+{% if tower_database_node %}
 [database]
-{{ tower_database_host }}
+{{ tower_database_node }}
 {% endif %}
 
-{% if tower_ah_hosts %}
+{% if tower_ah_nodes %}
 [automationhub]
-{% for ah_host in tower_ah_hosts %}
+{% for ah_host in tower_ah_nodes %}
 {{ ah_host }}
 {% endfor %}
 {% endif %}
@@ -25,7 +25,7 @@ admin_password='{{ tower_admin_password }}'
 {% endif %}
 
 # Define Remote PostgreSQL for Tower
-pg_host='{{ tower_database_host }}'
+pg_host='{{ tower_database_node }}'
 pg_port='{{ tower_database_port }}'
 
 pg_database='{{ tower_pg_database }}'
@@ -43,9 +43,9 @@ rabbitmq_use_long_name="{{ tower_rabbitmq_use_long_name }}"
 
 {% endif %}
 
-{% if tower_ah_hosts %}
+{% if tower_ah_nodes %}
 automationhub_admin_password='{{ tower_ah_admin_password }}'
-automationhub_pg_host='{{ tower_ah_pg_host }}'
+automationhub_pg_host='{{ tower_ah_pg_node }}'
 automationhub_pg_port='{{ tower_ah_pg_port }}'
 automationhub_pg_database='{{ tower_ah_pg_database }}'
 automationhub_pg_username='{{ tower_ah_pg_username }}'

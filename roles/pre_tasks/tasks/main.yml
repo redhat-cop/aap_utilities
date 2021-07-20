@@ -60,7 +60,7 @@
 #     immediate: yes
 #     zone: "{{ tower_firewalld_zone }}"
 #   when:
-#   - not tower_database_host|bool
+#   - not tower_database_node|bool
 #   - tower_database_port == tower_ah_pg_port  # if the ports are different, something is at least fishy
-#   - tower_ah_pg_host == ansible_host or tower_ah_pg_host == inventory_hostname
+#   - tower_ah_pg_node == ansible_host or tower_ah_pg_node == inventory_hostname
 ...
