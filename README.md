@@ -38,7 +38,7 @@ collections:
 
 ## Release and Upgrade Notes
 
-- From v1.0.0 the variable `tower_hosts` was renamed to `tower_nodes` in order to not collide with the variable of the same name in the redhat\_cop.tower\_configuration collection.
+- From v2.0.0 the variable `tower_hosts` was renamed to `tower_nodes` in order to not collide with the variable of the same name in the redhat\_cop.tower\_configuration collection.
 Similarly, the variables tower\_ah\_nodes, tower\_database\_node and tower\_ah\_pg\_node were introduced/renamed.
 Don't forget to adapt your inventory/ies and variable definitions accordingly.
 
