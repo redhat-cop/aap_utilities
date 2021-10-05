@@ -5,6 +5,9 @@
 #               Tower Installation Vars                    #
 ############################################################
 
+# If you are running AAP2.X+ use automationcontroller any earlier version use tower
+tower_or_aap: automationcontroller
+
 # Tower release version, either fixed e.g. 3.7.2 or "latest"
 tower_release_version: latest
 
