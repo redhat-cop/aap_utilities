@@ -1,4 +1,8 @@
+{% if legacy_tower %}
 [tower]
+{% else %}
+[automationcontroller]
+{% endif %}
 {% for item in tower_nodes %}
 {{ item }}
 {% endfor %}

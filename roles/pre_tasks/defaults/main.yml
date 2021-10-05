@@ -5,6 +5,9 @@
 #               Tower Installation Vars                    #
 ############################################################
 
+# Change to True if you are installing AAP1.X or Tower 3.X
+legacy_tower: False
+
 # Tower release version, either fixed e.g. 3.7.2 or "latest"
 tower_release_version: latest
 
