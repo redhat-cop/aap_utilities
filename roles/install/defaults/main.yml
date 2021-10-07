@@ -6,7 +6,7 @@
 ############################################################
 
 tower_url: "https://localhost"
-tower_ah_url: "https://localhost"
+tower_ah_url: "https://{{ tower_ah_nodes[0] | default('localhost') }}"
 tower_server: "{{ tower_url }}"
 tower_force_setup: true
 ...
