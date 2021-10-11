@@ -36,6 +36,15 @@ pg_database='{{ tower_pg_database }}'
 pg_username='{{ tower_pg_username }}'
 pg_password='{{ tower_pg_password }}'
 
+{% if not legacy_tower %}
+# Execution Environment Configuration
+# Credentials for container registry to pull execution environment images from,
+# comment out registry_username if authentication is not required
+registry_url='{{ custom_registry_url | default("registry.redhat.io") }}'
+registry_username='{{ registry_user | default("") }}'
+registry_password='{{ registry_pass | default("") }}'
+{% endif %}
+
 {% if rabbitmq_required %}
 
 rabbitmq_username='{{ tower_rabbitmq_username }}'
