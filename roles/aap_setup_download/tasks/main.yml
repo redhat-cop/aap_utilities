@@ -1,0 +1,38 @@
+---
+# tasks file for aap_setup_download
+- name: Login to Red Hat APIs
+  uri:
+    url: "{{ aap_setup_down_token_url }}"
+    method: POST
+    body_format: form-urlencoded
+    body:
+      grant_type: refresh_token
+      client_id: rhsm-api
+      refresh_token: "{{ aap_setup_down_offline_token }}"
+  register: __aap_setup_down_login
+- name: collecting the available installers
+  uri:
+    url: "{{ aap_setup_down_images_url }}"
+    method: GET
+    return_content: yes
+    headers:
+      Authorization: "Bearer {{ __aap_setup_down_login.json.access_token }}"
+  register: __aap_setup_down_output
+
+- name: simplify the list of possible downloads
+  set_fact:
+    __aap_setup_down_images: "{{ __aap_setup_down_output.json.body | sort(attribute='datePublished', reverse=True) }}"
+
+- name: downloading the latest installer of type {{ aap_setup_down_type }}
+  get_url:
+    url: "{{ item.downloadHref }}"
+    dest: "{{ aap_setup_down_dest_dir }}/{{ item.filename }}"
+    headers:
+      Authorization: "Bearer {{ __aap_setup_down_login.json.access_token }}"
+  loop: "{{ __aap_setup_down_images[:2] }}"
+  when: (aap_setup_down_type + '-' + aap_setup_down_version) in item.filename
+  register: __aap_setup_down_downloads
+
+- name: extract the name of the downloaded installer to aap_setup_down_installer_file
+  set_fact:
+    aap_setup_down_installer_file: "{{ (__aap_setup_down_downloads.results | selectattr('dest', 'defined') | map(attribute='dest') | list)[0] }}"
