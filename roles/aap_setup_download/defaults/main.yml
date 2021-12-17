@@ -1,8 +1,6 @@
 ---
 # defaults file for aap_setup_download
 
-# set the variable offline_token prior to executing this playbook
-# ansible-playbook installer_downloader.yml -e "offline_token=xxxxx"
 # Acquire your token at https://access.redhat.com/management/api/
 # see https://access.redhat.com/articles/3626371
 #

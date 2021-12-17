@@ -1,38 +1,55 @@
-Role Name
-=========
+aap\_setup\_download
+==================
 
-Shamelessly adapted from https://www.redhat.com/en/blog/automating-installation-ansible-automation-platform-ansible-and-satellite
+A role to download the latest z-version of the AAP setup tarball for a given minor version (e.g. 2.1 at time of writing).
+
+Shamelessly adapted from [Red Hat Ansible Automation Platform 2: Automating the Installer Download and publishing as a Content View in Satellite](https://www.redhat.com/en/blog/automating-installation-ansible-automation-platform-ansible-and-satellite).
 
 Requirements
 ------------
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+You will need a Red Hat Ansible Automation Platform (AAP, hence the name) subscription.
+Once this is a given, you will be able to create yourself an offline token
 
 Role Variables
 --------------
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+The following input variables are required:
+
+* `aap_setup_down_offline_token` contains your offline token as described in the requirements.
+It has no default value and _must_ be defined.
+* `aap_setup_down_version` defines the minor version to download (e.g. `2.1`), make sure you defines it as string and not as float!
+The default is the latest version available at time of writing.
+* `aap_setup_down_dest_dir` is the directory to where you want to download the tarball.
+It is by default the working directory `aap_setup_working_dir` also used by other roles of the collection, or ultimately `/var/tmp`.
+* `aap_setup_down_type` can be either `setup` or `setup-bundle`, depending which flavour of the tarball you want to download.
+
+The full path of the downloaded file is stored in the fact `aap_setup_down_installer_file` so that it can be used for extraction.
 
 Dependencies
 ------------
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+None.
 
 Example Playbook
 ----------------
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
+Combined with the role `aap_setup_prepare`, the following code will download and prepare the installation directory:
 
-    - hosts: servers
-      roles:
-         - { role: username.rolename, x: 42 }
+
+```yaml
+- hosts: installationserver
+  roles:
+    - { role: redhat_cop.tower_utilities.aap_setup_download }
+    - { role: redhat_cop.tower_utilities.aap_setup_prepare }
+```
 
 License
 -------
 
-BSD
+MIT
 
 Author Information
 ------------------
 
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+Eric Lavarde <elavarde@redhat.com>, Red Hat Consulting, Principal Architect
