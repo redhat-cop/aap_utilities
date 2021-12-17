@@ -14,7 +14,7 @@
   uri:
     url: "{{ aap_setup_down_images_url }}"
     method: GET
-    return_content: yes
+    return_content: true
     headers:
       Authorization: "Bearer {{ __aap_setup_down_login.json.access_token }}"
   register: __aap_setup_down_output
