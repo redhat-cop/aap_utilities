@@ -17,7 +17,7 @@ Role Variables
 The following input variables are required:
 
 * `aap_setup_down_offline_token` contains your offline token as described in the requirements.
-It has no default value and _must_ be defined.
+It has no default value and _must_ be defined. This token can be obtained at [Red Hat Access Management API](https://access.redhat.com/management/api).
 * `aap_setup_down_version` defines the minor version to download (e.g. `2.1`), make sure you defines it as string and not as float!
 The default is the latest version available at time of writing.
 * `aap_setup_down_dest_dir` is the directory to where you want to download the tarball.
