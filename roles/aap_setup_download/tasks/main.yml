@@ -10,6 +10,7 @@
       client_id: rhsm-api
       refresh_token: "{{ aap_setup_down_offline_token }}"
   register: __aap_setup_down_login
+
 - name: collecting the available installers
   uri:
     url: "{{ aap_setup_down_images_url }}"

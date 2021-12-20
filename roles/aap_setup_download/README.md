@@ -9,7 +9,7 @@ Requirements
 ------------
 
 You will need a Red Hat Ansible Automation Platform (AAP, hence the name) subscription.
-Once this is a given, you will be able to create yourself an offline token
+Once this is a given, you will be able to create yourself an offline token at [https://access.redhat.com/management/api/](https://access.redhat.com/management/api/) (see [Getting started with Red Hat APIs](https://access.redhat.com/articles/3626371) for details).
 
 Role Variables
 --------------
