@@ -1,0 +1,18 @@
+galaxy_info:
+  author: Eric Lavarde
+  description: Prepare installation of AAP, OS requirements, unpack tarball, write inventory
+  company: Red Hat
+
+  license: MIT
+
+  min_ansible_version: 2.9
+
+  platforms:
+    - name: Fedora
+      versions:
+        - all
+        - 25
+
+  galaxy_tags: ['aap', 'ansible']
+
+dependencies: []

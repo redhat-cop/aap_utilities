@@ -1,0 +1,20 @@
+---
+# defaults file for aap_setup_prepare
+# where to find the installer file
+# the default is to get it from the role aap_setup_download
+aap_setup_prep_installer_file: "{{ aap_setup_down_installer_file }}"
+
+# where to extract the installer file
+aap_setup_prep_working_dir: "{{ aap_setup_working_dir | default('/var/tmp') }}"
+
+# shall the default inventory template be processed
+# if false, you'll need to provide your own inventory at a later stage
+aap_setup_prep_process_template: true
+
+
+# variables required by the inventory template
+
+# registry credentials
+#aap_setup_prep_registry_username:
+#aap_setup_prep_registry_password:
+aap_setup_prep_registry_url: registry.redhat.io
