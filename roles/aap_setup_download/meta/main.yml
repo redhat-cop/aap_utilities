@@ -1,0 +1,17 @@
+galaxy_info:
+  author: Eric Lavarde
+  description: download the latest setup tarball for a version of AAP
+  company: Red Hat
+
+  license: MIT
+
+  min_ansible_version: 2.9
+
+  platforms:
+    - name: EL
+      versions:
+        - 8
+
+  galaxy_tags: ['aap', 'ansible']
+
+dependencies: []

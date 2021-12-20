@@ -1,0 +1,16 @@
+---
+# defaults file for aap_setup_download
+
+# Acquire your token at https://access.redhat.com/management/api/
+# see https://access.redhat.com/articles/3626371
+#
+# aap_setup_down_offline_token:
+
+# which version of the installer to download
+aap_setup_down_version: "2.1"
+
+# where to download the setup installer file
+aap_setup_down_dest_dir: "{{ aap_setup_working_dir | default('/var/tmp') }}"
+
+# do you download the "setup-bundle" or only the (online) "setup"?
+aap_setup_down_type: setup-bundle
