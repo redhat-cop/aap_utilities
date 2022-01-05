@@ -3,7 +3,7 @@
 {% for group_key in aap_setup_prep_inv_nodes %}
 [{{ group_key }}]
 {% for node_key in aap_setup_prep_inv_nodes[group_key] %}
-{{ node_key }} {{ aap_setup_prep_inv_nodes[group_key][node_key] }}
+{{ node_key }}{% if aap_setup_prep_inv_nodes[group_key][node_key] is defined %} {{ aap_setup_prep_inv_nodes[group_key][node_key] }}{% endif %}
 {% endfor %}
 
 {% endfor %}

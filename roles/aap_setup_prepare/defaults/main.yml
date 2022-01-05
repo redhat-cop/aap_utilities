@@ -17,8 +17,8 @@ aap_setup_prep_process_template: true
 # is a group name, and 2nd level is the host's name:
 # aap_setup_prep_inv_nodes:
 #   automationcontroller:
-#     autoctl1.example.com: "ansible_user={{ ansible_user }} ansible_password={{ ansible_password }} ansible_become_password={{ ansible_become_password }} ansible_become=True"
-#   autoctl2.example.com: "ansible_user={{ ansible_user }} ansible_password={{ ansible_password }} ansible_become_password={{ ansible_become_password }} ansible_become=True"
+#     autoctl1.example.com: "ansible_user={{ ansible_user }} ansible_password={{ ansible_password }} ansible_become=True"
+#   autoctl2.example.com: "ansible_user={{ ansible_user }} ansible_password={{ ansible_password }} ansible_become=True"
 #   database:
 #   automationhub:
 #   SSO:  # not yet implemented
