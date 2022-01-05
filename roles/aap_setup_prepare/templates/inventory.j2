@@ -1,0 +1,19 @@
+{# output all the hosts and their groups #}
+
+{% for group_key in aap_setup_prep_inv_nodes %}
+[{{ group_key }}]
+{% for node_key in aap_setup_prep_inv_nodes[group_key] %}
+{{ node_key }}{% if aap_setup_prep_inv_nodes[group_key][node_key] is defined %} {{ aap_setup_prep_inv_nodes[group_key][node_key] }}{% endif %}
+{% endfor %}
+
+{% endfor %}
+
+{# output all the variables and their groups #}
+
+{% for group_key in (aap_setup_prep_inv_vars | combine(aap_setup_prep_inv_secrets)) %}
+[{{ group_key }}:vars]
+{% set __inventory_vars = (aap_setup_prep_inv_vars[group_key] | default({})) | combine(aap_setup_prep_inv_secrets[group_key] | default({})) %}
+{% for var_key in __inventory_vars %}
+{{ var_key }}={{ __inventory_vars[var_key] }}
+{% endfor %}
+{% endfor %}

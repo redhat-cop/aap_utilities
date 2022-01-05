@@ -1,0 +1,37 @@
+---
+# tasks file for aap_setup_prepare
+
+# we check first so that the installation can happen without root access
+- name: check if the absolutely necessary packages are installed
+  raw: "rpm -q {{ __aap_setup_prep_required_packages | join(' ') }}"  # noqa 303
+  register: __aap_setup_prep_packages_result
+  ignore_errors: true
+  changed_when: false
+  check_mode: false  # run this command even in check mode
+
+- name: install absolutely necessary packages
+  yum:
+    name: "{{ __aap_setup_prep_required_packages }}"
+    state: present
+  become: true
+  when: "'is not installed' in __aap_setup_prep_packages_result.stdout"
+
+- name: extract the given installer tarball
+  unarchive:
+    src: "{{ aap_setup_prep_installer_file }}"
+    dest: "{{ aap_setup_prep_working_dir }}"
+    list_files: true
+    remote_src: true
+    exclude: "inventory"
+  register: __aap_setup_prep_extract
+
+- name: Set tower_setup_dir
+  set_fact:
+    aap_setup_prep_setup_dir: "{{ aap_setup_prep_working_dir }}/{{ __aap_setup_prep_extract.files[0] }}"
+
+- name: populate AAP setup.sh inventory file from template
+  template:
+    src: inventory.j2
+    dest: "{{ aap_setup_prep_setup_dir }}/inventory"
+    mode: "ug=rw,o=r"
+  when: aap_setup_prep_process_template | bool
