@@ -1,0 +1,18 @@
+galaxy_info:
+  author: Eric Lavarde
+  description: Trigger installation of AAP given a prepared setup and inventory
+  company: Red Hat
+
+  license: MIT
+
+  min_ansible_version: 2.9
+
+  platforms:
+    - name: Fedora
+      versions:
+        - all
+        - 25
+
+  galaxy_tags: ['aap', 'ansible']
+
+dependencies: []
