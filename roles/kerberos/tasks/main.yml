@@ -42,7 +42,8 @@
     group: root
     mode: 0644
 
-- debug:
+- name: Debug
+  debug:
     msg:
       - "To enable communication with your Windows nodes, add the following variables to your Windows group_vars:"
       - "  ansible_connection: 'winrm'"

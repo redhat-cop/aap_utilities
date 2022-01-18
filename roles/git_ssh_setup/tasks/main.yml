@@ -52,7 +52,7 @@
   loop_control:
     loop_var: client_item
 
-- name:
+- name: Debug
   debug:
     msg: >
       Git repos can be used with e.g.
