@@ -6,8 +6,8 @@ git_server_user: git
 
 # list of users which will be able to use the minimal Git server
 git_client_users:
-- name: "{{ ansible_user }}"
-  ssh_key_type: "ed25519"  # optional
+  - name: "{{ ansible_user }}"
+    ssh_key_type: "ed25519"  # optional
 
 # sub-directory under the Git user's home directory
 git_projects_dir: projects

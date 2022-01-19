@@ -1,24 +1,22 @@
 ---
 galaxy_info:
-  author: Eric Lavarde
-  description: Role to install a minimal Git over SSH server
+  author: Sean Sullivan
+  description: Role to restore the Ansible Automation Platform
   company: Red Hat
 
   license: MIT
 
-  min_ansible_version: 2.9
+  min_ansible_version: 2.12
 
   platforms:
     - name: EL
       versions:
-        - 7
         - 8
 
   galaxy_tags:
     - linux
     - system
     - ansible
-    - git
 
 dependencies: []
 ...

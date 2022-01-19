@@ -1,0 +1,27 @@
+---
+- name: validate if controller certificates directory exists
+  become: true
+  ansible.builtin.stat:
+    path: "{{ aap_certs_controller_cert_dest | dirname }}"
+  register: __aap_certs_controller_dir
+
+- name: install certificates for controller if directory exists
+  include_tasks: controller.yml
+  when:
+    - __aap_certs_controller_dir.stat.exists
+    - aap_certs_controller_ssl_cert is defined
+    - aap_certs_controller_ssl_key is defined
+
+- name: validate if automation hub certificates directory exists
+  become: true
+  ansible.builtin.stat:
+    path: "{{ aap_certs_autohub_cert_dest | dirname }}"
+  register: __aap_certs_autohub_dir
+
+- name: install certificates for automation hub if directory exists
+  include_tasks: autohub.yml
+  when:
+    - __aap_certs_autohub_dir.stat.exists
+    - aap_certs_autohub_ssl_cert is defined
+    - aap_certs_autohub_ssl_key is defined
+...
