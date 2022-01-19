@@ -41,9 +41,9 @@
       changed_when: false
       # these will always run and will always report “changed” otherwise
 
-    - name: Wait for Ansible Tower to be running.
-      uri:
-        url: "https://{{ controller_hostname }}"
+    - name: wait for automation controller to be running
+      uri:  # use the first host from the list if no hostname is defined
+        url: "https://{{ controller_hostname | default((aap_setup_prep_inv_nodes['automationcontroller'].keys() | list)[0]) }}"
         status_code: 200
         validate_certs: "{{ controller_validate_certs | default(omit) }}"
       register: __aap_setup_inst_result
@@ -52,9 +52,9 @@
       delay: 10
       when: "'automationcontroller' in aap_setup_prep_inv_nodes"
 
-    - name: Wait for Automation Hub to be running.
-      uri:
-        url: "https://{{ ah_hostname }}/ui/"
+    - name: wait for automation hub to be running
+      uri:  # use the first host from the list if no hostname is defined
+        url: "https://{{ ah_hostname | default((aap_setup_prep_inv_nodes['automationhub'].keys() | list)[0]) }}/ui/"
         status_code: 200
         validate_certs: "{{ ah_validate_certs | default(omit) }}"
       register: __aap_setup_inst_result_ah

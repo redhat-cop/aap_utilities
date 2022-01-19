@@ -3,7 +3,7 @@
 
 # we check first so that the installation can happen without root access
 - name: check if the absolutely necessary packages are installed
-  raw: "rpm -q {{ __aap_setup_prep_required_packages | join(' ') }}"  # noqa 303
+  command: "rpm -q {{ __aap_setup_prep_required_packages | join(' ') }}"  # noqa command-instead-of-module
   register: __aap_setup_prep_packages_result
   ignore_errors: true
   changed_when: false
@@ -35,3 +35,8 @@
     dest: "{{ aap_setup_prep_setup_dir }}/inventory"
     mode: "ug=rw,o=r"
   when: aap_setup_prep_process_template | bool
+
+- name: apply relevant fixes / workarounds
+  include_tasks:
+    file: "fixes/{{ item }}.yml"
+  loop: "{{ aap_setup_prep_fixes }}"
