@@ -4,6 +4,7 @@
 [{{ group_key }}]
 {% for node_key in aap_setup_prep_inv_nodes[group_key] %}
 {{ node_key }}{% if aap_setup_prep_inv_nodes[group_key][node_key] is defined %} {{ aap_setup_prep_inv_nodes[group_key][node_key] }}{% endif %}
+
 {% endfor %}
 
 {% endfor %}
@@ -14,6 +15,10 @@
 [{{ group_key }}:vars]
 {% set __inventory_vars = (aap_setup_prep_inv_vars[group_key] | default({})) | combine(aap_setup_prep_inv_secrets[group_key] | default({})) %}
 {% for var_key in __inventory_vars %}
+{% if var_key.endswith('_port') %}{# workaround for AAP-1798 #}
+{{ var_key }}='{{ __inventory_vars[var_key] }}'
+{% else %}
 {{ var_key }}={{ __inventory_vars[var_key] }}
+{% endif %}
 {% endfor %}
 {% endfor %}

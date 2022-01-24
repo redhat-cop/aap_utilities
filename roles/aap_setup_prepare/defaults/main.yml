@@ -135,3 +135,7 @@ aap_setup_prep_inv_secrets: {}
 #     # Isolated Tower nodes automatically generate an RSA key for authentication;
 #     # To disable this behavior, set this value to false
 #     #isolated_key_generation: true
+
+# list of fixes to apply to the installation scripts, use with CAUTION!
+aap_setup_prep_fixes:
+  - aap_1413
