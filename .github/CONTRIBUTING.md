@@ -22,3 +22,5 @@ If you feel like getting your hands dirty, feel free to make the change yourself
 See [Using Pull Requests](https://help.github.com/articles/using-pull-requests/) got more information on how to use GitHub PRs.
 
 For an in depth guide on how to contribute see [this article](https://opensource.com/article/19/7/create-pull-request-github)
+
+Note that we follow the https://redhat-cop.github.io/automation-good-practices[Automation Good Practices] and so are you expected to do.
