@@ -1,4 +1,4 @@
-# redhat_cop.tower_utilities.kerberos
+# redhat\_cop.aap\_utilities.kerberos
 ## Description
 An Ansible role to setup authentication to a windows domain server with kerberos.
 
@@ -65,7 +65,7 @@ If you require a proxy server to reach external repositories located on the inte
     http_proxy: "yourproxyurl:andport"
     https_proxy: "yourproxyurl:andport"
   roles:
-    - role: redhat_cop.tower_utilities.kerberos
+    - role: redhat_cop.aap_utilities.kerberos
       krb_default_realm: MYDOMAIN.COM
       krb_realms:
         - name: "MYDOMAIN.COM"

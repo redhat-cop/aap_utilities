@@ -40,8 +40,8 @@ Combined with the role `aap_setup_prepare`, the following code will download and
 ```yaml
 - hosts: installationserver
   roles:
-    - { role: redhat_cop.tower_utilities.aap_setup_download }
-    - { role: redhat_cop.tower_utilities.aap_setup_prepare }
+    - { role: redhat_cop.aap_utilities.aap_setup_download }
+    - { role: redhat_cop.aap_utilities.aap_setup_prepare }
 ```
 
 License

@@ -1,4 +1,4 @@
-# Redhat Communities of Practice Tower Utilities Collection
+# Red Hat Communities of Practice Tower Utilities Collection
 
 ![Ansible Lint](https://github.com/redhat-cop/tower_utilities/workflows/Ansible%20Lint/badge.svg)
 ![Galaxy Release](https://github.com/redhat-cop/tower_utilities/workflows/galaxy-release/badge.svg)
@@ -17,16 +17,16 @@ Click the `Content` button to see the list of content included in this collectio
 
 ## Installing this collection
 
-You can install the redhat_cop tower_utilities collection with the Ansible Galaxy CLI:
+You can install the redhat\_cop aap\_utilities collection with the Ansible Galaxy CLI:
 
-    ansible-galaxy collection install redhat_cop.tower_utilities
+    ansible-galaxy collection install redhat_cop.aap_utilities
 
 You can also include it in a `requirements.yml` file and install it with `ansible-galaxy collection install -r requirements.yml`, using the format:
 
 ```yaml
 ---
 collections:
-  - name: redhat_cop.tower_utilities
+  - name: redhat_cop.aap_utilities
     # If you need a specific version of the collection, you can specify like this:
     # version: ...
 ```
@@ -38,15 +38,17 @@ collections:
 
 ## Release and Upgrade Notes
 
-- From v2.0.0 the variable `tower_hosts` was renamed to `tower_nodes` in order to not collide with the variable of the same name in the redhat\_cop.tower\_configuration collection.
-Similarly, the variables tower\_ah\_nodes, tower\_database\_node and tower\_ah\_pg\_node were introduced/renamed.
-Don't forget to adapt your inventory/ies and variable definitions accordingly.
+Many roles and variables have been renamed to reflect the product renaming from Tower to controller/AAP.
+Verify carefully your inventory variables and playbooks.
+
+The OCP installation role has been suppressed due to the introduction of an operator.
+Further (community) automation for AAP on OCP is available from the https://github.com/redhat-cop/gitops-catalog/tree/main/ansible-automation-platform[GitOps catalogue].
 
 ## Roadmap
 
 ## Contributing to this collection
 
-We welcome community contributions to this collection. If you find problems, please open an issue or create a PR against the [Tower Utilities collection repository](https://github.com/redhat-cop/tower_utilities).
+We welcome community contributions to this collection. If you find problems, please open an issue or create a PR against the [Tower/AAP Utilities collection repository](https://github.com/redhat-cop/tower_utilities).
 More information about contributing can be found in our [Contribution Guidelines.](https://github.com/redhat-cop/tower_utilities/blob/devel/.github/CONTRIBUTING.md)
 
 ## Licensing

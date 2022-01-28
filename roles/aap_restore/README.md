@@ -1,4 +1,4 @@
-# redhat_cop.tower_utilities.restore
+# redhat\_cop.aap\_utilities.aap\_restore
 
 Ansible role to restore a backup of Ansible Tower.
 
@@ -103,7 +103,7 @@ $ ansible-playbook playbook.yml -e @tower_vars.yml tower
     tower_working_location: "{{playbook_dir}}"
     restore_location: "{{playbook_dir}}/tower-backup-latest.tar.gz"
   roles:
-    - redhat_cop.tower_utilities.restore
+    - redhat_cop.aap_utilities.aap_restore
 ```
 
 ## License
