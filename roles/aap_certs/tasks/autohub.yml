@@ -1,0 +1,25 @@
+---
+
+# according to https://access.redhat.com/solutions/5731261
+- name: autohub | copy cert into place
+  become: true
+  copy:
+    src: "{{ aap_certs_autohub_ssl_cert }}"
+    dest: "{{ aap_certs_autohub_cert_dest }}"
+    mode: u=rw,go=r
+    owner: root
+    group: pulp
+    backup: "{{ aap_certs_create_backup }}"
+  notify: restart_aap_service
+
+- name: autohub | copy key into place
+  become: true
+  copy:
+    src: "{{ aap_certs_autohub_ssl_key }}"
+    dest: "{{ aap_certs_autohub_key_dest }}"
+    mode: u=rw,go=
+    owner: root
+    group: pulp
+    backup: "{{ aap_certs_create_backup }}"
+  notify: restart_aap_service
+...

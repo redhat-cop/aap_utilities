@@ -1,0 +1,8 @@
+---
+- name: restart Nginx service
+  become: true
+  service:
+    name: nginx
+    state: restarted
+  listen: restart_aap_service
+...

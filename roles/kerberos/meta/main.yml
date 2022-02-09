@@ -1,6 +1,5 @@
 ---
 galaxy_info:
-  role_name: redhat_cop.tower_utilities.kerberos
   author: "Andrew J. Huffman"
   description: "An Ansible role to configure Ansible Tower nodes to manage Windows systems."
   company: "Red Hat"
@@ -18,7 +17,7 @@ galaxy_info:
   # - CC-BY
   license: "MIT"
 
-  min_ansible_version: "2.4"
+  min_ansible_version: "2.9"
 
   # Optionally specify the branch Galaxy will use when accessing the GitHub
   # repo for this role. During role install, if no tags are available,

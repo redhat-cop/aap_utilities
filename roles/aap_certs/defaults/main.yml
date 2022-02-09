@@ -1,0 +1,15 @@
+---
+# paths to the source certificates
+# they can be created with:
+# openssl req -x509 -nodes -sha256 -days 824 -newkey rsa:2048 \
+#   -keyout tower.key -out tower.cert
+# or
+#   -keyout pulp.key -out pulp.cert
+# aap_certs_controller_ssl_cert: "{{ playbook_dir }}/tower.cert"
+# aap_certs_controller_ssl_key: "{{ playbook_dir }}/tower.key"
+# aap_certs_autohub_ssl_cert: "{{ playbook_dir }}/pulp.cert"
+# aap_certs_autohub_ssl_key: "{{ playbook_dir }}/pulp.key"
+
+# boolean to decide if the existing certificates are kept
+aap_certs_create_backup: false
+...

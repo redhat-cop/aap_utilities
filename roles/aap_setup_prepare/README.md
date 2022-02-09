@@ -44,9 +44,9 @@ Example Playbook
   become: false
   tags: aap_installation
   roles:
-    - redhat_cop.tower_utilities.aap_setup_download
-    - redhat_cop.tower_utilities.aap_setup_prepare
-    - redhat_cop.tower_utilities.aap_setup_install
+    - redhat_cop.aap_utilities.aap_setup_download
+    - redhat_cop.aap_utilities.aap_setup_prepare
+    - redhat_cop.aap_utilities.aap_setup_install
 ```
 
 Note that this only works without root access if the bastion host isn't part of the future cluster, and if the RPM pre-requisites have been pre-installed.

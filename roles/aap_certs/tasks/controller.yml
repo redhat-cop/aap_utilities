@@ -1,0 +1,24 @@
+---
+# according to https://access.redhat.com/solutions/3109871
+- name: controller | copy cert into place
+  become: true
+  copy:
+    src: "{{ aap_certs_controller_ssl_cert }}"
+    dest: "{{ aap_certs_controller_cert_dest }}"
+    mode: u=rw,go=
+    owner: root
+    group: awx
+    backup: "{{ aap_certs_create_backup }}"
+  notify: restart_aap_service
+
+- name: controller | copy key into place
+  become: true
+  copy:
+    src: "{{ aap_certs_controller_ssl_key }}"
+    dest: "{{ aap_certs_controller_key_dest }}"
+    mode: u=rw,go=
+    owner: root
+    group: awx
+    backup: "{{ aap_certs_create_backup }}"
+  notify: restart_aap_service
+...
