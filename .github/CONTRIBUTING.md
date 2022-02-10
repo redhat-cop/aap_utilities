@@ -23,4 +23,4 @@ See [Using Pull Requests](https://help.github.com/articles/using-pull-requests/)
 
 For an in depth guide on how to contribute see [this article](https://opensource.com/article/19/7/create-pull-request-github)
 
-Note that we follow the https://redhat-cop.github.io/automation-good-practices[Automation Good Practices] and so are you expected to do.
+Note that we follow the [Automation Good Practices](https://redhat-cop.github.io/automation-good-practices) and so are you expected to do.
