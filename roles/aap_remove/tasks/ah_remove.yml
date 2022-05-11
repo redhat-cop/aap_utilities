@@ -65,3 +65,4 @@
   loop:
     - redis
   become: true
+...
