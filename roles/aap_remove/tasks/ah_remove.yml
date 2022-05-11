@@ -1,0 +1,67 @@
+---
+- name: Stop and disable services
+  systemd:
+    name: "{{ item }}"
+    state: stopped
+    enabled: false
+  ignore_errors: true
+  loop:
+    - nginx.service
+    - postgresql.service
+    - pulpcore-api.service
+    - pulpcore-content.service
+    - pulpcore-resource-manager.service
+    - pulpcore.service
+    - redis.service
+  become: true
+
+- name: Remove software
+  yum:
+    name:
+      - postgresql
+      - postgresql-server
+      - redis
+      - redhat-logos-httpd
+      - nginx
+      - nginx-filesystem
+      - automation-hub
+      - pulpcore-selinux
+      - python38-pulpcore
+      - python38-pulp-container
+      - python38-pulp-ansible
+      - python38-galaxy-importer
+      - python38-galaxy-ng
+    state: absent
+    autoremove: true
+  become: true
+
+- name: Remove created directories
+  file:
+    path: "{{ item }}"
+    state: absent
+  loop:
+    - /etc/galaxy-importer
+    - /etc/nginx
+    - /etc/pulp
+    - /root/hub
+  become: true
+
+- name: Remove added users
+  user:
+    name: "{{ item }}"
+    state: absent
+    remove: true
+  loop:
+    - postgres
+    - redis
+    - pulp
+    - nginx
+  become: true
+
+- name: Remove added groups
+  group:
+    name: "{{ item }}"
+    state: absent
+  loop:
+    - redis
+  become: true

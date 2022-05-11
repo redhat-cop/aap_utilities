@@ -1,0 +1,15 @@
+---
+# tasks file for ansible-tower-remove
+
+- include_tasks: controller_remove.yml
+  when: aap_remove_controller
+  tags:
+    - controller
+    - remove
+
+- include_tasks: ah_remove.yml
+  when: aap_remove_ah
+  tags:
+    - controller
+    - remove
+...
