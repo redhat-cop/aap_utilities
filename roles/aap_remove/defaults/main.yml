@@ -1,0 +1,11 @@
+---
+# defaults file for redhat_cop.aap_utilities.aap_remove
+
+############################################################
+#               Tower Remove Vars                         #
+############################################################
+
+aap_remove_controller: false
+aap_remove_ah: false
+
+...
