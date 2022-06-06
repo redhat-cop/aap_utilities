@@ -4,5 +4,5 @@
 ############################################################
 
 # Default backup vars, these are default from installer
-backup_dest: "{{ tower_working_location }}/"
+aap_backup_dest: '/var/tmp'
 ...
