@@ -11,8 +11,8 @@ None
 Available variables are listed below, along with default values defined (see defaults/main.yml)
 
 ```yaml
-tower_working_location: "/root/"
-backup_dest: "{{ tower_working_location }}/"
+aap_setup_working_dir: "/root/"
+backup_dest: "{{ aap_setup_working_dir }}/"
 
 # Use the default tower installation template
 pre_tasks_process_template: true

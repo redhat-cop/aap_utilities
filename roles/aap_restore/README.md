@@ -12,9 +12,9 @@ Available variables are listed below, along with default values defined (see def
 
 ```yaml
 # Role Vars
-tower_working_location: "/root/"
-restore_file: "tower-backup-latest.tar.gz"
-restore_location: "{{ tower_working_location }}/{{ restore_file }}"
+aap_setup_working_dir: "/root/"
+aap_restore_file: "automation-platform-backup-latest.tar.gz"
+aap_restore_location: "{{ aap_setup_working_dir }}/{{ restore_file }}"
 
 # Use the default tower installation template
 pre_tasks_process_template: true
