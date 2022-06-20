@@ -3,7 +3,8 @@
 - name: controller | copy cert into place
   become: true
   copy:
-    src: "{{ aap_certs_controller_ssl_cert }}"
+    src: "{{ aap_certs_controller_ssl_cert | default(omit) }}"
+    content: "{{ aap_certs_controller_ssl_cert_content | default(omit) }}"
     dest: "{{ aap_certs_controller_cert_dest }}"
     mode: u=rw,go=
     owner: root
@@ -14,7 +15,8 @@
 - name: controller | copy key into place
   become: true
   copy:
-    src: "{{ aap_certs_controller_ssl_key }}"
+    src: "{{ aap_certs_controller_ssl_key | default(omit) }}"
+    content: "{{ aap_certs_controller_ssl_key_content | default(omit) }}"
     dest: "{{ aap_certs_controller_key_dest }}"
     mode: u=rw,go=
     owner: root
