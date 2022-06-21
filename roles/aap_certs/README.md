@@ -24,6 +24,15 @@ aap_certs_autohub_ssl_cert: "{{ playbook_dir }}/pulp.cert"
 aap_certs_autohub_ssl_key: "{{ playbook_dir }}/pulp.key"
 ```
 
+The content of the certifcates and keys can also be set rather than specifying a file. This is useful when you're using a secrets backend like HashiCorp Vault.
+
+```yaml
+aap_certs_controller_ssl_cert_content: "-----BEGIN CERTIFICATE----- xxxxxx -----END CERTIFICATE-----"
+aap_certs_controller_ssl_key_content: "-----BEGIN PRIVATE KEY----- xxxxxx -----END PRIVATE KEY-----"
+aap_certs_autohub_ssl_cert_content: "-----BEGIN CERTIFICATE----- xxxxxx -----END CERTIFICATE-----"
+aap_certs_autohub_ssl_key_content: "-----BEGIN PRIVATE KEY----- xxxxxx -----END PRIVATE KEY-----"
+```
+
 The following variable defines if the old certificates/keys should be backed-up:
 
 ```yaml
