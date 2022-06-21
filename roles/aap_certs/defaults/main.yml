@@ -10,7 +10,7 @@
 # aap_certs_autohub_ssl_cert: "{{ playbook_dir }}/pulp.cert"
 # aap_certs_autohub_ssl_key: "{{ playbook_dir }}/pulp.key"
 #
-# content of the certificates and keys
+# content of the certificates and keys (mutex with above vars)
 # aap_certs_controller_ssl_cert_content: "-----BEGIN CERTIFICATE----- xxxxxx -----END CERTIFICATE-----"
 # aap_certs_controller_ssl_key_content: "-----BEGIN PRIVATE KEY----- xxxxxx -----END PRIVATE KEY-----"
 # aap_certs_autohub_ssl_cert_content: "-----BEGIN CERTIFICATE----- xxxxxx -----END CERTIFICATE-----"

@@ -4,7 +4,8 @@
 - name: autohub | copy cert into place
   become: true
   copy:
-    src: "{{ aap_certs_autohub_ssl_cert }}"
+    src: "{{ aap_certs_autohub_ssl_cert | default(omit) }}"
+    content: "{{ aap_certs_autohub_ssl_cert_content | default(omit) }}"
     dest: "{{ aap_certs_autohub_cert_dest }}"
     mode: u=rw,go=r
     owner: root
@@ -15,7 +16,8 @@
 - name: autohub | copy key into place
   become: true
   copy:
-    src: "{{ aap_certs_autohub_ssl_key }}"
+    src: "{{ aap_certs_autohub_ssl_key | default(omit) }}"
+    content: "{{ aap_certs_autohub_ssl_key_content | default(omit) }}"
     dest: "{{ aap_certs_autohub_key_dest }}"
     mode: u=rw,go=
     owner: root
