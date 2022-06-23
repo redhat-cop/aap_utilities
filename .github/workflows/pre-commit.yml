@@ -20,4 +20,8 @@ jobs:
       run: |
         sudo cp .github/workflow-config/.pre-commit-config.yml .pre-commit-config.yaml
     - uses: pre-commit/action@v2.0.0
+    - uses: DavidAnson/markdownlint-cli2-action@v5
+      with:
+        globs: |
+          **/*.md
 ...
