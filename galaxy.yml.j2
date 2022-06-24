@@ -2,7 +2,7 @@
 namespace: {{ collection_namespace }}
 name: {{ collection_name }}
 version: {{ collection_version }}
-description: A collection of utility roles for usage with Ansible Tower
+description: A collection of utility roles for usage with Ansible Automation Platform
 readme: README.md
 authors:
     - Jonathan Lozada De La Matta @jlozadad
@@ -13,15 +13,18 @@ repository: {{ collection_repo }}
 issues: {{ collection_repo }}/issues
 build_ignore:
     - galaxy.yml.j2
-    - release.yml
     - .github
+    - .markdownlint.yml
+    - .gitignore
+    - .gitattributes
 license:
     - GPL-3.0-or-later
 tags:
-    - tower
+    - ansible_automation_platform
+    - aap
+    - aap_utils
+    - aap_utilities
     - collection
     - utilities
     - utils
-    - tower_utilities
-    - tower_utils
 dependencies: {}
