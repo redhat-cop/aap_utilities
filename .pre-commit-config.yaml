@@ -1,3 +1,4 @@
+---
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.1.0
@@ -25,5 +26,4 @@ repos:
     rev: v0.4.0
     hooks:
       - id: markdownlint-cli2
-        entry: "markdownlint-cli2 **/*.md"
 ...
