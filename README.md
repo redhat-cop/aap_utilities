@@ -4,7 +4,8 @@
 ![Galaxy Release](https://github.com/redhat-cop/aap_utilities/workflows/galaxy-release/badge.svg)
 <!-- Further CI badges go here as above -->
 
-This ansible collection includes a number of roles which can be useful for installing and managing AWX or Ansible Automation Platform. Using this collection, you'll be able to automate following tasks:
+This ansible collection includes a number of roles which can be useful for installing and managing AWX or Ansible Automation Platform.
+Using this collection, you'll be able to automate following tasks:
 
 * prepare and install Automation controller and Private automation hub on RHEL
 * configure the OS to support Kerberos (if you plan to manage Windows hosts using AD credentials)
@@ -45,7 +46,7 @@ Many roles and variables have been renamed to reflect the product renaming from 
 Verify carefully your inventory variables and playbooks.
 
 The OCP installation role has been suppressed due to the introduction of an operator.
-Further (community) automation for AAP on OCP is available from the https://github.com/redhat-cop/gitops-catalog/tree/main/ansible-automation-platform[GitOps catalogue].
+Further (community) automation for AAP on OCP is available from the [GitOps catalogue](https://github.com/redhat-cop/gitops-catalog/tree/main/ansible-automation-platform).
 
 ## Roadmap
 

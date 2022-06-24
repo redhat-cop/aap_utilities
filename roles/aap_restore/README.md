@@ -86,7 +86,7 @@ isolated_groups: <unset>
 The following playbook and accompanying vars file containing the defined seed objects can be invoked in the following manner.
 
 ```sh
-$ ansible-playbook playbook.yml -e @tower_vars.yml tower
+ansible-playbook playbook.yml -e @tower_vars.yml tower
 ```
 
 ```yaml
