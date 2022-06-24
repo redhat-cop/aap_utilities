@@ -21,4 +21,9 @@ repos:
         pass_filenames: false
         always_run: true
         entry: "ansible-lint -c .github/workflow-config/.ansiblelint.yml --exclude=roles/master_role_example"
+  - repo: https://github.com/DavidAnson/markdownlint-cli2
+    rev: v0.4.0
+    hooks:
+      - id: markdownlint-cli2
+        entry: "markdownlint-cli2 **/*.md"
 ...
