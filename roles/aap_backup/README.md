@@ -102,21 +102,21 @@ tower_ssh_connection_vars:
 The following playbook and accompanying vars file containing the defined seed objects can be invoked in the following manner.
 
 ```sh
-ansible-playbook playbook.yml -e @tower_vars.yml tower
+ansible-playbook playbook.yml -e @controller_vars.yml controller
 ```
 
 ```yaml
 ---
-# Playbook to install Ansible Tower as a cluster
+# Playbook to backup Automation controller
 
-- name: Backup Ansible Tower
+- name: Backup Automation controller
   hosts: localhost
   become: true
   vars:
-    tower_nodes:
+    controller_nodes:
       - "clusternode[1:3].example.com"
-    tower_database_node: "dbnode.example.com"
-    tower_working_location: "{{playbook_dir}}"
+    controller_database_node: "dbnode.example.com"
+    controller_working_location: "{{playbook_dir}}"
   roles:
     - redhat_cop.aap_utilities.aap_backup
 ```
