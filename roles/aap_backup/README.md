@@ -113,10 +113,10 @@ ansible-playbook playbook.yml -e @controller_vars.yml controller
   hosts: localhost
   become: true
   vars:
-    controller_nodes:
+    tower_nodes:
       - "clusternode[1:3].example.com"
-    controller_database_node: "dbnode.example.com"
-    controller_working_location: "{{playbook_dir}}"
+    tower_database_node: "dbnode.example.com"
+    tower_working_location: "{{playbook_dir}}"
   roles:
     - redhat_cop.aap_utilities.aap_backup
 ```
