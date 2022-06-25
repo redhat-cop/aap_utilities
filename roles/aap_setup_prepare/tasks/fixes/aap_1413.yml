@@ -11,3 +11,4 @@
     state: present
   vars:
     __aap_setup_prep_snippet_fix: !unsafe "{{ __pulp_webserver_snippet.stdout | trim | regex_replace('\\\\s+.*$', '') }}"
+...

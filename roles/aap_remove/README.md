@@ -16,9 +16,12 @@ aap_remove_controller: false
 aap_remove_ah: false
 ```
 
-The above are used to determine whether to remove Controller or Automation Hub from the node. We recommend setting a host vars or simply using separate plays for each host which determines which of these vars to set true. An example is below.
+The above are used to determine whether to remove Controller or Automation Hub from the node.
+We recommend setting a host vars or simply using separate plays for each host which determines which of these vars to set true.
+An example is below.
 
 ## Example Playbook
+
 ```yaml
 ---
 # Playbook to install AAP2

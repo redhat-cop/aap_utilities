@@ -1,16 +1,13 @@
-aap\_setup\_install
-=================
+# aap\_setup\_install
 
 A role to install AAP 2.x, installing pre-requisites, unpacking the installation tarball and (optionally) writing the necessary inventory file.
 
-Requirements
-------------
+## Requirements
 
 * The installation package must have been extracted
 * The necessary inventory must have been written
 
-Role Variables
---------------
+## Role Variables
 
 The following input variables are available:
 
@@ -25,14 +22,12 @@ The following input variables are available:
 
 Note that the `controller_` and `ah_` variables are only required if the variable `aap_setup_inst_force` is _not_ true _and_ if the respective service is due to be installed.
 
-Dependencies
-------------
+## Dependencies
 
 * `aap_setup_download`, in the same collection, can be used to download the tarball automatically.
 * `aap_setup_prepare`, in the same collection, can be used to extract the tarball and write the inventory
 
-Example Playbook
-----------------
+## Example Playbook
 
 ```yaml
 - name: download and install AAP from the bastion
@@ -46,15 +41,14 @@ Example Playbook
     - redhat_cop.aap_utilities.aap_setup_install
 ```
 
-Note that this only works without root access if the bastion host isn't part of the future cluster, and if the RPM pre-requisites have been pre-installed.
+Note that this only works without root access if the bastion host isn't part of the future cluster,
+and if the RPM pre-requisites have been pre-installed.
 Else change to `become: true`.
 
-License
--------
+## License
 
 BSD
 
-Author Information
-------------------
+## Author Information
 
 Eric Lavarde <elavarde@redhat.com>

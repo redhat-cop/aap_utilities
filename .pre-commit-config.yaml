@@ -1,15 +1,17 @@
+---
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.1.0
     hooks:
       - id: end-of-file-fixer
       - id: trailing-whitespace
-  - repo: https://github.com/adrienverge/yamllint.git
-    rev: v1.26.3
-    hooks:
-      - id: yamllint
-        entry: yamllint -c .github/workflow-config/.yamllint.yml
-        types: [yaml]
+  # Disabling the separate yamllint as it can now be done by ansible-lint with our config moved to TLD.
+  # - repo: https://github.com/adrienverge/yamllint.git
+  #   rev: v1.26.3
+  #   hooks:
+  #     - id: yamllint
+  #       entry: "yamllint"
+  #       types: [yaml]
   - repo: https://github.com/ansible/ansible-lint.git
     rev: v5.3.2
     hooks:
@@ -20,5 +22,9 @@ repos:
       - id: ansible-lint
         pass_filenames: false
         always_run: true
-        entry: "ansible-lint -c .github/workflow-config/.ansiblelint.yml --exclude=roles/master_role_example"
+        entry: "ansible-lint"
+  - repo: https://github.com/DavidAnson/markdownlint-cli2
+    rev: v0.4.0
+    hooks:
+      - id: markdownlint-cli2
 ...

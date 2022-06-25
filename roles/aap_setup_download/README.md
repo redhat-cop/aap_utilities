@@ -1,18 +1,15 @@
-aap\_setup\_download
-==================
+# aap\_setup\_download
 
 A role to download the latest z-version of the AAP setup tarball for a given minor version (e.g. 2.1 at time of writing).
 
 Shamelessly adapted from [Red Hat Ansible Automation Platform 2: Automating the Installer Download and publishing as a Content View in Satellite](https://www.redhat.com/en/blog/automating-installation-ansible-automation-platform-ansible-and-satellite).
 
-Requirements
-------------
+## Requirements
 
 You will need a Red Hat Ansible Automation Platform (AAP, hence the name) subscription.
 Once this is a given, you will be able to create yourself an offline token at [https://access.redhat.com/management/api/](https://access.redhat.com/management/api/) (see [Getting started with Red Hat APIs](https://access.redhat.com/articles/3626371) for details).
 
-Role Variables
---------------
+## Role Variables
 
 The following input variables are required:
 
@@ -26,16 +23,13 @@ It is by default the working directory `aap_setup_working_dir` also used by othe
 
 The full path of the downloaded file is stored in the fact `aap_setup_down_installer_file` so that it can be used for extraction.
 
-Dependencies
-------------
+## Dependencies
 
 None.
 
-Example Playbook
-----------------
+## Example Playbook
 
 Combined with the role `aap_setup_prepare`, the following code will download and prepare the installation directory:
-
 
 ```yaml
 - hosts: installationserver
@@ -44,12 +38,10 @@ Combined with the role `aap_setup_prepare`, the following code will download and
     - { role: redhat_cop.aap_utilities.aap_setup_prepare }
 ```
 
-License
--------
+## License
 
 MIT
 
-Author Information
-------------------
+## Author Information
 
 Eric Lavarde <elavarde@redhat.com>, Red Hat Consulting, Principal Architect

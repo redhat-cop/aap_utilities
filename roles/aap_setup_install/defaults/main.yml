@@ -57,3 +57,4 @@ aap_setup_inst_extra_vars: {}
 
 # force the installation of AAP even if it's already running
 aap_setup_inst_force: false
+...

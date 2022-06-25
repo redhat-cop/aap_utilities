@@ -139,3 +139,4 @@ aap_setup_prep_inv_secrets: {}
 # list of fixes to apply to the installation scripts, use with CAUTION!
 aap_setup_prep_fixes:
   - aap_1413
+...
