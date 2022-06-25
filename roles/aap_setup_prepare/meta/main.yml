@@ -1,3 +1,4 @@
+---
 galaxy_info:
   author: Eric Lavarde
   description: Prepare installation of AAP, OS requirements, unpack tarball, write inventory
@@ -16,3 +17,4 @@ galaxy_info:
   galaxy_tags: ['aap', 'ansible']
 
 dependencies: []
+...

@@ -1,3 +1,4 @@
+---
 default: true
 
 # MD003/heading-style/header-style - Heading style
@@ -13,3 +14,4 @@ MD013: false
 # This will ensure that code block format is consistent across all markdown files
 MD0046:
   style: fenced
+...

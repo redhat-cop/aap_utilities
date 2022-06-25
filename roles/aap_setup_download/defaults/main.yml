@@ -14,3 +14,4 @@ aap_setup_down_dest_dir: "{{ aap_setup_working_dir | default('/var/tmp') }}"
 
 # do you download the "setup-bundle" or only the (online) "setup"?
 aap_setup_down_type: setup-bundle
+...

@@ -1,3 +1,4 @@
+---
 galaxy_info:
   author: Eric Lavarde
   description: download the latest setup tarball for a version of AAP
@@ -15,3 +16,4 @@ galaxy_info:
   galaxy_tags: ['aap', 'ansible']
 
 dependencies: []
+...

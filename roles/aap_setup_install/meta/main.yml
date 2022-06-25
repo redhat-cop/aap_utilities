@@ -1,3 +1,4 @@
+---
 galaxy_info:
   author: Eric Lavarde
   description: Trigger installation of AAP given a prepared setup and inventory
@@ -16,3 +17,4 @@ galaxy_info:
   galaxy_tags: ['aap', 'ansible']
 
 dependencies: []
+...

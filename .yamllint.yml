@@ -14,4 +14,6 @@ rules:
     - 'False'
     - 'true'
     - 'false'
+  # Enabling yamllint check based on PR #35
+  document-end: enable
 ...

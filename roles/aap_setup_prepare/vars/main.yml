@@ -8,3 +8,4 @@ __aap_setup_prep_required_packages:
   - ansible-core  # must be pre-installed on the bastion if not running as root
   - git  # must be pre-installed on the bastion if not running as root
   - rsync  # optional, required to copy bundle from bastion to other hosts
+...
