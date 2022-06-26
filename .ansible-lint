@@ -9,9 +9,7 @@ use_default_rules: true
 # https://github.com/ansible/ansible-lint/issues/808
 #  with verbosity set to 1, its dumping 'unknown file type messages'
 # verbosity: 1
-skip_list:
-  # Temporarily disabling the ignore-errors check to get CI to pass
-  - ignore-errors
+skip_list: []
 # Disabled the the below skip_list as they use the old style rule names.
 # With the move of the .yamllint.yml to TLD ansible-lint now picks up our config so no need to exclude it.
 #   # [E204]: "Lines should be no longer than 160 chars"

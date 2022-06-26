@@ -3,7 +3,7 @@
 # according to https://access.redhat.com/solutions/5731261
 - name: autohub | copy cert into place
   become: true
-  copy:
+  ansible.builtin.copy:
     src: "{{ aap_certs_autohub_ssl_cert | default(omit) }}"
     content: "{{ aap_certs_autohub_ssl_cert_content | default(omit) }}"
     dest: "{{ aap_certs_autohub_cert_dest }}"
@@ -15,7 +15,7 @@
 
 - name: autohub | copy key into place
   become: true
-  copy:
+  ansible.builtin.copy:
     src: "{{ aap_certs_autohub_ssl_key | default(omit) }}"
     content: "{{ aap_certs_autohub_ssl_key_content | default(omit) }}"
     dest: "{{ aap_certs_autohub_key_dest }}"

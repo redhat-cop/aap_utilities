@@ -1,6 +1,6 @@
 ---
 - name: Install required kerberos packages
-  package:
+  ansible.builtin.package:
     name: "{{ item }}"
     state: "present"
   with_items: "{{ krb_req_pkgs }}"
@@ -8,7 +8,7 @@
 
 # EPEL required for python-pip install
 - name: Ensure EPEL repository is installed | EL7
-  package:
+  ansible.builtin.package:
     name: "https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm"
     state: "installed"
   when:
@@ -18,7 +18,7 @@
   tags: prerequisites
 
 - name: Ensure pip is installed
-  package:
+  ansible.builtin.package:
     name: "python-pip"
     state: "present"
   when: (ansible_os_family == "RedHat" and ansible_distribution_major_version == "7") or
@@ -27,7 +27,7 @@
   tags: prerequisites
 
 - name: Ensure Python libraries are installed
-  pip:
+  ansible.builtin.pip:
     name: "{{ item }}"
     umask: "0022"
     state: "present"
@@ -35,7 +35,7 @@
   become: true
 
 - name: Configure kerberos
-  template:
+  ansible.builtin.template:
     src: krb5.conf.j2
     dest: /etc/krb5.conf
     owner: root
@@ -43,7 +43,7 @@
     mode: 0644
 
 - name: Debug
-  debug:
+  ansible.builtin.debug:
     msg:
       - "To enable communication with your Windows nodes, add the following variables to your Windows group_vars:"
       - "  ansible_connection: 'winrm'"
