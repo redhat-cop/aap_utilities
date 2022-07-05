@@ -1,6 +1,11 @@
 ---
 # tasks file for aap_setup_install
 
+- name: apply relevant fixes / workarounds
+  include_tasks:
+    file: "fixes/{{ item }}.yml"
+  loop: "{{ aap_setup_inst_fixes }}"
+
 - name: Check Ansible Tower Running
   uri:
     url: "https://{{ controller_hostname }}/"

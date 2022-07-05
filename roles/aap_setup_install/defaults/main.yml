@@ -61,4 +61,9 @@ aap_setup_inst_extra_vars: {}
 
 # force the installation of AAP even if it's already running
 aap_setup_inst_force: false
+
+# list of fixes to apply before starting the actual installation,
+# review before bumping up the default AAP version
+aap_setup_inst_fixes:
+  - aap_4555  # setup.log is only saved on first call as non-root (2.2.0)
 ...
