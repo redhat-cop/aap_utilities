@@ -6,6 +6,7 @@
   ansible.builtin.stat:
     path: "{{ aap_setup_inst_setup_dir }}/setup.log"
   register: __aap_setup_inst_log
+
 - name: AAP_4555 | create a backup of setup.log if it exists
   ansible.builtin.copy:
     src: /dev/null
@@ -14,6 +15,7 @@
     remote_src: true
     mode: 0664
   when: __aap_setup_inst_log.stat.exists
+
 - name: AAP_4555 | make sure setup.log doesn't exist
   ansible.builtin.file:
     path: "{{ aap_setup_inst_setup_dir }}/setup.log"
