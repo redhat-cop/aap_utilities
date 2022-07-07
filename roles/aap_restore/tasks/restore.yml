@@ -2,7 +2,7 @@
 # Run the Setup to restore tower
 - name: "[Tower] Run the Ansible Tower Setup Program with restore option"
   become: true
-  command: ./setup.sh -e 'restore_backup_file={{ aap_restore_location | quote }}' -r
+  ansible.builtin.command: ./setup.sh -e 'restore_backup_file={{ aap_restore_location | quote }}' -r
   args:
     chdir: "{{ aap_setup_prep_setup_dir }}"
   async: 10000

@@ -7,7 +7,7 @@
   loop: "{{ aap_setup_inst_fixes }}"
 
 - name: Check Ansible Tower Running
-  uri:
+  ansible.builtin.uri:
     url: "https://{{ controller_hostname }}/"
     method: GET
     user: admin
@@ -22,7 +22,7 @@
     - not aap_setup_inst_force | bool
 
 - name: Check Automation Hub Running
-  uri:
+  ansible.builtin.uri:
     url: "https://{{ ah_hostname }}/api/galaxy/"
     method: GET
     user: admin
@@ -36,9 +36,10 @@
     - "'automationhub' in aap_setup_prep_inv_nodes"
     - not aap_setup_inst_force | bool
 
-- block:
+- name: Install AAP
+  block:
     - name: run the Ansible Automation Platform setup program
-      command: "{{ lookup('template', 'setup_sh.j2') }}"
+      ansible.builtin.command: "{{ lookup('template', 'setup_sh.j2') }}"
       args:
         chdir: "{{ aap_setup_inst_setup_dir }}"
       async: 10000
@@ -47,7 +48,7 @@
       # these will always run and will always report “changed” otherwise
 
     - name: wait for automation controller to be running
-      uri:  # use the first host from the list if no hostname is defined
+      ansible.builtin.uri:  # use the first host from the list if no hostname is defined
         url: "https://{{ controller_hostname }}/"
         status_code: 200
         validate_certs: "{{ controller_validate_certs | default(omit) }}"
@@ -58,7 +59,7 @@
       when: "'automationcontroller' in aap_setup_prep_inv_nodes"
 
     - name: wait for automation hub to be running
-      uri:  # use the first host from the list if no hostname is defined
+      ansible.builtin.uri:  # use the first host from the list if no hostname is defined
         url: "https://{{ ah_hostname }}/api/galaxy/"
         status_code: 200
         validate_certs: "{{ ah_validate_certs | default(omit) }}"

@@ -2,12 +2,12 @@
 # Following this article: https://access.redhat.com/solutions/6733721
 
 - name: Stop and disable services
-  systemd:
+  ansible.builtin.systemd:
     name: "{{ item }}"
     state: stopped
     enabled: false
   become: true
-  ignore_errors: true
+  failed_when: false
   loop:
     - automation-controller.service
     - postgresql.service
@@ -17,7 +17,7 @@
     - receptor.service
 
 - name: Remove software
-  yum:
+  ansible.builtin.yum:
     name:
       - postgresql
       - postgresql-server
@@ -31,7 +31,7 @@
   become: true
 
 - name: Remove created directories
-  file:
+  ansible.builtin.file:
     path: "{{ item }}"
     state: absent
   loop:
@@ -44,7 +44,7 @@
   become: true
 
 - name: Remove added users
-  user:
+  ansible.builtin.user:
     name: "{{ item }}"
     state: absent
     remove: true
@@ -57,7 +57,7 @@
   become: true
 
 - name: Remove added groups
-  group:
+  ansible.builtin.group:
     name: "{{ item }}"
     state: absent
   loop:

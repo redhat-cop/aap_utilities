@@ -2,27 +2,27 @@
 # tasks file for git_ssh_setup
 
 - name: install some additional convenience software on the control node
-  package:
+  ansible.builtin.package:
     name: "{{ git_needed_software }}"
     state: present
 
 - name: make sure git-shell is in /etc/shells
-  lineinfile:
+  ansible.builtin.lineinfile:
     dest: /etc/shells
     line: /usr/bin/git-shell
 
 - name: git user '{{ git_server_user }}' exists and uses git-shell
-  user:
+  ansible.builtin.user:
     name: "{{ git_server_user }}"
     comment: "Git server user"
     shell: /usr/bin/git-shell
 
 - name: define projects directory variable
-  set_fact:
+  ansible.builtin.set_fact:
     full_projects_dir: "/home/{{ git_server_user }}/{{ git_projects_dir }}"
 
 - name: Ensure home directory exists and has the correct access rights
-  file:
+  ansible.builtin.file:
     path: "/home/{{ git_server_user }}"
     owner: "{{ git_server_user }}"
     group: "{{ git_server_user }}"
@@ -30,7 +30,7 @@
     state: directory
 
 - name: Ensure projects directory exists and has the correct access rights
-  file:
+  ansible.builtin.file:
     path: "{{ full_projects_dir }}"
     owner: "{{ git_server_user }}"
     group: "{{ git_server_user }}"
@@ -38,7 +38,7 @@
     state: directory
 
 - name: Create empty bare repositories if missing
-  command: git init --bare --shared=group {{ full_projects_dir }}/{{ item }}.git  # noqa 303
+  ansible.builtin.command: git init --bare --shared=group {{ full_projects_dir }}/{{ item }}.git  # noqa 303
   args:
     creates: "{{ full_projects_dir }}/{{ item }}.git"
   become: true
@@ -53,7 +53,7 @@
     loop_var: client_item
 
 - name: Debug
-  debug:
+  ansible.builtin.debug:
     msg: >
       Git repos can be used with e.g.
       'git clone {{ git_client_users[0].name }}@{{ ansible_host }}:{{ full_projects_dir }}/{{ git_projects[0] }}.git'

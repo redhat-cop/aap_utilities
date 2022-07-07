@@ -4,7 +4,7 @@
 # `pulp.pulp_installer.pulp_webserver : Symlink nginx snippets`.
 
 - name: AAP-1413 | fix pulp/pulp_installer/roles/pulp_webserver/tasks/nginx.yml
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: "{{ aap_setup_prep_setup_dir }}/collections/ansible_collections/pulp/pulp_installer/roles/pulp_webserver/tasks/nginx.yml"
     line: '        src: "{{ __aap_setup_prep_snippet_fix }}"'
     regex: '^ *src: ".. __pulp_webserver_snippet.stdout'
