@@ -1,0 +1,4 @@
+---
+# vars file for aap_ocp_install
+__aap_ocp_install_prevalidate_errors: []
+...

@@ -1,0 +1,14 @@
+---
+apiVersion: operators.coreos.com/v1
+kind: OperatorGroup
+metadata:
+  name: ansible-automation-platform-operator
+  namespace: {{ aap_ocp_install_namespace }}
+spec:
+  targetNamespaces:
+{% if aap_ocp_install_operator['channel'].endswith('-cluster-scoped')  %}
+    []
+{% else %}
+    - {{ aap_ocp_install_namespace }}
+{% endif %}
+...

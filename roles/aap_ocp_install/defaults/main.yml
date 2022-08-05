@@ -1,0 +1,26 @@
+---
+# Variable applicable to connecting to OpenShift
+# aap_ocp_install_connection:
+#   host:
+#   username:
+#   password:
+#   verify_ssl:
+
+# Namespace to install into
+# aap_ocp_install_namespace:
+
+# Variable applicable to the operator installation
+# aap_ocp_install_operator:
+#   channel:
+
+# Variable applicable to the controller installation
+# aap_ocp_install_controller:
+#   instance_name:
+#   replicas:
+#   link_text:
+
+# Variable applicable to the hub installation
+# aap_ocp_install_hub:
+#   instance_name:
+#   link_text:
+...

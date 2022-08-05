@@ -1,0 +1,17 @@
+---
+apiVersion: automationcontroller.ansible.com/v1beta1
+kind: AutomationController
+metadata:
+  name: {{ aap_ocp_install_controller['instance_name'] }}
+  namespace: {{ aap_ocp_install_namespace }}
+spec:
+  create_preload_data: true
+  route_tls_termination_mechanism: Edge
+  garbage_collect_secrets: true
+  ingress_type: Route
+  image_pull_policy: IfNotPresent
+  task_privileged: false
+  projects_persistence: false
+  replicas: {{ aap_ocp_install_controller['replicas'] | default('1') }}
+  admin_user: admin
+...

@@ -7,10 +7,29 @@
 This ansible collection includes a number of roles which can be useful for installing and managing AWX or Ansible Automation Platform.
 Using this collection, you'll be able to automate following tasks:
 
-* prepare and install Automation controller and Private automation hub on RHEL
-* configure the OS to support Kerberos (if you plan to manage Windows hosts using AD credentials)
-* backup and restore Automation controller and Private automation hub
-* install a minimal Git repo over SSH, for demonstration and learning purposes
+* RHEL based installs
+  * prepare and install Automation controller and Private automation hub on RHEL
+  * configure the OS to support Kerberos (if you plan to manage Windows hosts using AD credentials)
+  * backup and restore Automation controller and Private automation hub
+  * install a minimal Git repo over SSH, for demonstration and learning purposes
+* OpenShift based installs
+  * prepare and install Automation controller and Private automation hub on OpenShift
+
+## Requirements
+
+The following collections are required to use this collection.
+
+| Name             | Minimum Version |
+|------------------|:---------------:|
+| ansible.posix    | 1.0.0           |
+| kubernetes.core  | 2.2.0           |
+| redhat.openshift | 2.0.1           |
+
+> ⚠️ **IMPORTANT**
+>
+> To install this collection ensure that access to Automation Hub is configured or required collections are already installed.
+
+The `aap_install_ocp` role requires the `kubernetes` (version 12.0.0 or later) Python module to be installed.
 
 ## Included content
 
@@ -45,8 +64,8 @@ collections:
 Many roles and variables have been renamed to reflect the product renaming from Tower to controller/AAP.
 Verify carefully your inventory variables and playbooks.
 
-The OCP installation role has been suppressed due to the introduction of an operator.
-Further (community) automation for AAP on OCP is available from the [GitOps catalogue](https://github.com/redhat-cop/gitops-catalog/tree/main/ansible-automation-platform).
+The previous OCP installation role has been suppressed due to the introduction of an operator.
+In addition to the current OCP installation role, further (community) automation for AAP on OCP is available from the [GitOps catalogue](https://github.com/redhat-cop/gitops-catalog/tree/main/ansible-automation-platform).
 
 ## Roadmap
 
