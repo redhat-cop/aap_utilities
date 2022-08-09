@@ -50,6 +50,10 @@
     - name: wait for automation controller to be running
       ansible.builtin.uri:  # use the first host from the list if no hostname is defined
         url: "https://{{ controller_hostname }}/"
+        method: GET
+        user: admin
+        password: "{{ aap_setup_prep_inv_vars.all.admin_password }}"
+        force_basic_auth: true
         status_code: 200
         validate_certs: "{{ controller_validate_certs | default(omit) }}"
       register: __aap_setup_inst_result
@@ -61,6 +65,10 @@
     - name: wait for automation hub to be running
       ansible.builtin.uri:  # use the first host from the list if no hostname is defined
         url: "https://{{ ah_hostname }}/api/galaxy/"
+        method: GET
+        user: admin
+        password: "{{ aap_setup_prep_inv_vars.all.automationhub_admin_password }}"
+        force_basic_auth: true
         status_code: 200
         validate_certs: "{{ ah_validate_certs | default(omit) }}"
       register: __aap_setup_inst_result_ah
