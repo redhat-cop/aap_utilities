@@ -1,0 +1,48 @@
+---
+- name: Create operator group
+  kubernetes.core.k8s:
+    host: "{{ __aap_ocp_install_auth_results['openshift_auth']['host'] }}"
+    api_key: "{{ __aap_ocp_install_auth_results['openshift_auth']['api_key'] }}"
+    validate_certs: "{{ aap_ocp_install_ocp_connection['validate_certs'] | default(omit) }}"
+    state: present
+    resource_definition: "{{ lookup('template', 'operator/operatorgroup.yaml.j2') | from_yaml }}"
+    apply: true
+
+- name: Create subscription
+  kubernetes.core.k8s:
+    host: "{{ __aap_ocp_install_auth_results['openshift_auth']['host'] }}"
+    api_key: "{{ __aap_ocp_install_auth_results['openshift_auth']['api_key'] }}"
+    validate_certs: "{{ aap_ocp_install_ocp_connection['validate_certs'] | default(omit) }}"
+    state: present
+    resource_definition: "{{ lookup('template', 'operator/subscription.yaml.j2') | from_yaml }}"
+    apply: true
+
+- name: Wait for operator installation to complete
+  kubernetes.core.k8s_info:
+    host: "{{ __aap_ocp_install_auth_results['openshift_auth']['host'] }}"
+    api_key: "{{ __aap_ocp_install_auth_results['openshift_auth']['api_key'] }}"
+    validate_certs: "{{ aap_ocp_install_ocp_connection['validate_certs'] | default(omit) }}"
+    kind: Subscription
+    name: ansible-automation-platform-operator
+    api_version: operators.coreos.com/v1alpha1
+    namespace: "{{ aap_ocp_install_namespace | mandatory }}"
+  register: __aap_ocp_install_sub_result
+  until: "(__aap_ocp_install_sub_result['resources'][0]['status']['state'] is defined) and (__aap_ocp_install_sub_result['resources'][0]['status']['state'] == 'AtLatestKnown')"
+  retries: 24
+  delay: 10
+
+- name: Update install plan
+  kubernetes.core.k8s_json_patch:
+    host: "{{ __aap_ocp_install_auth_results['openshift_auth']['host'] }}"
+    api_key: "{{ __aap_ocp_install_auth_results['openshift_auth']['api_key'] }}"
+    validate_certs: "{{ aap_ocp_install_ocp_connection['validate_certs'] | default(omit) }}"
+    kind: Subscription
+    namespace: "{{ aap_ocp_install_namespace | mandatory }}"
+    name: ansible-automation-platform-operator
+    api_version: operators.coreos.com/v1alpha1
+    patch:
+      - op: replace
+        path: /spec/installPlanApproval
+        value: Manual
+  when: (aap_ocp_install_operator['approval'] | default('Automatic') | lower) == 'manual'
+...

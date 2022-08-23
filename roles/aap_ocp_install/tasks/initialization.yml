@@ -1,0 +1,18 @@
+---
+- name: Get OpenShift API token
+  openshift_auth:
+    host: "{{ aap_ocp_install_ocp_connection['host'] | mandatory }}"
+    username: "{{ aap_ocp_install_ocp_connection['username'] | mandatory }}"
+    password: "{{ aap_ocp_install_ocp_connection['password'] | mandatory }}"
+    validate_certs: "{{ aap_ocp_install_ocp_connection['validate_certs'] | default(omit) }}"
+  register: __aap_ocp_install_auth_results
+
+- name: Create namespace
+  kubernetes.core.k8s:
+    host: "{{ __aap_ocp_install_auth_results['openshift_auth']['host'] }}"
+    api_key: "{{ __aap_ocp_install_auth_results['openshift_auth']['api_key'] }}"
+    validate_certs: "{{ aap_ocp_install_ocp_connection['validate_certs'] | default(omit) }}"
+    state: present
+    resource_definition: "{{ lookup('template', 'namespace.yaml.j2') | from_yaml }}"
+    apply: true
+...

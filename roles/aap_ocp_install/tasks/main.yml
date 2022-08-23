@@ -1,0 +1,46 @@
+---
+- name: Include pre-validation tasks
+  include_tasks:
+    file: pre-validate.yml
+    apply:
+      tags:
+        - always
+  tags:
+    - always
+
+- name: Include OpenShift initialization tasks
+  include_tasks:
+    file: initialization.yml
+    apply:
+      tags:
+        - always
+  tags:
+    - always
+
+- name: Include Ansible Automation Platform operator install tasks
+  include_tasks:
+    file: install-operator.yml
+    apply:
+      tags:
+        - operator
+  tags:
+    - operator
+
+- name: Include Ansible Automation Platform controller install tasks
+  include_tasks:
+    file: install-controller.yml
+    apply:
+      tags:
+        - controller
+  tags:
+    - controller
+
+- name: Include Ansible Automation Platform hub install tasks
+  include_tasks:
+    file: install-hub.yml
+    apply:
+      tags:
+        - hub
+  tags:
+    - hub
+...
