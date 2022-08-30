@@ -2,8 +2,8 @@
 # defaults file for aap_setup_install
 
 # Hostnames for check
-controller_hostname: aap_setup_prep_inv_nodes['automationcontroller'][0]
-ah_hostname: aap_setup_prep_inv_nodes['automationhub'][0]
+controller_hostname: "{{ aap_setup_prep_inv_nodes['automationcontroller'][0] }}"
+ah_hostname: "{{ aap_setup_prep_inv_nodes['automationhub'][0] }}"
 
 # where is the setup directory
 aap_setup_inst_setup_dir: "{{ aap_setup_prep_setup_dir }}"
