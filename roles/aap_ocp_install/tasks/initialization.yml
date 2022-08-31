@@ -13,6 +13,9 @@
     api_key: "{{ __aap_ocp_install_auth_results['openshift_auth']['api_key'] }}"
     validate_certs: "{{ aap_ocp_install_ocp_connection['validate_certs'] | default(omit) }}"
     state: present
-    resource_definition: "{{ lookup('template', 'namespace.yaml.j2') | from_yaml }}"
+    resource_definition: "{{ lookup('ansible.builtin.template', 'namespace.yaml.j2', template_vars=ns_vars) | from_yaml }}"
     apply: true
+  vars:
+    ns_vars:
+      ns_name: "{{ aap_ocp_install_namespace }}"
 ...

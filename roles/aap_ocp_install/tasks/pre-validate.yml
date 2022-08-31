@@ -46,21 +46,19 @@
     - name: Ensure OpenShift namespace variable is set
       ansible.builtin.assert:
         that:
-          - aap_ocp_install_namespace is defined
-          - aap_ocp_install_namespace | default("", true) | length > 0
+          - aap_ocp_install_namespace | default("", true) | regex_search('^[a-z0-9]([-a-z0-9]*[a-z0-9])?$')
         quiet: true
   rescue:
     - name: Update validation errors fact - namespace
       ansible.builtin.set_fact:
         __aap_ocp_install_prevalidate_errors: >
-          {{ __aap_ocp_install_prevalidate_errors + ["aap_ocp_install_namespace must be set"] }}
+          {{ __aap_ocp_install_prevalidate_errors + ["aap_ocp_install_namespace must be a lowercase RFC 1123 label consisting of lower case alphanumeric characters or '-', and must start and end with an alphanumeric character (e.g. 'my-name',  or '123-abc'"] }}
 
 - name: Ensure operator channel variable is set (block)
   block:
     - name: Ensure operator channel variable is set
       ansible.builtin.assert:
         that:
-          - aap_ocp_install_operator['channel'] is defined
           - aap_ocp_install_operator['channel'] | default('', true) | length > 0
         quiet: true
   rescue:
@@ -71,28 +69,17 @@
       when:
         - ( 'operator' in ansible_run_tags ) or ( 'all' in ansible_run_tags )
 
-- name: Ensure controller instance name variable is set (block)
-  block:
-    - name: Ensure controller instance name variable is set
-      ansible.builtin.assert:
-        that:
-          - aap_ocp_install_controller['instance_name'] is defined
-          - aap_ocp_install_controller['instance_name'] | default('', true) | length > 0
-        quiet: true
-  rescue:
-    - name: Update validation errors fact - controller instance_name
-      ansible.builtin.set_fact:
-        __aap_ocp_install_prevalidate_errors: >
-          {{ __aap_ocp_install_prevalidate_errors + ["aap_ocp_install_controller['instance_name'] must be set"] }}
-      when:
-        - ( 'controller' in ansible_run_tags ) or ( 'all' in ansible_run_tags )
+- name: Ensure controller variables are set
+  ansible.builtin.include_tasks:
+    file: pre-validate-controller.yml
+  when:
+    - ( 'controller' in ansible_run_tags ) or ( 'all' in ansible_run_tags )
 
 - name: Ensure hub instance name variable is set (block)
   block:
     - name: Ensure hub instance name variable is set
       ansible.builtin.assert:
         that:
-          - aap_ocp_install_hub['instance_name'] is defined
           - aap_ocp_install_hub['instance_name'] | default('', true) | length > 0
         quiet: true
   rescue:
@@ -104,8 +91,10 @@
         - ( 'hub' in ansible_run_tags ) or ( 'all' in ansible_run_tags )
 
 - name: Ensure no validation errors found
-  ansible.builtin.assert:
-    that:
-      - (__aap_ocp_install_prevalidate_errors | length == 0)
-    fail_msg: "The following errors must be fixed to continue: {{ __aap_ocp_install_prevalidate_errors | join(', ') }}"
+  ansible.builtin.debug:
+    msg:
+      - "The following errors must be fixed to continue:"
+      - "{{ __aap_ocp_install_prevalidate_errors }}"
+  failed_when: (__aap_ocp_install_prevalidate_errors | length) > 0
+  when: (__aap_ocp_install_prevalidate_errors | length) > 0
 ...
