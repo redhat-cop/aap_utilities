@@ -19,7 +19,8 @@ A description of the settable variables for this role should go here, including 
 | aap_ocp_install_controller | Yes*     | None          | Dictionary containing keys defined in the `controller variables table` |
 | aap_ocp_install_hub        | Yes*     | None          | Dictionary containing keys defined in the `hub variables table`        |
 
-\* Variable and required keys must be defined when no tags are specified or the type of tag is specified (e.g. `--tags controller` requires the aap_ocp_install_controller variable be defined.)
+\* Variable and required keys must be defined when the type of tag is specified (e.g. `--tags controller` requires the aap_ocp_install_controller variable be defined).
+If the variable is omitted the corresponding component will not be installed (e.g. if only aap_ocp_install_hub variable is defined then the operator and controller installation will be skipped)
 
 ### aap_ocp_install_connection keys
 

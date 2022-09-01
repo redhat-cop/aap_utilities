@@ -23,6 +23,7 @@
     apply:
       tags:
         - operator
+  when: aap_ocp_install_operator is defined
   tags:
     - operator
 
@@ -32,6 +33,7 @@
     apply:
       tags:
         - controller
+  when: aap_ocp_install_controller is defined
   tags:
     - controller
 
@@ -41,6 +43,7 @@
     apply:
       tags:
         - hub
+  when: aap_ocp_install_hub is defined
   tags:
     - hub
 ...
