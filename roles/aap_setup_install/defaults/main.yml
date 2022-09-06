@@ -66,4 +66,7 @@ aap_setup_inst_force: false
 # review before bumping up the default AAP version
 aap_setup_inst_fixes:
   - aap_4555  # setup.log is only saved on first call as non-root (2.2.0)
+
+# perform postinstallation validation
+aap_postinstall_validation: true
 ...

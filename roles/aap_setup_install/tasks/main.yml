@@ -48,7 +48,7 @@
       # these will always run and will always report “changed” otherwise
 
     - name: wait for automation controller to be running
-      ansible.builtin.uri:  # use the first host from the list if no hostname is defined
+      ansible.builtin.uri: # use the first host from the list if no hostname is defined
         url: "https://{{ controller_hostname }}/"
         method: GET
         user: admin
@@ -60,10 +60,10 @@
       until: __aap_setup_inst_result.status == 200
       retries: 90
       delay: 10
-      when: "'automationcontroller' in aap_setup_prep_inv_nodes"
+      when: "'automationcontroller' in aap_setup_prep_inv_nodes and aap_postinstall_validation|bool == true"
 
     - name: wait for automation hub to be running
-      ansible.builtin.uri:  # use the first host from the list if no hostname is defined
+      ansible.builtin.uri: # use the first host from the list if no hostname is defined
         url: "https://{{ ah_hostname }}/api/galaxy/"
         method: GET
         user: admin
@@ -75,7 +75,7 @@
       until: __aap_setup_inst_result_ah.status == 200
       retries: 90
       delay: 10
-      when: "'automationhub' in aap_setup_prep_inv_nodes"
+      when: "'automationhub' in aap_setup_prep_inv_nodes and aap_postinstall_validation|bool == true"
   when: >
     aap_setup_inst_force
     or ('automationcontroller' in aap_setup_prep_inv_nodes
