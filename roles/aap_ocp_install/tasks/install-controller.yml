@@ -28,7 +28,7 @@
     api_key: "{{ __aap_ocp_install_auth_results['openshift_auth']['api_key'] }}"
     validate_certs: "{{ aap_ocp_install_ocp_connection['validate_certs'] | default(omit) }}"
     kind: Route
-    name: "{{ aap_ocp_install_controller['instance_name']  | mandatory }}"
+    name: "{{ aap_ocp_install_controller['instance_name'] | mandatory }}"
     api_version: route.openshift.io/v1
     namespace: "{{ aap_ocp_install_controller['namespace'] | default(aap_ocp_install_namespace) | mandatory }}"
   register: __aap_ocp_install_controller_route_result

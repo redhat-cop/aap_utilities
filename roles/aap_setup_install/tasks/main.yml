@@ -1,7 +1,7 @@
 ---
 # tasks file for aap_setup_install
 
-- name: apply relevant fixes / workarounds
+- name: Apply relevant fixes / workarounds
   include_tasks:
     file: "fixes/{{ item }}.yml"
   loop: "{{ aap_setup_inst_fixes }}"
@@ -38,7 +38,7 @@
 
 - name: Install AAP
   block:
-    - name: run the Ansible Automation Platform setup program
+    - name: Run the Ansible Automation Platform setup program
       ansible.builtin.command: "{{ lookup('template', 'setup_sh.j2') }}"
       args:
         chdir: "{{ aap_setup_inst_setup_dir }}"
@@ -47,7 +47,7 @@
       changed_when: false
       # these will always run and will always report “changed” otherwise
 
-    - name: wait for automation controller to be running
+    - name: Wait for automation controller to be running
       ansible.builtin.uri:  # use the first host from the list if no hostname is defined
         url: "https://{{ controller_hostname }}/"
         method: GET
@@ -62,7 +62,7 @@
       delay: 10
       when: "'automationcontroller' in aap_setup_prep_inv_nodes"
 
-    - name: wait for automation hub to be running
+    - name: Wait for automation hub to be running
       ansible.builtin.uri:  # use the first host from the list if no hostname is defined
         url: "https://{{ ah_hostname }}/api/galaxy/"
         method: GET
