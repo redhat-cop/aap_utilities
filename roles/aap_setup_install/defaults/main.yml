@@ -15,7 +15,7 @@ aap_setup_inst_inventory: inventory
 aap_setup_inst_extra_vars: {}
 #  # When installing automation controller make sure Ansible is also up to date
 #  upgrade_ansible_with_tower: false
-#  # When installing Tower also create the Demo Org, project, credential, Job Template, etc.
+#  # When installing AAP also create the Demo Org, project, credential, Job Template, etc.
 #  create_preload_data: true
 #  # When installing from a bundle where to put the bundled repos
 #  bundle_install_folder: var/lib/tower-bundle
@@ -31,7 +31,7 @@ aap_setup_inst_extra_vars: {}
 #  backup_dir: /var/backups/tower/
 #  # Specify an alternative backup file to restore from
 #  restore_backup_file: None
-#  # The minimum RAM required to install Tower (should only be changed for test installation)
+#  # The minimum RAM required to install AAP (should only be changed for test installation)
 #  required_ram: 3750
 #  # The minimum open file descriptions (should only be changed for test installations)
 #  min_open_fds: None

@@ -2,10 +2,10 @@
 # defaults file for redhat_cop.aap_utilities.aap_restore
 
 ############################################################
-#               Tower Restore Vars                         #
+#               AAP Restore Vars                           #
 ############################################################
 
-# Restore location for tower restore
+# Restore location for AAP restore
 aap_restore_file: "automation-platform-backup-latest.tar.gz"
 aap_restore_location: "{{ aap_setup_working_dir }}/{{ aap_restore_file }}"
 ...

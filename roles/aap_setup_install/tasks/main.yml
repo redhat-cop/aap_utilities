@@ -6,7 +6,7 @@
     file: "fixes/{{ item }}.yml"
   loop: "{{ aap_setup_inst_fixes }}"
 
-- name: Check Ansible Tower Running
+- name: Check Automation Controller Running
   ansible.builtin.uri:
     url: "https://{{ controller_hostname }}/"
     method: GET

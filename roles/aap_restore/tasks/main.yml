@@ -1,9 +1,9 @@
 ---
-# tasks file for ansible-tower-restore
+# tasks file for aap_restore
 
 #
 # -----------------------------------------------------------------------------
-# Prepare for tower work
+# Prepare for AAP work
 # -----------------------------------------------------------------------------
 #
 

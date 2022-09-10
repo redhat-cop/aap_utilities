@@ -1,6 +1,6 @@
 ---
 ############################################################
-#               Ansible Tower backup settings.                 #
+#               AAP backup settings.                       #
 ############################################################
 
 # Default backup vars, these are default from installer

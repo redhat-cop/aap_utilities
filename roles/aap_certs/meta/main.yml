@@ -1,7 +1,7 @@
 ---
 galaxy_info:
   author: Tom Page
-  description: Role to install Ansible Tower Certificates
+  description: Role to install Ansible AAP Certificates
   company: Red Hat
 
   license: MIT
