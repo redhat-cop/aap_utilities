@@ -1,6 +1,6 @@
 ---
 # according to https://access.redhat.com/solutions/3109871
-- name: controller | copy cert into place
+- name: Controller | copy cert into place
   become: true
   ansible.builtin.copy:
     src: "{{ aap_certs_controller_ssl_cert | default(omit) }}"
@@ -12,7 +12,7 @@
     backup: "{{ aap_certs_create_backup }}"
   notify: restart_aap_service
 
-- name: controller | copy key into place
+- name: Controller | copy key into place
   become: true
   ansible.builtin.copy:
     src: "{{ aap_certs_controller_ssl_key | default(omit) }}"

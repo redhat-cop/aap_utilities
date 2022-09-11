@@ -11,7 +11,7 @@
       refresh_token: "{{ aap_setup_down_offline_token }}"
   register: __aap_setup_down_login
 
-- name: collecting the available installers
+- name: Collecting the available installers
   ansible.builtin.uri:
     url: "{{ aap_setup_down_images_url }}"
     method: GET
@@ -20,11 +20,11 @@
       Authorization: "Bearer {{ __aap_setup_down_login.json.access_token }}"
   register: __aap_setup_down_output
 
-- name: simplify the list of possible downloads
+- name: Simplify the list of possible downloads
   ansible.builtin.set_fact:
     __aap_setup_down_images: "{{ __aap_setup_down_output.json.body | sort(attribute='datePublished', reverse=True) }}"
 
-- name: downloading the latest installer of type {{ aap_setup_down_type }}
+- name: Downloading the latest installer of type {{ aap_setup_down_type }}
   ansible.builtin.get_url:
     url: "{{ item.downloadHref }}"
     dest: "{{ aap_setup_down_dest_dir }}/{{ item.filename }}"
@@ -35,7 +35,7 @@
   when: (aap_setup_down_type + '-' + aap_setup_down_version) in item.filename
   register: __aap_setup_down_downloads
 
-- name: extract the name of the downloaded installer to aap_setup_down_installer_file
+- name: Extract the name of the downloaded installer to aap_setup_down_installer_file
   ansible.builtin.set_fact:
     aap_setup_down_installer_file: "{{ (__aap_setup_down_downloads.results | selectattr('dest', 'defined') | map(attribute='dest') | list)[0] }}"
 ...

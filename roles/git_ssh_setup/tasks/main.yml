@@ -1,23 +1,23 @@
 ---
 # tasks file for git_ssh_setup
 
-- name: install some additional convenience software on the control node
+- name: Install some additional convenience software on the control node
   ansible.builtin.package:
     name: "{{ git_needed_software }}"
     state: present
 
-- name: make sure git-shell is in /etc/shells
+- name: Make sure git-shell is in /etc/shells
   ansible.builtin.lineinfile:
     dest: /etc/shells
     line: /usr/bin/git-shell
 
-- name: git user '{{ git_server_user }}' exists and uses git-shell
+- name: Git user '{{ git_server_user }}' exists and uses git-shell
   ansible.builtin.user:
     name: "{{ git_server_user }}"
     comment: "Git server user"
     shell: /usr/bin/git-shell
 
-- name: define projects directory variable
+- name: Define projects directory variable
   ansible.builtin.set_fact:
     full_projects_dir: "/home/{{ git_server_user }}/{{ git_projects_dir }}"
 
@@ -38,14 +38,14 @@
     state: directory
 
 - name: Create empty bare repositories if missing
-  ansible.builtin.command: git init --bare --shared=group {{ full_projects_dir }}/{{ item }}.git  # noqa 303
+  ansible.builtin.command: git init --bare --shared=group {{ full_projects_dir }}/{{ item }}.git  # noqa command-instead-of-module
   args:
     creates: "{{ full_projects_dir }}/{{ item }}.git"
   become: true
   become_user: "{{ git_server_user }}"
   loop: "{{ git_projects }}"
 
-- name: create and manage client Git users
+- name: Create and manage client Git users
   include_tasks:
     file: git_users.yml
   loop: "{{ git_client_users }}"
