@@ -1,5 +1,5 @@
 ---
-# tasks file for ansible-tower-remove
+# tasks file for aap_remove
 
 - include_tasks: controller_remove.yml
   when: aap_remove_controller

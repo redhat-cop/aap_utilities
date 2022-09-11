@@ -1,9 +1,9 @@
 ---
-# tasks file for ansible-tower-backup
+# tasks file for aap_backup
 
 #
 # -----------------------------------------------------------------------------
-# Prepare for tower work
+# Prepare for AAP work
 # -----------------------------------------------------------------------------
 #
 

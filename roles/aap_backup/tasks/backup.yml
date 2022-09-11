@@ -1,6 +1,6 @@
 ---
-# Run the Setup to backup tower
-- name: "[Tower] Run the Ansible Tower Setup Program with backup option"
+# Run the Setup to backup AAP
+- name: "Run the Ansible AAP Setup Program with backup option"
   become: true
   ansible.builtin.command: ./setup.sh -e 'backup_dest={{ aap_backup_dest | quote }}' -b
   args:

@@ -1,6 +1,6 @@
 ---
-# Run the Setup to restore tower
-- name: "[Tower] Run the Ansible Tower Setup Program with restore option"
+# Run the Setup to restore AAP
+- name: "Run the Ansible AAP Setup Program with restore option"
   become: true
   ansible.builtin.command: ./setup.sh -e 'restore_backup_file={{ aap_restore_location | quote }}' -r
   args:
