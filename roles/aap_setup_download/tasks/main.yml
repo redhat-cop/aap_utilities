@@ -32,7 +32,7 @@
     headers:
       Authorization: "Bearer {{ __aap_setup_down_login.json.access_token }}"
   loop: "{{ __aap_setup_down_images[:2] }}"
-  when: (aap_setup_down_type + '-' + aap_setup_down_version) in item.filename
+  when: (aap_setup_down_type + '-' + (aap_setup_down_version | string)) in item.filename
   register: __aap_setup_down_downloads
 
 - name: Extract the name of the downloaded installer to aap_setup_down_installer_file
