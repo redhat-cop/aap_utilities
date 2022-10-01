@@ -1,27 +1,37 @@
 ---
-
 # according to https://access.redhat.com/solutions/5731261
-- name: Autohub | copy cert into place
+
+- name: Autohub | get certificate file content
+  when:
+    - aap_certs_autohub_ssl_cert is defined
+    - aap_certs_autohub_ssl_key is defined
+  ansible.builtin.set_fact:
+    aap_certs_autohub_ssl_cert_content: "{{ lookup('ansible.builtin.file', aap_certs_autohub_ssl_cert) }}"
+    aap_certs_autohub_ssl_key_content: "{{ lookup('ansible.builtin.file', aap_certs_autohub_ssl_key) }}"
+
+- name: Autohub | update certificate file
   become: true
-  ansible.builtin.copy:
-    src: "{{ aap_certs_autohub_ssl_cert | default(omit) }}"
-    content: "{{ aap_certs_autohub_ssl_cert_content | default(omit) }}"
+  ansible.builtin.template:
+    src: cert_content.j2
     dest: "{{ aap_certs_autohub_cert_dest }}"
-    mode: u=rw,go=r
+    mode: u=rw,go=
     owner: root
     group: pulp
     backup: "{{ aap_certs_create_backup }}"
   notify: restart_aap_service
+  vars:
+    file_content: "{{ aap_certs_autohub_ssl_cert_content }}"
 
-- name: Autohub | copy key into place
+- name: Autohub | update certificate key file
   become: true
-  ansible.builtin.copy:
-    src: "{{ aap_certs_autohub_ssl_key | default(omit) }}"
-    content: "{{ aap_certs_autohub_ssl_key_content | default(omit) }}"
+  ansible.builtin.template:
+    src: cert_content.j2
     dest: "{{ aap_certs_autohub_key_dest }}"
     mode: u=rw,go=
     owner: root
     group: pulp
     backup: "{{ aap_certs_create_backup }}"
   notify: restart_aap_service
+  vars:
+    file_content: "{{ aap_certs_autohub_ssl_key_content }}"
 ...

@@ -14,4 +14,8 @@ MD013: false
 # This will ensure that code block format is consistent across all markdown files
 MD0046:
   style: fenced
+
+MD033:
+  allowed_elements:
+    - "br"
 ...

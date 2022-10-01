@@ -10,17 +10,4 @@ use_default_rules: true
 #  with verbosity set to 1, its dumping 'unknown file type messages'
 # verbosity: 1
 skip_list: []
-# Disabled the the below skip_list as they use the old style rule names.
-# With the move of the .yamllint.yml to TLD ansible-lint now picks up our config so no need to exclude it.
-#   # [E204]: "Lines should be no longer than 160 chars"
-#   # (Disabled in June 2020)
-#   - '204'
-#   # [E106]: "Role name {} does not match ^[a-z][a-z0-9_]+$ pattern" Issue with galaxy.yml file being variable based.
-#   # (Disabled in Oct 2020)
-#   - '106'
-#   # [E208]: "File permissions not mentioned. Issue created to fix"
-#   # (Disabled in Oct 2020)
-#   # - '208'
-#   # YAML: Ansible lint doing yaml checks that we were already doing but without config.
-#   - yaml
 ...
