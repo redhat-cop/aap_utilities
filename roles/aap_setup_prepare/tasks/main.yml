@@ -8,6 +8,7 @@
   ignore_errors: true
   changed_when: false
   check_mode: false  # run this command even in check mode
+  warn: false # the query is not supported in the yum module - hence `builtin.command`
 
 - name: Install absolutely necessary packages
   ansible.builtin.yum:
