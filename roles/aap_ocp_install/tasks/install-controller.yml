@@ -1,7 +1,6 @@
 ---
 - name: Create controller namespace
-  # Disabled the ansible-lint jinja[invalid] check as it is throwing an error due to the ways the vars are specified
-  kubernetes.core.k8s:  # noqa jinja[invalid]
+  kubernetes.core.k8s:
     host: "{{ __aap_ocp_install_auth_results['openshift_auth']['host'] }}"
     api_key: "{{ __aap_ocp_install_auth_results['openshift_auth']['api_key'] }}"
     validate_certs: "{{ aap_ocp_install_ocp_connection['validate_certs'] | default(omit) }}"

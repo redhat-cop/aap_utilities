@@ -13,7 +13,7 @@ repos:
   #       entry: "yamllint"
   #       types: [yaml]
   - repo: https://github.com/ansible/ansible-lint.git
-    rev: v6.6.1
+    rev: v6.8.1
     hooks:
       # see discussions here about what arguments are used, and behavior
       # https://github.com/ansible/ansible-lint/issues/649
@@ -25,6 +25,9 @@ repos:
         entry: "ansible-lint"
         args:
           - "--profile=production"
+        additional_dependencies:
+          - "ansible-core>=2.13"
+          - "yamllint>=1.26,<2.0"
   - repo: https://github.com/DavidAnson/markdownlint-cli2
     rev: v0.5.1
     hooks:

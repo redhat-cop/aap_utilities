@@ -6,7 +6,7 @@
   register: __aap_certs_controller_dir
 
 - name: Install certificates for controller if directory exists
-  include_tasks: controller.yml
+  ansible.builtin.include_tasks: controller.yml
   when:
     - __aap_certs_controller_dir.stat.exists
     - aap_certs_controller_ssl_cert is defined or aap_certs_controller_ssl_cert_content is defined
@@ -19,7 +19,7 @@
   register: __aap_certs_autohub_dir
 
 - name: Install certificates for automation hub if directory exists
-  include_tasks: autohub.yml
+  ansible.builtin.include_tasks: autohub.yml
   when:
     - __aap_certs_autohub_dir.stat.exists
     - aap_certs_autohub_ssl_cert is defined or aap_certs_autohub_ssl_cert_content is defined

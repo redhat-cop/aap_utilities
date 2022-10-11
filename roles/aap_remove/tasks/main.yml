@@ -1,13 +1,15 @@
 ---
 # tasks file for aap_remove
 
-- include_tasks: controller_remove.yml
+- name: Include controller removal tasks
+  ansible.builtin.include_tasks: controller_remove.yml
   when: aap_remove_controller
   tags:
     - controller
     - remove
 
-- include_tasks: ah_remove.yml
+- name: Include automation hub removal tasks
+  ansible.builtin.include_tasks: ah_remove.yml
   when: aap_remove_ah
   tags:
     - controller
