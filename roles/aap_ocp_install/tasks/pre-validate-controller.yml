@@ -13,6 +13,7 @@
           {{ __aap_ocp_install_prevalidate_errors + ["aap_ocp_install_controller['instance_name'] must be set"] }}
 
 - name: Ensure controller admin username variable is set (block)
+  when: aap_ocp_install_controller['admin_user'] is defined
   block:
     - name: Ensure controller admin username variable is set
       ansible.builtin.assert:
@@ -24,9 +25,9 @@
       ansible.builtin.set_fact:
         __aap_ocp_install_prevalidate_errors: >
           {{ __aap_ocp_install_prevalidate_errors + ["aap_ocp_install_controller['admin_user'] must be a non-empty string"] }}
-  when: aap_ocp_install_controller['admin_user'] is defined
 
 - name: Ensure controller namespace variable is set (block)
+  when: aap_ocp_install_controller['namespace'] is defined
   block:
     - name: Ensure controller namespace variable is set
       ansible.builtin.assert:
@@ -38,9 +39,9 @@
       ansible.builtin.set_fact:
         __aap_ocp_install_prevalidate_errors: >
           {{ __aap_ocp_install_prevalidate_errors + ["aap_ocp_install_controller['namespace'] must be a lowercase RFC 1123 label consisting of lower case alphanumeric characters or '-', and must start and end with an alphanumeric character (e.g. 'my-name',  or '123-abc'"] }}
-  when: aap_ocp_install_controller['namespace'] is defined
 
 - name: Ensure controller link text variable is set (block)
+  when: aap_ocp_install_controller['link_text'] is defined
   block:
     - name: Ensure controller link text variable is set
       ansible.builtin.assert:
@@ -52,9 +53,9 @@
       ansible.builtin.set_fact:
         __aap_ocp_install_prevalidate_errors: >
           {{ __aap_ocp_install_prevalidate_errors + ["aap_ocp_install_controller['link_text'] must be a non-empty string"] }}
-  when: aap_ocp_install_controller['link_text'] is defined
 
 - name: Ensure controller image pull policy is valid (block)
+  when: aap_ocp_install_controller['image_pull_policy'] is defined
   block:
     - name: Ensure controller image pull policy is valid
       ansible.builtin.assert:
@@ -66,9 +67,9 @@
       ansible.builtin.set_fact:
         __aap_ocp_install_prevalidate_errors: >
           {{ __aap_ocp_install_prevalidate_errors + ["aap_ocp_install_controller['image_pull_policy'] must be one of: IfNotPresent, Always, or Never"] }}
-  when: aap_ocp_install_controller['image_pull_policy'] is defined
 
 - name: Ensure controller create preload data is valid (block)
+  when: aap_ocp_install_controller['create_preload_data'] is defined
   block:
     - name: Ensure controller create preload data is valid
       ansible.builtin.assert:
@@ -80,9 +81,9 @@
       ansible.builtin.set_fact:
         __aap_ocp_install_prevalidate_errors: >
           {{ __aap_ocp_install_prevalidate_errors + ["aap_ocp_install_controller['create_preload_data'] must be one of: true or false"] }}
-  when: aap_ocp_install_controller['create_preload_data'] is defined
 
 - name: Ensure controller garbage collect secrets is valid (block)
+  when: aap_ocp_install_controller['garbage_collect_secrets'] is defined
   block:
     - name: Ensure controller garbage collect secrets is valid
       ansible.builtin.assert:
@@ -94,9 +95,9 @@
       ansible.builtin.set_fact:
         __aap_ocp_install_prevalidate_errors: >
           {{ __aap_ocp_install_prevalidate_errors + ["aap_ocp_install_controller['garbage_collect_secrets'] must be one of: true or false"] }}
-  when: aap_ocp_install_controller['garbage_collect_secrets'] is defined
 
 - name: Ensure controller projects persistence is valid (block)
+  when: aap_ocp_install_controller['projects_persistence'] is defined
   block:
     - name: Ensure controller projects persistence is valid
       ansible.builtin.assert:
@@ -108,9 +109,9 @@
       ansible.builtin.set_fact:
         __aap_ocp_install_prevalidate_errors: >
           {{ __aap_ocp_install_prevalidate_errors + ["aap_ocp_install_controller['projects_persistence'] must be one of: true or false"] }}
-  when: aap_ocp_install_controller['projects_persistence'] is defined
 
 - name: Ensure controller replicas is valid (block)
+  when: aap_ocp_install_controller['replicas'] is defined
   block:
     - name: Ensure controller replicas is valid
       ansible.builtin.assert:
@@ -122,9 +123,9 @@
       ansible.builtin.set_fact:
         __aap_ocp_install_prevalidate_errors: >
           {{ __aap_ocp_install_prevalidate_errors + ["aap_ocp_install_controller['replicas'] must be a number greater than 0"] }}
-  when: aap_ocp_install_controller['replicas'] is defined
 
 - name: Ensure controller projects storage size is valid (block)
+  when: aap_ocp_install_controller['projects_storage_size'] is defined
   block:
     - name: Ensure controller projects storage size is valid
       ansible.builtin.assert:
@@ -137,5 +138,4 @@
       ansible.builtin.set_fact:
         __aap_ocp_install_prevalidate_errors: >
           {{ __aap_ocp_install_prevalidate_errors + ["aap_ocp_install_controller['projects_storage_size'] must be a number greater than 0 with a size (e.g. 12Gi or 10000M)"] }}
-  when: aap_ocp_install_controller['projects_storage_size'] is defined
 ...

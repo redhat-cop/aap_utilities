@@ -1,7 +1,7 @@
 ---
 # tasks file for git_ssh_setup
 
-- name: Git_users | add client user to {{ git_server_user }} group
+- name: Git_users | add client user to group - {{ git_server_user }}
   ansible.builtin.user:
     name: "{{ client_item.name }}"
     groups: "{{ git_server_user }}"  # group has been created with the user of same name

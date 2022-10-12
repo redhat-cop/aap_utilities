@@ -1,6 +1,7 @@
 ---
 - name: Get OpenShift API token
-  openshift_auth:
+  # Disabling check for FQCN on module names as using either community.okd or redhat.openshift collection is able to be used
+  openshift_auth:  # noqa fqcn[action]
     host: "{{ aap_ocp_install_ocp_connection['host'] | mandatory }}"
     username: "{{ aap_ocp_install_ocp_connection['username'] | mandatory }}"
     password: "{{ aap_ocp_install_ocp_connection['password'] | mandatory }}"
@@ -8,8 +9,7 @@
   register: __aap_ocp_install_auth_results
 
 - name: Create namespace
-  # Disabled the ansible-lint jinja[invalid] check as it is throwing an error due to the ways the vars are specified
-  kubernetes.core.k8s:  # noqa jinja[invalid]
+  kubernetes.core.k8s:
     host: "{{ __aap_ocp_install_auth_results['openshift_auth']['host'] }}"
     api_key: "{{ __aap_ocp_install_auth_results['openshift_auth']['api_key'] }}"
     validate_certs: "{{ aap_ocp_install_ocp_connection['validate_certs'] | default(omit) }}"

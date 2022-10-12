@@ -11,7 +11,7 @@
     dest: /etc/shells
     line: /usr/bin/git-shell
 
-- name: Git user '{{ git_server_user }}' exists and uses git-shell
+- name: Ensure git user exists and uses git-shell
   ansible.builtin.user:
     name: "{{ git_server_user }}"
     comment: "Git server user"
@@ -38,15 +38,15 @@
     state: directory
 
 - name: Create empty bare repositories if missing
-  ansible.builtin.command: git init --bare --shared=group {{ full_projects_dir }}/{{ item }}.git  # noqa command-instead-of-module
-  args:
+  ansible.builtin.command:
+    cmd: git init --bare --shared=group {{ full_projects_dir }}/{{ item }}.git  # noqa command-instead-of-module
     creates: "{{ full_projects_dir }}/{{ item }}.git"
   become: true
   become_user: "{{ git_server_user }}"
   loop: "{{ git_projects }}"
 
 - name: Create and manage client Git users
-  include_tasks:
+  ansible.builtin.include_tasks:
     file: git_users.yml
   loop: "{{ git_client_users }}"
   loop_control:
