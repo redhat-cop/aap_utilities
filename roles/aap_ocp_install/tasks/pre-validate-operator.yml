@@ -1,0 +1,14 @@
+---
+- name: Ensure operator channel variable is set (block)
+  block:
+    - name: Ensure operator channel variable is set
+      ansible.builtin.assert:
+        that:
+          - aap_ocp_install_operator['channel'] | default('', true) | length > 0
+        quiet: true
+  rescue:
+    - name: Update validation errors fact - channel
+      ansible.builtin.set_fact:
+        __aap_ocp_install_prevalidate_errors: >
+          {{ __aap_ocp_install_prevalidate_errors + ["aap_ocp_install_operator['channel'] must be set"] }}
+...

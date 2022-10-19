@@ -54,41 +54,23 @@
         __aap_ocp_install_prevalidate_errors: >
           {{ __aap_ocp_install_prevalidate_errors + ["aap_ocp_install_namespace must be a lowercase RFC 1123 label consisting of lower case alphanumeric characters or '-', and must start and end with an alphanumeric character (e.g. 'my-name',  or '123-abc'"] }}
 
-- name: Ensure operator channel variable is set (block)
-  block:
-    - name: Ensure operator channel variable is set
-      ansible.builtin.assert:
-        that:
-          - aap_ocp_install_operator['channel'] | default('', true) | length > 0
-        quiet: true
-  rescue:
-    - name: Update validation errors fact - channel
-      ansible.builtin.set_fact:
-        __aap_ocp_install_prevalidate_errors: >
-          {{ __aap_ocp_install_prevalidate_errors + ["aap_ocp_install_operator['channel'] must be set"] }}
-      when:
-        - ( 'operator' in ansible_run_tags ) or ( 'all' in ansible_run_tags )
+- name: Ensure operator variables are set
+  ansible.builtin.include_tasks:
+    file: pre-validate-operator.yml
+  when:
+    - ( 'operator' in ansible_run_tags ) or ( 'all' in ansible_run_tags and aap_ocp_install_operator is defined )
 
 - name: Ensure controller variables are set
   ansible.builtin.include_tasks:
     file: pre-validate-controller.yml
   when:
-    - ( 'controller' in ansible_run_tags ) or ( 'all' in ansible_run_tags )
+    - ( 'controller' in ansible_run_tags ) or ( 'all' in ansible_run_tags and aap_ocp_install_controller is defined )
 
-- name: Ensure hub instance name variable is set (block)
-  block:
-    - name: Ensure hub instance name variable is set
-      ansible.builtin.assert:
-        that:
-          - aap_ocp_install_hub['instance_name'] | default('', true) | length > 0
-        quiet: true
-  rescue:
-    - name: Update validation errors fact - hub instance_name
-      ansible.builtin.set_fact:
-        __aap_ocp_install_prevalidate_errors: >
-          {{ __aap_ocp_install_prevalidate_errors + ["aap_ocp_install_hub['instance_name'] must be set"] }}
-      when:
-        - ( 'hub' in ansible_run_tags ) or ( 'all' in ansible_run_tags )
+- name: Ensure hub variables are set
+  ansible.builtin.include_tasks:
+    file: pre-validate-hub.yml
+  when:
+    - ( 'hub' in ansible_run_tags ) or ( 'all' in ansible_run_tags and aap_ocp_install_hub is defined )
 
 - name: Ensure no validation errors found
   ansible.builtin.debug:
