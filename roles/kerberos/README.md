@@ -80,7 +80,7 @@ ensure that you have set them either on the server running the playbook, or in t
     http_proxy: "yourproxyurl:andport"
     https_proxy: "yourproxyurl:andport"
   roles:
-    - role: redhat_cop.aap_utilities.kerberos
+    - role: infra.aap_utilities.kerberos
       krb_default_realm: MYDOMAIN.COM
       krb_realms:
         - name: "MYDOMAIN.COM"

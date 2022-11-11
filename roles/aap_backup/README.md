@@ -118,7 +118,7 @@ ansible-playbook playbook.yml -e @controller_vars.yml controller
     tower_database_node: "dbnode.example.com"
     tower_working_location: "{{playbook_dir}}"
   roles:
-    - redhat_cop.aap_utilities.aap_backup
+    - infra.aap_utilities.aap_backup
 ```
 
 ## License

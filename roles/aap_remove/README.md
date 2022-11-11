@@ -1,4 +1,4 @@
-# redhat_cop.aap_utilities.aap_remove
+# infra.aap_utilities.aap_remove
 
 Ansible role to remove instances of AAP.
 
@@ -31,14 +31,14 @@ An example is below.
   vars:
     aap_remove_controller: true
   roles:
-    - redhat_cop.aap_utilities.aap_remove
+    - infra.aap_utilities.aap_remove
 
 - name: Remove Ansible Automation Hub
   hosts: ah
   vars:
     aap_remove_ah: true
   roles:
-    - redhat_cop.aap_utilities.aap_remove
+    - infra.aap_utilities.aap_remove
 ```
 
 ## License

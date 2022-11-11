@@ -50,7 +50,7 @@ Click the `Content` button to see the list of content included in this collectio
 You can install the redhat\_cop aap\_utilities collection with the Ansible Galaxy CLI:
 
 ```bash
-ansible-galaxy collection install redhat_cop.aap_utilities
+ansible-galaxy collection install infra.aap_utilities
 ```
 
 You can also include it in a `requirements.yml` file and install it with `ansible-galaxy collection install -r requirements.yml`, using the format:
@@ -58,7 +58,7 @@ You can also include it in a `requirements.yml` file and install it with `ansibl
 ```yaml
 ---
 collections:
-  - name: redhat_cop.aap_utilities
+  - name: infra.aap_utilities
     # If you need a specific version of the collection, you can specify like this:
     # version: ...
 ```

@@ -103,7 +103,7 @@ ansible-playbook playbook.yml -e @tower_vars.yml tower
     tower_working_location: "{{playbook_dir}}"
     restore_location: "{{playbook_dir}}/tower-backup-latest.tar.gz"
   roles:
-    - redhat_cop.aap_utilities.aap_restore
+    - infra.aap_utilities.aap_restore
 ```
 
 ## License
