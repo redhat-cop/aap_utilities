@@ -2,10 +2,9 @@
 # tasks file for aap_setup_prepare
 
 # we check first so that the installation can happen without root access
-- name: Check if the absolutely necessary packages are installed
+- name: Check if the absolutely necessary packages are installed  # noqa command-instead-of-module
   ansible.builtin.command:
     cmd: "rpm -q {{ __aap_setup_prep_required_packages | join(' ') }}"
-    warn: false  # the query is not supported in the yum module - hence `builtin.command`
   register: __aap_setup_prep_packages_result
   ignore_errors: true
   changed_when: false
