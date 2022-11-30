@@ -1,0 +1,4 @@
+---
+breaking_changes:
+  - removed the warn on the builtin command role as module feature depreciated in recent ansible release.
+...
