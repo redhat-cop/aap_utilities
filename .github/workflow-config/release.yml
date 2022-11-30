@@ -17,6 +17,13 @@
         src: "{{ repo_base_dir }}/galaxy.yml.j2"
         dest: "{{ repo_base_dir }}/galaxy.yml"
 
+    - name: Update changelog
+      command:
+        cmd: antsibull-changelog release --verbose --version {{ collection_version }}
+        chdir: "{{ repo_base_dir }}"
+      register: update_changelog
+      changed_when: "update_changelog.rc != 2"
+
     - name: build collection
       command:
         cmd: ansible-galaxy collection build
@@ -35,11 +42,6 @@
         cmd: "ansible-galaxy collection publish --api-key={{ api_key }} {{ collection_namespace }}-{{ collection_name }}-{{ collection_version }}.tar.gz"
         chdir: "{{ repo_base_dir }}"
       tags: publish
-
-    - name: git cleanup
-      command:
-        cmd: git reset --hard
-      tags: cleanup
 
     - name: remove galaxy.yml
       file:
