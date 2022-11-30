@@ -1,0 +1,10 @@
+ancestor: null
+releases:
+  2.2.3:
+    changes:
+      breaking_changes:
+      - removed the warn on the builtin command role as module feature depreciated
+        in recent ansible release.
+    fragments:
+    - remove_warn.yml
+    release_date: '2022-11-30'
