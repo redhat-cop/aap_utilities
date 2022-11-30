@@ -1,3 +1,4 @@
+---
 objects:
   role: {}
 plugins:
@@ -15,3 +16,4 @@ plugins:
   strategy: {}
   vars: {}
 version: 2.2.3
+...
