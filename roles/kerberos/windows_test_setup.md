@@ -14,7 +14,7 @@ These instructions have been tested on Windows Server 2016 and 2019
 2. Navigate to Roles, add roles, Domain Services Role, Next, Next, Create a new domain in a new forest, Next
 3. Enter in the Domain name
 4. Navigate to Next, Select Server 2008 from the dropdown, Next, Yes, Next,
-5. Enter a “Directory Services Restore Mode Administrator Password”
+5. Enter a "Directory Services Restore Mode Administrator Password"
 6. Click Next, the roles will install and reboot.
 
 ## Enable Winrm

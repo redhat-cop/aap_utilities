@@ -7,5 +7,5 @@
     chdir: "{{ aap_setup_prep_setup_dir }}"
   async: 10000
   poll: 20
-  changed_when: false   # these will always run and will always report “changed” otherwise
+  changed_when: false   # these will always run and will always report "changed" otherwise
 ...
