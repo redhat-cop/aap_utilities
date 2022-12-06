@@ -51,7 +51,7 @@
       async: 10000
       poll: 20
       changed_when: false
-      # these will always run and will always report “changed” otherwise
+      # these will always run and will always report "changed" otherwise
 
     - name: Wait for automation controller to be running
       ansible.builtin.uri:  # use the first host from the list if no hostname is defined
