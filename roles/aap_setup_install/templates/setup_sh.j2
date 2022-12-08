@@ -4,3 +4,6 @@
 {%- for varkey in aap_setup_inst_extra_vars %}
  -e {{ varkey }}={{ aap_setup_inst_extra_vars[varkey] | quote }}
 {%- endfor -%}
+{%- for varsfile in __extra_vars_files.results %}
+ -e @{{ varsfile.dest }}
+{%- endfor -%}

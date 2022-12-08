@@ -1,0 +1,4 @@
+---
+minor_changes:
+  - Added ability to add extra vars files in aap_setup_install role.
+...

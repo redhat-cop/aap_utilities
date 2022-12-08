@@ -44,6 +44,14 @@
     or ('automationhub' in aap_setup_prep_inv_nodes
         and __aap_setup_inst_ah_check.status != 200)
   block:
+    - name: Copy extra vars files to workspace
+      ansible.builtin.copy:
+        src: "{{ item }}"
+        dest: "{{ aap_setup_inst_setup_dir }}"
+        mode: 0644
+      loop: "{{ aap_setup_inst_extra_vars_files }}"
+      register: __extra_vars_files
+
     - name: Run the Ansible Automation Platform setup program
       ansible.builtin.command: "{{ lookup('template', 'setup_sh.j2') }}"
       args:

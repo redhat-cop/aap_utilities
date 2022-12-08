@@ -11,6 +11,11 @@ aap_setup_inst_setup_dir: "{{ aap_setup_prep_setup_dir }}"
 # where is the inventory file, relative to the above directory _or_ absolute:
 aap_setup_inst_inventory: inventory
 
+# dictionary of extra vars files used when calling setup.sh
+aap_setup_inst_extra_vars_files: []
+# - extra_vars.yml
+# - ldap_vars.yml
+
 # dictionary of extra vars used when calling setup.sh
 aap_setup_inst_extra_vars: {}
 #  # When installing automation controller make sure Ansible is also up to date
