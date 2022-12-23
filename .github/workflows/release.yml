@@ -16,7 +16,7 @@ jobs:
       collection_namespace_2: redhat_cop
       collection_name: aap_utilities
       collection_version: ${{ github.ref_name }}
-      collection_repo: https://github.com/redhat-cop/controller_configuration/
+      collection_repo: https://github.com/redhat-cop/aap_utilities/
     secrets:
       galaxy_api_key: ${{ secrets.ANSIBLE_GALAXY_APIKEY }}
       infra_api_key: ${{ secrets.GALAXY_INFRA_KEY }}
