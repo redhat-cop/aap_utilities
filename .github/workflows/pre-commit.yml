@@ -17,5 +17,5 @@ jobs:
       collection_namespace: infra
       collection_name: aap_utilities
       collection_version: 1.0.0
-      collection_repo: https://github.com/redhat-cop/controller_configuration/
+      collection_repo: https://github.com/redhat-cop/aap_utilities/
 ...
