@@ -41,7 +41,7 @@ Combined with the role `aap_setup_prepare`, the following code will download and
 
 ## License
 
-MIT
+[GPLv3+0](https://github.com/redhat-cop/aap_utilities#licensing)
 
 ## Author Information
 
