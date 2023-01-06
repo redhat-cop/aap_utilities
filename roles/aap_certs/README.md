@@ -69,7 +69,7 @@ ansible-playbook playbook.yml -e @tower_vars.yml tower
 
 ## License
 
-MIT
+[GPLv3+0](https://github.com/redhat-cop/aap_utilities#licensing)
 
 ## Author Information
 

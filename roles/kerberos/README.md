@@ -95,7 +95,7 @@ ensure that you have set them either on the server running the playbook, or in t
 
 ## License
 
-[MIT](LICENSE)
+[GPLv3+0](https://github.com/redhat-cop/aap_utilities#licensing)
 
 ## Author
 
