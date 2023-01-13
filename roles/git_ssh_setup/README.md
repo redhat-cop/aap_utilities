@@ -30,7 +30,7 @@ We've assumed that it will be created directly on the Tower server for demonstra
 
 ## License
 
-MIT
+[GPLv3+0](https://github.com/redhat-cop/aap_utilities#licensing)
 
 ## Author Information
 

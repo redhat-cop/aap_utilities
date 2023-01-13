@@ -99,7 +99,7 @@ Including an example of how to use your role (for instance, with variables passe
 
 ## License
 
-MIT
+[GPLv3+0](https://github.com/redhat-cop/aap_utilities#licensing)
 
 ## Author Information
 

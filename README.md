@@ -1,6 +1,6 @@
 # Red Hat Communities of Practice Ansible Automation Platform Utilities Collection
 
-![Ansible Lint](https://github.com/redhat-cop/aap_utilities/workflows/Ansible%20Lint/badge.svg)
+![pre-commit tests](https://github.com/redhat-cop/aap_utilities/actions/workflows/pre-commit.yml/badge.svg)
 ![Galaxy Release](https://github.com/redhat-cop/aap_utilities/workflows/galaxy-release/badge.svg)
 <!-- Further CI badges go here as above -->
 

@@ -48,7 +48,7 @@ Else change to `become: true`.
 
 ## License
 
-BSD
+[GPLv3+0](https://github.com/redhat-cop/aap_utilities#licensing)
 
 ## Author Information
 
