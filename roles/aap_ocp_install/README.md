@@ -1,4 +1,4 @@
-# aap_ocp_install
+# infra.aap_utilities.aap_ocp_install
 
 A role to install Ansible Automation Platform (AAP) 2.x on OpenShift using the operator.
 
@@ -93,7 +93,7 @@ Including an example of how to use your role (for instance, with variables passe
       instance_name: automationhub
 
   roles:
-    - redhat_cop.aap_utilities.aap_ocp_install
+    - infra.aap_utilities.aap_ocp_install
 ...
 ```
 

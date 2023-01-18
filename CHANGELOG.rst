@@ -1,5 +1,5 @@
 ======================================
-Redhat_Cop.Aap_Utilities Release Notes
+infra.aap_Utilities Release Notes
 ======================================
 
 .. contents:: Topics

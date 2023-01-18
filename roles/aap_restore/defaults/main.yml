@@ -1,5 +1,5 @@
 ---
-# defaults file for redhat_cop.aap_utilities.aap_restore
+# defaults file for infra.aap_utilities.aap_restore
 
 ############################################################
 #               AAP Restore Vars                           #
