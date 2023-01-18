@@ -35,10 +35,10 @@ The `aap_install_ocp` role requires the `kubernetes` (version 12.0.0 or later) P
 
 |Collection Name|Purpose|
 |:---:|:---:|
-|[Controller Configuration](https://galaxy.ansible.com/redhat_cop/controller_configuration)|Automation controller configuration|
-|[Hub Configuration](https://galaxy.ansible.com/redhat_cop/ah_configuration)|Automation hub configuration|
-|[EE Utilities](https://galaxy.ansible.com/redhat_cop/ee_utilities)|Execution Environment creation utilities|
-|[AAP installation Utilities](https://galaxy.ansible.com/redhat_cop/aap_utilities)|Ansible Automation Platform Utilities|
+|[Controller Configuration](https://galaxy.ansible.com/infra/controller_configuration)|Automation controller configuration|
+|[Hub Configuration](https://galaxy.ansible.com/infra/ah_configuration)|Automation hub configuration|
+|[EE Utilities](https://galaxy.ansible.com/infra/ee_utilities)|Execution Environment creation utilities|
+|[AAP installation Utilities](https://galaxy.ansible.com/infra/aap_utilities)|Ansible Automation Platform Utilities|
 |[AAP Configuration Template](https://github.com/redhat-cop/aap_configuration_template)|Configuration Template for this suite|
 
 ## Included content
@@ -50,7 +50,7 @@ Click the `Content` button to see the list of content included in this collectio
 You can install the redhat\_cop aap\_utilities collection with the Ansible Galaxy CLI:
 
 ```bash
-ansible-galaxy collection install redhat_cop.aap_utilities
+ansible-galaxy collection install infra.aap_utilities
 ```
 
 You can also include it in a `requirements.yml` file and install it with `ansible-galaxy collection install -r requirements.yml`, using the format:
@@ -58,7 +58,7 @@ You can also include it in a `requirements.yml` file and install it with `ansibl
 ```yaml
 ---
 collections:
-  - name: redhat_cop.aap_utilities
+  - name: infra.aap_utilities
     # If you need a specific version of the collection, you can specify like this:
     # version: ...
 ```

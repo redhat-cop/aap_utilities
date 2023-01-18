@@ -1,4 +1,4 @@
-# aap\_setup\_download
+# infra.aap_utilities.aap\_setup\_download
 
 A role to download the latest z-version of the AAP setup tarball for a given minor version (e.g. 2.1 at time of writing).
 
@@ -35,8 +35,8 @@ Combined with the role `aap_setup_prepare`, the following code will download and
 ```yaml
 - hosts: installationserver
   roles:
-    - { role: redhat_cop.aap_utilities.aap_setup_download }
-    - { role: redhat_cop.aap_utilities.aap_setup_prepare }
+    - { role: infra.aap_utilities.aap_setup_download }
+    - { role: infra.aap_utilities.aap_setup_prepare }
 ```
 
 ## License

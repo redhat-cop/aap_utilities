@@ -1,4 +1,4 @@
-# redhat\_cop.aap\_utilities.kerberos
+# infra.aap\_utilities.kerberos
 
 ## Description
 
@@ -73,14 +73,14 @@ ensure that you have set them either on the server running the playbook, or in t
 
 ```yaml
 ---
-- hosts: towers
+- hosts: controllers
 # If you need proxy settings to install packages from the internet:
 # The following 3 lines are optional
   environment:
     http_proxy: "yourproxyurl:andport"
     https_proxy: "yourproxyurl:andport"
   roles:
-    - role: redhat_cop.aap_utilities.kerberos
+    - role: infra.aap_utilities.kerberos
       krb_default_realm: MYDOMAIN.COM
       krb_realms:
         - name: "MYDOMAIN.COM"

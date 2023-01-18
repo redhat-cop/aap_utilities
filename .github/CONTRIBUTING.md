@@ -17,7 +17,7 @@ If you feel like getting your hands dirty, feel free to make the change yourself
 5. Push your code change up to your forked repo.
 6. Open a Pull Request to merge your changes to this repo. The comment box will be filled in automatically via a template.
 7. All Pull Requests will be subject to Ansible and Yaml Linting checks. Please make sure that your code complies and fix any warnings that arise. These are Checks that appear at the bottom of your Pull Request.
-8. All Pull requests are subject to Testing against being used in tower. As above there is a check at the bottom of your pull request for this named integration.
+8. All Pull requests are subject to Testing against being used against AAP. As above there is a check at the bottom of your pull request for this named integration.
 
 See [Using Pull Requests](https://help.github.com/articles/using-pull-requests/) got more information on how to use GitHub PRs.
 

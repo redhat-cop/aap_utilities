@@ -1,4 +1,4 @@
-# redhat\_cop.tower\_utilities.aap\_certs
+# infra.aap\_utilities.aap\_certs
 
 Ansible role to install SSL certificates for AAP automation controller and/or automation hub.
 
@@ -48,13 +48,11 @@ aap_certs_create_backup: false
 The following playbook and accompanying vars file containing the defined seed objects can be invoked in the following manner.
 
 ```sh
-ansible-playbook playbook.yml -e @tower_vars.yml tower
+ansible-playbook playbook.yml -e @aap_vars.yml
 ```
 
 ```yaml
 ---
-# Playbook to install Ansible Tower as a single node
-
 - name: Install AAP certificates
   hosts: aap_servers
   become: true
@@ -64,7 +62,7 @@ ansible-playbook playbook.yml -e @tower_vars.yml tower
     aap_certs_autohub_ssl_cert: ""
     aap_certs_autohub_ssl_key: ""
   roles:
-    - ansible-tower-install
+    - infra.aap_utilities.aap_certs
 ```
 
 ## License

@@ -1,7 +1,7 @@
 ---
 galaxy_info:
   author: "Andrew J. Huffman"
-  description: "An Ansible role to configure Ansible Tower nodes to manage Windows systems."
+  description: "An Ansible role to configure Ansible Controller nodes to manage Windows systems."
   company: "Red Hat"
 
   # If the issue tracker for your role is not on github, uncomment the
@@ -149,8 +149,8 @@ galaxy_info:
         #   - any
 
   galaxy_tags:
-    - "ansibletower"
-    - "tower"
+    - "ansiblecontroller"
+    - "controller"
     - "awx"
     - "configuration"
     - "system"

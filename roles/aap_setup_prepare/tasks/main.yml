@@ -26,7 +26,7 @@
     exclude: "inventory"
   register: __aap_setup_prep_extract
 
-- name: Set tower_setup_dir
+- name: Set aap_setup_prep_setup_dir
   ansible.builtin.set_fact:
     aap_setup_prep_setup_dir: "{{ aap_setup_prep_working_dir }}/{{ __aap_setup_prep_extract.files[0] }}"
 

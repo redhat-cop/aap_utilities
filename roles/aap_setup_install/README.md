@@ -1,4 +1,4 @@
-# aap\_setup\_install
+# infra.aap_utilities.aap\_setup\_install
 
 A role to install AAP 2.x, installing pre-requisites, unpacking the installation tarball and (optionally) writing the necessary inventory file.
 
@@ -37,9 +37,9 @@ Note that the `controller_` and `ah_` variables are only required if the variabl
   become: false
   tags: aap_installation
   roles:
-    - redhat_cop.aap_utilities.aap_setup_download
-    - redhat_cop.aap_utilities.aap_setup_prepare
-    - redhat_cop.aap_utilities.aap_setup_install
+    - infra.aap_utilities.aap_setup_download
+    - infra.aap_utilities.aap_setup_prepare
+    - infra.aap_utilities.aap_setup_install
 ```
 
 Note that this only works without root access if the bastion host isn't part of the future cluster,

@@ -1,4 +1,4 @@
-# aap\_setup\_prepare
+# infra.aap_utilities.aap\_setup\_prepare
 
 A role to prepare the installation of AAP 2.x, installing pre-requisites,
 unpacking the installation tarball and (optionally) writing the necessary inventory file.
@@ -40,9 +40,9 @@ By convention the [defaults/main.yml](defaults/main.yml) contains all possible v
   become: false
   tags: aap_installation
   roles:
-    - redhat_cop.aap_utilities.aap_setup_download
-    - redhat_cop.aap_utilities.aap_setup_prepare
-    - redhat_cop.aap_utilities.aap_setup_install
+    - infra.aap_utilities.aap_setup_download
+    - infra.aap_utilities.aap_setup_prepare
+    - infra.aap_utilities.aap_setup_install
 ```
 
 Note that this only works without root access if the bastion host isn't part of the future cluster,

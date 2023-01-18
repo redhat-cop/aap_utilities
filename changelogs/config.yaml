@@ -28,7 +28,7 @@ sections:
     - Bugfixes
   - - known_issues
     - Known Issues
-title: Redhat_Cop.Aap_Utilities
+title: infra.aap_Utilities
 trivial_section_name: trivial
 use_fqcn: true
 ...
