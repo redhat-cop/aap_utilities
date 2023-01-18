@@ -12,6 +12,7 @@
   ansible.builtin.include_tasks: ah_remove.yml
   when: aap_remove_ah
   tags:
-    - controller
+    - hub
+    - ah
     - remove
 ...
