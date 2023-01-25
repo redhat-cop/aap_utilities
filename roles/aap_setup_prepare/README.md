@@ -60,13 +60,13 @@ aap_setup_down_type: "setup-bundle"
 aap_setup_rhel_version: 8
 
 aap_setup_prep_inv_nodes:
-  automationcontroller: 
+  automationcontroller:
     - ansible-ctrl.example.com
-  automationhub: 
+  automationhub:
     - ansible-hub.example.com
-  database: 
+  database:
     - database.example # if using an already existing DB, remove this and ensure that the following variables are filled with the valid details for your Controller and PAH
-                       # databases: pg_host, pg_port, pg_database, ph_username, pg_password, automationhub_pg_host, automationhub_pg_port, automationhub_pg_database, 
+                       # databases: pg_host, pg_port, pg_database, ph_username, pg_password, automationhub_pg_host, automationhub_pg_port, automationhub_pg_database,
                        # automationhub_pg_username, automationhub_pg_password, automationhub_pg_sslmode
   execution_nodes:
     - execution-1.example
@@ -76,9 +76,9 @@ aap_setup_prep_inv_nodes:
 
 aap_setup_prep_inv_vars:
   automationcontroller: # denotes the automation controller nodes as hybrid nodes (controller and execution)
-    peers: execution_nodes 
-    node_type: hybrid 
-    
+    peers: execution_nodes
+    node_type: hybrid
+
   execution_nodes:
     node_type: execution
 
@@ -114,7 +114,7 @@ aap_setup_prep_inv_vars:
     sso_console_admin_password: ''
 
 aap_setup_prep_inv_secrets:
-  all: 
+  all:
     registry_username: changeme
     registry_password: changeme
 ```
