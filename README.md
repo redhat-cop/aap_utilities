@@ -17,7 +17,7 @@ Using this collection, you'll be able to automate following tasks:
 
 ## Requirements
 
-The following collections are required to use this collection.
+The following collections are required to use this collection if you are using the Openshift specific roles.
 
 | Name             | Minimum Version |
 |------------------|:---------------:|
@@ -76,6 +76,14 @@ Verify carefully your inventory variables and playbooks.
 
 The previous OCP installation role has been suppressed due to the introduction of an operator.
 In addition to the current OCP installation role, further (community) automation for AAP on OCP is available from the [GitOps catalogue](https://github.com/redhat-cop/gitops-catalog/tree/main/ansible-automation-platform).
+
+## Releasing, Versioning and Deprecation
+
+This collection follows [Semantic Versioning](https://semver.org/). More details on versioning can be found [in the Ansible docs](https://docs.ansible.com/ansible/latest/dev_guide/developing_collections.html#collection-versions).
+
+We plan to regularly release new minor or bugfix versions once new features or bugfixes have been implemented.
+
+Releasing the current major version happens from the `devel` branch.
 
 ## Roadmap
 
