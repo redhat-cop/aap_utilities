@@ -7,7 +7,7 @@
 # aap_setup_down_offline_token:
 
 # which version of the installer to download
-aap_setup_down_version: "2.2"
+aap_setup_down_version: "2.3"
 
 # Which RHEL version are you using (8 or 9)
 aap_setup_rhel_version: "{{ ansible_distribution_major_version | default(8, true) }}"

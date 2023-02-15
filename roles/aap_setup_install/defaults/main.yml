@@ -1,10 +1,6 @@
 ---
 # defaults file for aap_setup_install
 
-# Hostnames for check
-controller_hostname: "{{ aap_setup_prep_inv_nodes['automationcontroller'][0] }}"
-ah_hostname: "{{ aap_setup_prep_inv_nodes['automationhub'][0] }}"
-
 # where is the setup directory
 aap_setup_inst_setup_dir: "{{ aap_setup_prep_setup_dir }}"
 
@@ -43,11 +39,16 @@ aap_setup_inst_extra_vars: {}
 #  # Ignore preflight checks, useful when installing into a template or other non-system image (overrides required_ram and min_open_fds)
 #  ignore_preflight_errors: false
 
+# Note that the controller_hostname and ah_hostname are defined differently
+# than usual because the installation is supposed to run against the install
+# host, instead of the controller/PAH host being installed (or configured)
+
 # These are the default variables common to most controller_configuration
 # and _utilities roles
 # You shouldn't need to define them again and again but they should be defined
 #
 # controller_hostname: "{{ inventory_hostname }}"
+controller_hostname: "{{ (aap_setup_prep_inv_nodes['automationcontroller'].keys() | list)[0] }}"
 # controller_username: "admin"
 # controller_password: ""
 # controller_oauthtoken: ""
@@ -59,6 +60,7 @@ aap_setup_inst_extra_vars: {}
 # You shouldn't need to define them again and again but they should be defined
 #
 # ah_hostname: "{{ inventory_hostname }}"
+ah_hostname: "{{ (aap_setup_prep_inv_nodes['automationhub'].keys() | list)[0] }}"
 # ah_username: "admin"
 # ah_password: ""
 # ah_oauthtoken: ""
@@ -69,6 +71,6 @@ aap_setup_inst_force: false
 
 # list of fixes to apply before starting the actual installation,
 # review before bumping up the default AAP version
-aap_setup_inst_fixes:
-  - aap_4555  # setup.log is only saved on first call as non-root (2.2.0)
+aap_setup_inst_fixes: []
+#  - aap_4555  # setup.log is only saved on first call as non-root (2.2.0, fixed since 2.2.1/2.1.3)
 ...
