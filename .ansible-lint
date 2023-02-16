@@ -4,6 +4,9 @@
 # https://github.com/ansible/ansible-lint/issues/371
 # exclude_paths:
 #   - roles/master_role_example/
+exclude_paths:
+  - '.github/'
+  - 'changelogs/'
 parseable: true
 use_default_rules: true
 # https://github.com/ansible/ansible-lint/issues/808
@@ -11,4 +14,7 @@ use_default_rules: true
 # verbosity: 1
 skip_list:
   - meta-runtime
+warn_list:
+  - jinja[invalid]  # Temporarily adding this due to https://github.com/ansible/ansible-lint/issues/3048
+  - jinja[spacing]  # Would be set to warn by default and the only flagged issues are fairly unfixable
 ...
