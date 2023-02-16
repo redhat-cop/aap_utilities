@@ -1,0 +1,6 @@
+---
+bugfixes:
+  - Fix hostnames for install check
+minor_changes:
+  - Bumped the default aap version to 2.3
+...
