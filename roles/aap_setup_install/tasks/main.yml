@@ -11,7 +11,7 @@
     url: "https://{{ controller_hostname }}/"
     method: GET
     user: admin
-    password: "{{ aap_setup_prep_inv_vars.all.admin_password }}"
+    password: "{{ aap_setup_prep_inv_secrets.all.admin_password | default(aap_setup_prep_inv_vars.all.admin_password) }}"
     validate_certs: "{{ controller_validate_certs | default('false') }}"
     force_basic_auth: true
   register: __aap_setup_inst_ctl_check
@@ -26,7 +26,7 @@
     url: "https://{{ ah_hostname }}/api/galaxy/"
     method: GET
     user: admin
-    password: "{{ aap_setup_prep_inv_vars.all.automationhub_admin_password }}"
+    password: "{{ aap_setup_prep_inv_secrets.all.automationhub_admin_password | default(aap_setup_prep_inv_vars.all.automationhub_admin_password) }}"
     validate_certs: "{{ controller_validate_certs | default('false') }}"
     force_basic_auth: true
   register: __aap_setup_inst_ah_check
@@ -66,7 +66,7 @@
         url: "https://{{ controller_hostname }}/"
         method: GET
         user: admin
-        password: "{{ aap_setup_prep_inv_vars.all.admin_password }}"
+        password: "{{ aap_setup_prep_inv_secrets.all.admin_password | default(aap_setup_prep_inv_vars.all.admin_password) }}"
         force_basic_auth: true
         status_code: 200
         validate_certs: "{{ controller_validate_certs | default(omit) }}"
@@ -81,7 +81,7 @@
         url: "https://{{ ah_hostname }}/api/galaxy/"
         method: GET
         user: admin
-        password: "{{ aap_setup_prep_inv_vars.all.automationhub_admin_password }}"
+        password: "{{ aap_setup_prep_inv_secrets.all.automationhub_admin_password | default(aap_setup_prep_inv_vars.all.automationhub_admin_password) }}"
         force_basic_auth: true
         status_code: 200
         validate_certs: "{{ ah_validate_certs | default(omit) }}"
