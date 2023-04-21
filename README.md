@@ -1,8 +1,7 @@
 # Red Hat Communities of Practice Ansible Automation Platform Utilities Collection
 
-![pre-commit tests](https://github.com/redhat-cop/aap_utilities/actions/workflows/pre-commit.yml/badge.svg)
-![Galaxy Release](https://github.com/redhat-cop/aap_utilities/workflows/galaxy-release/badge.svg)
-<!-- Further CI badges go here as above -->
+[![pre-commit tests](https://github.com/redhat-cop/aap_utilities/actions/workflows/pre-commit.yml/badge.svg)](https://github.com/redhat-cop/aap_utilities/actions/workflows/pre-commit.yml)
+[![Galaxy Release](https://github.com/redhat-cop/aap_utilities/actions/workflows/release.yml/badge.svg)](https://github.com/redhat-cop/aap_utilities/actions/workflows/release.yml)
 
 This ansible collection includes a number of roles which can be useful for installing and managing AWX or Ansible Automation Platform.
 Using this collection, you'll be able to automate following tasks:
