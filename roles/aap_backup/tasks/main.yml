@@ -11,4 +11,8 @@
   ansible.builtin.include_tasks: backup.yml
   tags:
     - backup
+
+- name: Warn about namespace change
+  ansible.builtin.debug:
+    msg: WARNING!!! You are using a version of redhat_cop.aap_utilities that is no longer maintained please change to infra.aap_utilities.
 ...
