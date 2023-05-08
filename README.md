@@ -1,8 +1,7 @@
 # Red Hat Communities of Practice Ansible Automation Platform Utilities Collection
 
-![Ansible Lint](https://github.com/redhat-cop/aap_utilities/workflows/Ansible%20Lint/badge.svg)
-![Galaxy Release](https://github.com/redhat-cop/aap_utilities/workflows/galaxy-release/badge.svg)
-<!-- Further CI badges go here as above -->
+[![pre-commit tests](https://github.com/redhat-cop/aap_utilities/actions/workflows/pre-commit.yml/badge.svg)](https://github.com/redhat-cop/aap_utilities/actions/workflows/pre-commit.yml)
+[![Galaxy Release](https://github.com/redhat-cop/aap_utilities/actions/workflows/release.yml/badge.svg)](https://github.com/redhat-cop/aap_utilities/actions/workflows/release.yml)
 
 This ansible collection includes a number of roles which can be useful for installing and managing AWX or Ansible Automation Platform.
 Using this collection, you'll be able to automate following tasks:
@@ -17,7 +16,7 @@ Using this collection, you'll be able to automate following tasks:
 
 ## Requirements
 
-The following collections are required to use this collection.
+The following collections are required to use this collection if you are using the Openshift specific roles.
 
 | Name             | Minimum Version |
 |------------------|:---------------:|
@@ -35,10 +34,10 @@ The `aap_install_ocp` role requires the `kubernetes` (version 12.0.0 or later) P
 
 |Collection Name|Purpose|
 |:---:|:---:|
-|[Controller Configuration](https://galaxy.ansible.com/redhat_cop/controller_configuration)|Automation controller configuration|
-|[Hub Configuration](https://galaxy.ansible.com/redhat_cop/ah_configuration)|Automation hub configuration|
-|[EE Utilities](https://galaxy.ansible.com/redhat_cop/ee_utilities)|Execution Environment creation utilities|
-|[AAP installation Utilities](https://galaxy.ansible.com/redhat_cop/aap_utilities)|Ansible Automation Platform Utilities|
+|[Controller Configuration](https://galaxy.ansible.com/infra/controller_configuration)|Automation controller configuration|
+|[Hub Configuration](https://galaxy.ansible.com/infra/ah_configuration)|Automation hub configuration|
+|[EE Utilities](https://galaxy.ansible.com/infra/ee_utilities)|Execution Environment creation utilities|
+|[AAP installation Utilities](https://galaxy.ansible.com/infra/aap_utilities)|Ansible Automation Platform Utilities|
 |[AAP Configuration Template](https://github.com/redhat-cop/aap_configuration_template)|Configuration Template for this suite|
 
 ## Included content
@@ -76,6 +75,14 @@ Verify carefully your inventory variables and playbooks.
 
 The previous OCP installation role has been suppressed due to the introduction of an operator.
 In addition to the current OCP installation role, further (community) automation for AAP on OCP is available from the [GitOps catalogue](https://github.com/redhat-cop/gitops-catalog/tree/main/ansible-automation-platform).
+
+## Releasing, Versioning and Deprecation
+
+This collection follows [Semantic Versioning](https://semver.org/). More details on versioning can be found [in the Ansible docs](https://docs.ansible.com/ansible/latest/dev_guide/developing_collections.html#collection-versions).
+
+We plan to regularly release new minor or bugfix versions once new features or bugfixes have been implemented.
+
+Releasing the current major version happens from the `devel` branch.
 
 ## Roadmap
 

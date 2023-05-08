@@ -1,4 +1,4 @@
-# redhat\_cop.aap\_utilities.kerberos
+# infra.aap\_utilities.kerberos
 
 ## Description
 
@@ -73,7 +73,7 @@ ensure that you have set them either on the server running the playbook, or in t
 
 ```yaml
 ---
-- hosts: towers
+- hosts: controllers
 # If you need proxy settings to install packages from the internet:
 # The following 3 lines are optional
   environment:
@@ -95,7 +95,7 @@ ensure that you have set them either on the server running the playbook, or in t
 
 ## License
 
-[MIT](LICENSE)
+[GPLv3+0](https://github.com/redhat-cop/aap_utilities#licensing)
 
 ## Author
 

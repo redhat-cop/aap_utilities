@@ -11,7 +11,7 @@
     url: "https://{{ controller_hostname }}/"
     method: GET
     user: admin
-    password: "{{ aap_setup_prep_inv_vars.all.admin_password }}"
+    password: "{{ aap_setup_prep_inv_secrets.all.admin_password | default(aap_setup_prep_inv_vars.all.admin_password) }}"
     validate_certs: "{{ controller_validate_certs | default('false') }}"
     force_basic_auth: true
   register: __aap_setup_inst_ctl_check
@@ -26,7 +26,7 @@
     url: "https://{{ ah_hostname }}/api/galaxy/"
     method: GET
     user: admin
-    password: "{{ aap_setup_prep_inv_vars.all.automationhub_admin_password }}"
+    password: "{{ aap_setup_prep_inv_secrets.all.automationhub_admin_password | default(aap_setup_prep_inv_vars.all.automationhub_admin_password) }}"
     validate_certs: "{{ controller_validate_certs | default('false') }}"
     force_basic_auth: true
   register: __aap_setup_inst_ah_check
@@ -44,6 +44,14 @@
     or ('automationhub' in aap_setup_prep_inv_nodes
         and __aap_setup_inst_ah_check.status != 200)
   block:
+    - name: Copy extra vars files to workspace
+      ansible.builtin.copy:
+        src: "{{ item }}"
+        dest: "{{ aap_setup_inst_setup_dir }}"
+        mode: 0644
+      loop: "{{ aap_setup_inst_extra_vars_files }}"
+      register: __extra_vars_files
+
     - name: Run the Ansible Automation Platform setup program
       ansible.builtin.command: "{{ lookup('template', 'setup_sh.j2') }}"
       args:
@@ -51,14 +59,14 @@
       async: 10000
       poll: 20
       changed_when: false
-      # these will always run and will always report “changed” otherwise
+      # these will always run and will always report "changed" otherwise
 
     - name: Wait for automation controller to be running
       ansible.builtin.uri:  # use the first host from the list if no hostname is defined
         url: "https://{{ controller_hostname }}/"
         method: GET
         user: admin
-        password: "{{ aap_setup_prep_inv_vars.all.admin_password }}"
+        password: "{{ aap_setup_prep_inv_secrets.all.admin_password | default(aap_setup_prep_inv_vars.all.admin_password) }}"
         force_basic_auth: true
         status_code: 200
         validate_certs: "{{ controller_validate_certs | default(omit) }}"
@@ -73,7 +81,7 @@
         url: "https://{{ ah_hostname }}/api/galaxy/"
         method: GET
         user: admin
-        password: "{{ aap_setup_prep_inv_vars.all.automationhub_admin_password }}"
+        password: "{{ aap_setup_prep_inv_secrets.all.automationhub_admin_password | default(aap_setup_prep_inv_vars.all.automationhub_admin_password) }}"
         force_basic_auth: true
         status_code: 200
         validate_certs: "{{ ah_validate_certs | default(omit) }}"

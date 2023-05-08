@@ -1,7 +1,7 @@
-# redhat\_cop.aap\_utilities.git\_ssh\_setup
+# infra.aap\_utilities.git\_ssh\_setup
 
 Creates a minimal Git server which can be used over SSH. It isn't meant as a full blown Git server,
-but just for demonstration and learning purposes, and can be installed directly on the Tower server.
+but just for demonstration and learning purposes, and can be installed directly on the AAP servers.
 
 ## Requirements
 
@@ -21,17 +21,17 @@ The following snippet, using the defaults, will create two Git repos under the g
 which can be used (cloned and written) by the Ansible user:
 
 ```yaml
-- hosts: tower.example.com
+- hosts: controller.example.com
   roles:
-    - git_ssh_setup
+    - infra.aap_utilities.git_ssh_setup
 ```
 
-We've assumed that it will be created directly on the Tower server for demonstration purposes.
+We've assumed that it will be created directly on the Controller server for demonstration purposes.
 
 ## License
 
-MIT
+[GPLv3+0](https://github.com/redhat-cop/aap_utilities#licensing)
 
 ## Author Information
 
-Create an [issue at GitHub](https://github.com/redhat-cop/tower_utilities/issues) if you want to contact us.
+Create an [issue at GitHub](https://github.com/redhat-cop/aap_utilities/issues) if you want to contact us.
