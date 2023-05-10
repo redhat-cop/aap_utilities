@@ -24,4 +24,8 @@
     - __aap_certs_autohub_dir.stat.exists
     - aap_certs_autohub_ssl_cert is defined or aap_certs_autohub_ssl_cert_content is defined
     - aap_certs_autohub_ssl_key is defined or aap_certs_autohub_ssl_key_content is defined
+
+- name: Warn about namespace change
+  ansible.builtin.debug:
+    msg: WARNING!!! You are using a version of redhat_cop.aap_utilities that is no longer maintained please change to infra.aap_utilities.
 ...
