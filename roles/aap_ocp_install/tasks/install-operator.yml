@@ -3,7 +3,7 @@
   kubernetes.core.k8s:
     host: "{{ __aap_ocp_install_auth_results['openshift_auth']['host'] }}"
     api_key: "{{ __aap_ocp_install_auth_results['openshift_auth']['api_key'] }}"
-    validate_certs: "{{ aap_ocp_install_ocp_connection['validate_certs'] | default(omit) }}"
+    validate_certs: "{{ aap_ocp_install_connection['validate_certs'] | default(omit) }}"
     state: present
     resource_definition: "{{ lookup('template', 'operator/operatorgroup.yaml.j2') | from_yaml }}"
     apply: true
@@ -12,7 +12,7 @@
   kubernetes.core.k8s:
     host: "{{ __aap_ocp_install_auth_results['openshift_auth']['host'] }}"
     api_key: "{{ __aap_ocp_install_auth_results['openshift_auth']['api_key'] }}"
-    validate_certs: "{{ aap_ocp_install_ocp_connection['validate_certs'] | default(omit) }}"
+    validate_certs: "{{ aap_ocp_install_connection['validate_certs'] | default(omit) }}"
     state: present
     resource_definition: "{{ lookup('template', 'operator/subscription.yaml.j2') | from_yaml }}"
     apply: true
@@ -21,7 +21,7 @@
   kubernetes.core.k8s_info:
     host: "{{ __aap_ocp_install_auth_results['openshift_auth']['host'] }}"
     api_key: "{{ __aap_ocp_install_auth_results['openshift_auth']['api_key'] }}"
-    validate_certs: "{{ aap_ocp_install_ocp_connection['validate_certs'] | default(omit) }}"
+    validate_certs: "{{ aap_ocp_install_connection['validate_certs'] | default(omit) }}"
     kind: Subscription
     name: ansible-automation-platform-operator
     api_version: operators.coreos.com/v1alpha1
@@ -35,7 +35,7 @@
   kubernetes.core.k8s_json_patch:
     host: "{{ __aap_ocp_install_auth_results['openshift_auth']['host'] }}"
     api_key: "{{ __aap_ocp_install_auth_results['openshift_auth']['api_key'] }}"
-    validate_certs: "{{ aap_ocp_install_ocp_connection['validate_certs'] | default(omit) }}"
+    validate_certs: "{{ aap_ocp_install_connection['validate_certs'] | default(omit) }}"
     kind: Subscription
     namespace: "{{ aap_ocp_install_namespace | mandatory }}"
     name: ansible-automation-platform-operator

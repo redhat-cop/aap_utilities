@@ -99,7 +99,7 @@ aap_setup_prep_inv_vars:
     automationhub_pg_username: 'automationhub'
     automationhub_pg_password: changeme
     automationhub_pg_sslmode: 'prefer'
-    automationhub_main_url: hub.example
+    automationhub_main_url: https://hub.example #url, not hostname
     automationhub_require_content_approval: False
     automationhub_enable_unauthenticated_collection_access: True
 

@@ -79,7 +79,7 @@ Including an example of how to use your role (for instance, with variables passe
   gather_facts: false
 
   vars:
-    aap_ocp_install_ocp_connection:
+    aap_ocp_install_connection:
       host: "https://api.crc.testing:6443"
       username: kubeadmin
       password: <PASSWORD>

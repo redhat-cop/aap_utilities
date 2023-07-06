@@ -14,6 +14,7 @@ use_default_rules: true
 # verbosity: 1
 skip_list:
   - meta-runtime
+  - var-naming[no-role-prefix]
 warn_list:
   - jinja[invalid]  # Temporarily adding this due to https://github.com/ansible/ansible-lint/issues/3048
 ...
