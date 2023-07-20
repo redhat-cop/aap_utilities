@@ -37,6 +37,16 @@
   tags:
     - controller
 
+- name: Include Ansible Automation Platform EDA install tasks
+  ansible.builtin.include_tasks:
+    file: install-eda.yml
+    apply:
+      tags:
+        - eda
+  when: aap_ocp_install_eda is defined
+  tags:
+    - eda
+
 - name: Include Ansible Automation Platform hub install tasks
   ansible.builtin.include_tasks:
     file: install-hub.yml
