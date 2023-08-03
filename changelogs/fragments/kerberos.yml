@@ -1,4 +1,0 @@
----
-deprecated_features:
-  - The kerberos role is now depreciated as it is not compatible with Execution Environments.
-...
