@@ -58,6 +58,8 @@ aap_setup_prep_inv_nodes:
     - ansible-ctrl.example.com
   automationhub:
     - ansible-hub.example.com
+  automationedacontroller:
+    - ansible-eda.example.com
   database:
     - database.example # if using an already existing DB, remove this and ensure that the following variables are filled with the valid details for your Controller and PAH
                        # databases: pg_host, pg_port, pg_database, ph_username, pg_password, automationhub_pg_host, automationhub_pg_port, automationhub_pg_database,
@@ -104,6 +106,13 @@ aap_setup_prep_inv_vars:
     automationhub_enable_unauthenticated_collection_access: True
 
     automationhub_ssl_validate_certs: False
+
+    automationedacontroller_admin_password: 'password' # Admin password for EDA UI
+    automationedacontroller_pg_host: 'controller.aap24.local'
+    automationedacontroller_pg_port: '5432'
+    automationedacontroller_pg_database: 'automationedacontroller'
+    automationedacontroller_pg_username: 'automationedacontroller'
+    automationedacontroller_pg_password: 'password'
 
     sso_console_admin_password: ''
 

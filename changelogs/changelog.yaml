@@ -23,3 +23,20 @@ releases:
     - fix_tag.yml
     - licensing.yml
     release_date: '2023-03-13'
+  2.3.0:
+    changes:
+      bugfixes:
+      - Availability checks will use credentials from either aap_setup_prep_inv_secrets
+        or aap_setup_prep_inv_vars
+      - Use correct variable name for OCP connection details
+      deprecated_features:
+      - The kerberos role is now depreciated as it is not compatible with Execution
+        Environments.
+      minor_changes:
+      - galaxy.yml added to enable install from source
+    fragments:
+    - kerberos.yml
+    - ocp_install_connection_var.yml
+    - source_build.yml
+    - use-inv-secrets.yml
+    release_date: '2023-08-03'

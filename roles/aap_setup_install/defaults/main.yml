@@ -66,6 +66,9 @@ ah_hostname: "{{ (aap_setup_prep_inv_nodes['automationhub'].keys() | list)[0] }}
 # ah_oauthtoken: ""
 # ah_validate_certs: false
 
+eda_hostname: "{{ (aap_setup_prep_inv_nodes['automationedacontroller'].keys() | list)[0] }}"
+# eda_validate_certs: false
+
 # force the installation of AAP even if it's already running
 aap_setup_inst_force: false
 

@@ -1,15 +1,19 @@
 ---
 namespace: infra
 name: aap_utilities
-version: 2.2.2
+version: 2.3.0-devel
 description: A collection of utility roles for usage with Ansible Automation Platform
 readme: README.md
 authors:
-    - Sean Sullivan @sean-m-sullivan
+    - Adebisi Oyawale @aoyawale
+    - Kedar Kulkarni @kedark3
     - Tom Page @Tompage1994
-    - David Danielsson @djdanielsson
-repository: https://github.com/redhat-cop/aap_utilities
-issues: https://github.com/redhat-cop/aap_utilities/issues
+    - Sean Sullivan @sean-m-sullivan
+    - Eric Lavarde @ericzolf
+    - Brant Evans @branic
+    - Christopher Renwick @crenwick93
+repository: https://github.com/redhat-cop/aap_utilities/
+issues: https://github.com/redhat-cop/aap_utilities//issues
 build_ignore:
     - galaxy.yml.j2
     - .github
@@ -19,6 +23,7 @@ build_ignore:
     - .pre-commit-config.yaml
     - .gitignore
     - .gitattributes
+    - '*.tar.gz'
 license:
     - GPL-3.0-or-later
 tags:
