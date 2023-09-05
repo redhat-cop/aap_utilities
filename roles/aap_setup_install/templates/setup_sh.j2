@@ -7,3 +7,6 @@
 {%- for varsfile in __extra_vars_files.results %}
  -e @{{ varsfile.dest }}
 {%- endfor -%}
+{%- if aap_setup_inst_log_dir is defined %}
+ -p {{ aap_setup_inst_log_dir }}
+{%- endif -%}

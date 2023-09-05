@@ -20,6 +20,7 @@ The following input variables are available:
 |`controller_hostname/username/password/validate_certs`|none|see below|hostname and credentials of the installed controller, necessary to test previous installation|see the 'redhat\_cop.controller\_configuration' collection|
 |`ah_hostname/username/password/validate_certs`|none|see below|hostname and credentials of the installed automation hub, necessary to test previous installation|see the 'redhat\_cop.ah\_configuration' collection|
 |`aap_setup_inst_force`|false|no|a boolean deciding if the installation should proceed even if the controller and the automation hub are already installed|see [defaults/main.yml](defaults/main.yml)|
+|`aap_setup_inst_log_dir`|none|no|directory where setup.sh stores the log file|'/tmp/'|
 
 Note that the `controller_` and `ah_` variables are only required if the variable `aap_setup_inst_force` is _not_ true _and_ if the respective service is due to be installed.
 
