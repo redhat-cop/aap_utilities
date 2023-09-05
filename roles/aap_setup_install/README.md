@@ -55,18 +55,18 @@ aap_setup_rhel_version: 8
 
 aap_setup_prep_inv_nodes:
   automationcontroller:
-    - ansible-ctrl.example.com
+    ansible-ctrl.example.com:
   automationhub:
-    - ansible-hub.example.com
+    ansible-hub.example.com:
   automationedacontroller:
-    - ansible-eda.example.com
+    ansible-eda.example.com:
   database:
-    - database.example # if using an already existing DB, remove this and ensure that the following variables are filled with the valid details for your Controller and PAH
+    database.example: # if using an already existing DB, remove this and ensure that the following variables are filled with the valid details for your Controller and PAH
                        # databases: pg_host, pg_port, pg_database, ph_username, pg_password, automationhub_pg_host, automationhub_pg_port, automationhub_pg_database,
                        # automationhub_pg_username, automationhub_pg_password, automationhub_pg_sslmode
   execution_nodes:
-    - execution-1.example
-    - execution-2.example
+    execution-1.example:
+    execution-2.example:
   #servicescatalog_workers:
   #sso:
 
