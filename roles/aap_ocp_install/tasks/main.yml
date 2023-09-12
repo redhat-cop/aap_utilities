@@ -8,42 +8,57 @@
   tags:
     - always
 
-- name: Include OpenShift initialization tasks
-  ansible.builtin.include_tasks:
-    file: initialization.yml
-    apply:
+- name: "Openshift deployment tasks"
+  block:
+
+    - name: Include OpenShift initialization tasks
+      ansible.builtin.include_tasks:
+        file: initialization.yml
+        apply:
+          tags:
+            - always
       tags:
         - always
-  tags:
-    - always
 
-- name: Include Ansible Automation Platform operator install tasks
-  ansible.builtin.include_tasks:
-    file: install-operator.yml
-    apply:
+    - name: Include Ansible Automation Platform operator install tasks
+      ansible.builtin.include_tasks:
+        file: install-operator.yml
+        apply:
+          tags:
+            - operator
+      when: aap_ocp_install_operator is defined
       tags:
         - operator
-  when: aap_ocp_install_operator is defined
-  tags:
-    - operator
 
-- name: Include Ansible Automation Platform controller install tasks
-  ansible.builtin.include_tasks:
-    file: install-controller.yml
-    apply:
+    - name: Include Ansible Automation Platform controller install tasks
+      ansible.builtin.include_tasks:
+        file: install-controller.yml
+        apply:
+          tags:
+            - controller
+      when: aap_ocp_install_controller is defined
       tags:
         - controller
-  when: aap_ocp_install_controller is defined
-  tags:
-    - controller
 
-- name: Include Ansible Automation Platform hub install tasks
-  ansible.builtin.include_tasks:
-    file: install-hub.yml
-    apply:
+    - name: Include Ansible Automation Platform hub install tasks
+      ansible.builtin.include_tasks:
+        file: install-hub.yml
+        apply:
+          tags:
+            - hub
+      when: aap_ocp_install_hub is defined
       tags:
         - hub
-  when: aap_ocp_install_hub is defined
-  tags:
-    - hub
+
+  always:
+
+    - name: Include OpenShift finalization tasks
+      ansible.builtin.include_tasks:
+        file: finalization.yml
+        apply:
+          tags:
+            - always
+      tags:
+        - always
+
 ...
