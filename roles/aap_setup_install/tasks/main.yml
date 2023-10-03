@@ -108,7 +108,7 @@
       delay: 10
       when: "'automationhub' in aap_setup_prep_inv_nodes"
 
-    - name: Wait for automation hub to be running
+    - name: Wait for EDA controller to be running
       ansible.builtin.uri:  # use the first host from the list if no hostname is defined
         url: "https://{{ eda_hostname }}/"
         method: GET
