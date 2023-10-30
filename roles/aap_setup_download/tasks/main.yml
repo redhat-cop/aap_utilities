@@ -22,7 +22,7 @@
 
 - name: Simplify the list of possible downloads
   ansible.builtin.set_fact:
-    __aap_setup_down_images: "{{ __aap_setup_down_output.json.body | sort(attribute='datePublished', reverse=True) }}"
+    __aap_setup_down_images: "{{ __aap_setup_down_output.json.body | selectattr('filename', 'match', 'ansible-automation-platform-setup') | sort(attribute='datePublished', reverse=True) }}"
 
 - name: Downloading the latest installer of type {{ aap_setup_down_type }}
   ansible.builtin.get_url:
@@ -31,7 +31,7 @@
     mode: 0644
     headers:
       Authorization: "Bearer {{ __aap_setup_down_login.json.access_token }}"
-  loop: "{{ __aap_setup_down_images[:3] }}"
+  loop: "{{ __aap_setup_down_images }}"
   when: ((aap_setup_down_type | string) + '-' + (aap_setup_down_version | string)) in item.filename
   register: __aap_setup_down_downloads
 
