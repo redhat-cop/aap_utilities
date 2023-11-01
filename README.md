@@ -14,6 +14,14 @@ Using this collection, you'll be able to automate following tasks:
 * OpenShift based installs
   * prepare and install Automation controller and Private automation hub on OpenShift
 
+## Getting Help
+
+We are on the Ansible Forums and Matrix, if you want to discuss something, ask for help, or participate in the community, please use the #infra-config-as-code tag on the fourm, or post to the chat in Matrix.
+
+[Ansible Forums](https://forum.ansible.com/tag/infra-config-as-code)
+
+[Matrix Chat Room](https://matrix.to/#/#aap_config_as_code:ansible.com)
+
 ## Requirements
 
 The following collections are required to use this collection if you are using the Openshift specific roles.
