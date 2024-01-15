@@ -69,7 +69,6 @@ aap_setup_prep_inv_nodes:
     - execution-1.example
     - execution-2.example
   #servicescatalog_workers:
-  #sso:
 
 aap_setup_prep_inv_vars:
   automationcontroller: # denotes the automation controller nodes as hybrid nodes (both controller and execution)
@@ -114,8 +113,6 @@ aap_setup_prep_inv_vars:
     automationedacontroller_pg_database: 'automationedacontroller'
     automationedacontroller_pg_username: 'automationedacontroller'
     automationedacontroller_pg_password: 'password'
-
-    sso_console_admin_password: ''
 
 aap_setup_prep_inv_secrets:
   all:

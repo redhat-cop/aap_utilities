@@ -18,10 +18,10 @@ aap_setup_prep_process_template: true
 # aap_setup_prep_inv_nodes:
 #   automationcontroller:
 #     autoctl1.example.com: "ansible_user={{ ansible_user }} ansible_password={{ ansible_password }} ansible_become=True"
-#   autoctl2.example.com: "ansible_user={{ ansible_user }} ansible_password={{ ansible_password }} ansible_become=True"
+#     autoctl2.example.com: "ansible_user={{ ansible_user }} ansible_password={{ ansible_password }} ansible_become=True"
 #   database:
 #   automationhub:
-#   SSO:  # not yet implemented
+#   automationedacontroller:
 
 # dictionary of list of variables, where each top key is a group, and
 # each 2nd level key is a variable name
@@ -56,7 +56,7 @@ aap_setup_prep_inv_secrets: {}
 #     ## CONTROLLER DATABASE PARAMETERS ##
 #
 #     pg_password: '{{ ansible_password }}'
-#     pg_host: 'autodb.ewl.example.com'
+#     pg_host: 'autodb.example.com'
 #     pg_port: '5432'
 #     pg_database: 'awx'
 #     pg_username: 'awx'
@@ -101,22 +101,28 @@ aap_setup_prep_inv_secrets: {}
 #
 #     ## AUTOMATION HUB DATABASE PARAMETERS ##
 #
-#     automationhub_pg_host: 'autodb.ewl.example.com'
+#     automationhub_pg_host: 'autodb.example.com'
 #     automationhub_pg_port: '5432'
 #     automationhub_pg_database: 'automationhub'
 #     automationhub_pg_username: 'automationhub'
 #     automationhub_pg_password: '{{ ansible_password }}'
 #     automationhub_pg_sslmode: 'prefer'  # set to 'verify-full' for client-side enforced SSL
+#     ## AUTOMATION EDA PARAMETERS ##
 #
-#     ## AUTOMATION HUB SSO PARAMETERS ##
+#     automationedacontroller_admin_password: '{{ ansible_password }}'
+#     automationedacontroller_controller_verify_ssl: true  # or false if self-signed
+#     # The full routable URL used by EDA to connect to a controller host.
+#     # This URL is required if there is no Automation Controller configured
+#     # in inventory.
+#     # automation_controller_main_url: 'https://autoctl.example.com'
 #
-#     #sso_keystore_password: '{{ ansible_password }}'
-#
-#     # If you are implementing Red Hat Single Sign-On on your automation hub
-#     # environment, with a cluster setup, specify the main automation hub URL that
-#     # clients will connect to, using the automationhub_main_url field.
-#     # By default, the first node of the Automation Hub cluster is used.
-#     #automationhub_main_url: 'https://automationhub.ansible.com'
+#     ## AUTOMATION EDA DATABASE PARAMETERS ##
+#     automationedacontroller_pg_host: 'autodb.example.com'
+#     automationedacontroller_pg_port: '5432'
+#     automationedacontroller_pg_database: 'automationeda'
+#     automationedacontroller_pg_username: 'automationeda'
+#     automationedacontroller_pg_password: '{{ ansible_password }}'
+#     automationedacontroller_pg_sslmode: 'prefer'
 #
 #     ## DATABASE SERVER PARAMETERS ##
 #
@@ -124,12 +130,7 @@ aap_setup_prep_inv_secrets: {}
 #     # postgres_use_ssl: False
 #     # postgres_ssl_cert: /path/to/pgsql.crt
 #     # postgres_ssl_key: /path/to/pgsql.key
-#
-#     ## RH SSO PARAMETERS ##
-#
-#     #sso_console_admin_username: 'admin'
-#     #sso_console_admin_password: '{{ ansible_password }}'
-#
+
 # list of fixes to apply to the installation scripts, use with CAUTION!
 aap_setup_prep_fixes: []
 ...
