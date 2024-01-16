@@ -1,7 +1,7 @@
 ---
 namespace: infra
 name: aap_utilities
-version: 2.3.0-devel
+version: 2.4.0-devel
 description: A collection of utility roles for usage with Ansible Automation Platform
 readme: README.md
 authors:
