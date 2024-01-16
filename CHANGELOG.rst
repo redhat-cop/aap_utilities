@@ -5,6 +5,9 @@ infra.aap_Utilities Release Notes
 .. contents:: Topics
 
 
+v2.4.0
+======
+
 v2.3.0
 ======
 
