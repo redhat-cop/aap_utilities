@@ -1,6 +1,6 @@
 # infra.aap\_utilities.aap\_certs
 
-Ansible role to install SSL certificates for AAP automation controller and/or automation hub.
+Ansible role to install SSL certificates for AAP automation controller and/or automation hub and/or EDA controller.
 
 Certificates are only installed if the underlying destination directory does already exist,
 this allows to point the role at all servers in the cluster.
@@ -24,6 +24,9 @@ aap_certs_controller_ssl_cert: "{{ playbook_dir }}/tower.cert"
 aap_certs_controller_ssl_key: "{{ playbook_dir }}/tower.key"
 aap_certs_autohub_ssl_cert: "{{ playbook_dir }}/pulp.cert"
 aap_certs_autohub_ssl_key: "{{ playbook_dir }}/pulp.key"
+aap_certs_eda_ssl_cert: "{{ playbook_dir }}/server.cert"
+aap_certs_eda_ssl_key: "{{ playbook_dir }}/server.key"
+
 ```
 
 The content of the certificates and keys can also be set rather than specifying a file.
@@ -35,6 +38,9 @@ aap_certs_controller_ssl_cert_content: "-----BEGIN CERTIFICATE----- xxxxxx -----
 aap_certs_controller_ssl_key_content: "-----BEGIN PRIVATE KEY----- xxxxxx -----END PRIVATE KEY-----"
 aap_certs_autohub_ssl_cert_content: "-----BEGIN CERTIFICATE----- xxxxxx -----END CERTIFICATE-----"
 aap_certs_autohub_ssl_key_content: "-----BEGIN PRIVATE KEY----- xxxxxx -----END PRIVATE KEY-----"
+aap_certs_eda_ssl_cert_content: "-----BEGIN CERTIFICATE----- xxxxxx -----END CERTIFICATE-----"
+aap_certs_eda_ssl_key_content: "-----BEGIN PRIVATE KEY----- xxxxxx -----END PRIVATE KEY-----"
+
 ```
 
 The following variable defines if the old certificates/keys should be backed-up:
