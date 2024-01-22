@@ -59,22 +59,19 @@ Else change to `become: true`.
 aap_setup_down_type: "setup-bundle"
 aap_setup_rhel_version: 8
 
-aap_setup_prep_inv_nodes:
+aap_setup_prep_inv_nodes:  # a dictionary of dictionaries!
   automationcontroller:
-    - ansible-ctrl.example.com
+    ansible-ctrl.example.com:
   automationhub:
-    - ansible-hub.example.com
+    ansible-hub.example.com:
   automationedacontroller:
-    - ansible-eda.example.com
+    ansible-eda.example.com:
   database:
-    - database.example # if using an already existing DB, remove this and ensure that the following variables are filled with the valid details for your Controller and PAH
-                       # databases: pg_host, pg_port, pg_database, ph_username, pg_password, automationhub_pg_host, automationhub_pg_port, automationhub_pg_database,
-                       # automationhub_pg_username, automationhub_pg_password, automationhub_pg_sslmode
+    database.example.com:  # If using an already existing DB, remove this group/node
+                           # and adapt accordingly the following database related values
   execution_nodes:
-    - execution-1.example
-    - execution-2.example
-  #servicescatalog_workers:
-  #sso:
+    execution-1.example.com:
+    execution-2.example.com:
 
 aap_setup_prep_inv_vars:
   automationcontroller: # denotes the automation controller nodes as hybrid nodes (controller and execution)
@@ -88,7 +85,7 @@ aap_setup_prep_inv_vars:
     ansible_user: ansible
     ansible_become: true
     admin_password: changeme # admin password for Automation Controller UI
-    pg_host: 'database.example'
+    pg_host: 'database.example.com'
     pg_port: '5432'
 
     pg_database: 'awx'
@@ -100,14 +97,14 @@ aap_setup_prep_inv_vars:
     receptor_listener_port: 27199
 
     automationhub_admin_password: changeme # admin password for PAH UI
-    automationhub_pg_host: 'database.example'
+    automationhub_pg_host: 'database.example.com'
     automationhub_pg_port: '5432'
 
     automationhub_pg_database: 'automationhub'
     automationhub_pg_username: 'automationhub'
     automationhub_pg_password: changeme
     automationhub_pg_sslmode: 'prefer'
-    automationhub_main_url: https://hub.example #url, not hostname
+    automationhub_main_url: https://hub.example.com #url, not hostname
     automationhub_require_content_approval: False
     automationhub_enable_unauthenticated_collection_access: True
 
