@@ -56,9 +56,6 @@ To check what version of powershell is installed, run the following in powershel
 $PSVersionTable.PSVersion
 ```
 
-A technet guide on upgrading to PowerShell 4 is here:
-<https://social.technet.microsoft.com/wiki/contents/articles/20623.step-by-step-upgrading-the-powershell-version-4-on-2008-r2.aspx>
-
 ## Tags
 
 If you would like to skip the check of EPEL and python-pip installation,
