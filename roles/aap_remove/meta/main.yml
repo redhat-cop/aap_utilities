@@ -4,9 +4,9 @@ galaxy_info:
   description: Role to remove the Ansible Automation Platform
   company: Red Hat
 
-  license: MIT
+  license: GPL-3.0-or-later
 
-  min_ansible_version: "2.12"
+  min_ansible_version: 2.14.0
 
   platforms:
     - name: EL
