@@ -7,6 +7,9 @@ aap_setup_inst_setup_dir: "{{ aap_setup_prep_setup_dir }}"
 # where is the inventory file, relative to the above directory _or_ absolute:
 aap_setup_inst_inventory: inventory
 
+# Are we installing containerized AAP
+aap_setup_inst_containerized: "{{ aap_setup_containerized }}"
+
 # dictionary of extra vars files used when calling setup.sh
 aap_setup_inst_extra_vars_files: []
 # - extra_vars.yml
@@ -66,7 +69,7 @@ ah_hostname: "{{ (aap_setup_prep_inv_nodes['automationhub'].keys() | list)[0] }}
 # ah_oauthtoken: ""
 # ah_validate_certs: false
 
-eda_hostname: "{{ (aap_setup_prep_inv_nodes['automationedacontroller'].keys() | list)[0] }}"
+eda_hostname: "{{ (aap_setup_prep_inv_nodes[__aap_setup_inst_eda_group_name].keys() | list)[0] }}"
 # eda_validate_certs: false
 
 # force the installation of AAP even if it's already running
