@@ -20,6 +20,7 @@ The following input variables are available:
 |`aap_setup_prep_inv_nodes`|none|yes|a dictionary of dictionaries, the first level key is the inventory group name, the 2nd level key is the hostname with the value being its inventory host variables in INI-format|see [defaults/main.yml](defaults/main.yml)|
 |`aap_setup_prep_inv_vars`|{}|see below|a dictionary of dictionaries, the first level key is the inventory group name, the 2nd level key is the variable name with the value being the variable's value|see [defaults/main.yml](defaults/main.yml)|
 |`aap_setup_prep_inv_secrets`|{}|see below|a dictionary of dictionaries, the first level key is the inventory group name, the 2nd level key is the variable name with the value being the variable's value|see [defaults/main.yml](defaults/main.yml)|
+|`aap_setup_prep_containerized`|"`{{ aap_setup_containerized }}`"|no|will the setup prep be for a containerized install|see [defaults/main.yml](defaults/main.yml)|
 
 Some notes about the inventory variables and secrets:
 

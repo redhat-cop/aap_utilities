@@ -7,6 +7,8 @@ aap_setup_prep_installer_file: "{{ aap_setup_down_installer_file }}"
 # where to extract the installer file
 aap_setup_prep_working_dir: "{{ aap_setup_working_dir | default('/var/tmp') }}"
 
+aap_setup_prep_containerized: "{{ aap_setup_containerized }}"
+
 # shall the default inventory template be processed
 # if false, you'll need to provide your own inventory at a later stage
 aap_setup_prep_process_template: true

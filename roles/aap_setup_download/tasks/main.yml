@@ -22,7 +22,7 @@
 
 - name: Simplify the list of possible downloads
   ansible.builtin.set_fact:
-    __aap_setup_down_images: "{{ __aap_setup_down_output.json.body | selectattr('filename', 'match', 'ansible-automation-platform-setup') | sort(attribute='datePublished', reverse=True) }}"
+    __aap_setup_down_images: "{{ __aap_setup_down_output.json.body | selectattr('filename', 'match', ((aap_setup_containerized | bool) | ternary('ansible-automation-platform-containerized-setup', 'ansible-automation-platform-setup'))) | sort(attribute='datePublished', reverse=True) }}"
 
 - name: Downloading the latest installer of type {{ aap_setup_down_type }}
   ansible.builtin.get_url:
@@ -34,7 +34,7 @@
   loop: "{{ __aap_setup_down_images[:3] }}"
   when:
     - ((aap_setup_down_type | string) + '-' + (aap_setup_down_version | string)) in item.filename
-    - "'ansible-automation-platform-setup' in item.filename"
+    - ((aap_setup_containerized | bool) | ternary('ansible-automation-platform-containerized-setup', 'ansible-automation-platform-setup')) in item.filename
   register: __aap_setup_down_downloads
 
 - name: Extract the name of the downloaded installer to aap_setup_down_installer_file
