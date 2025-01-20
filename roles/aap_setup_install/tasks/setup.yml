@@ -49,7 +49,7 @@
 
 - name: Check Gateway API Status
   ansible.builtin.uri:
-    url: https://{{ gateway_hostname }}/api/gateway/v1/status/
+    url: https://{{ gateway_hostname }}/api/gateway/v1/status/?service_keys=true
     method: GET
     user: admin
     password: "{{ aap_setup_prep_inv_secrets.all.automationgateway_admin_password | default(aap_setup_prep_inv_vars.all.automationgateway_admin_password) }}"
@@ -143,9 +143,9 @@
         - "'automationedacontroller' in aap_setup_prep_inv_nodes"
         - aap_setup_down_version is version('2.5', '<')
 
-    - name: Wait for Automation controller service to be running
+    - name: Wait for Automation Controller service to be running
       ansible.builtin.uri: # use the first host from the list if no hostname is defined
-        url: https://{{ gateway_hostname }}/api/gateway/v1/status/
+        url: https://{{ gateway_hostname }}/api/gateway/v1/status/?service_keys=true
         method: GET
         user: admin
         password: "{{ aap_setup_prep_inv_secrets.all.automationgateway_admin_password | default(aap_setup_prep_inv_vars.all.automationgateway_admin_password) }}"
@@ -161,7 +161,7 @@
 
     - name: Wait for Automation Hub service to be running
       ansible.builtin.uri: # use the first host from the list if no hostname is defined
-        url: https://{{ gateway_hostname }}/api/gateway/v1/status/
+        url: https://{{ gateway_hostname }}/api/gateway/v1/status/?service_keys=true
         method: GET
         user: admin
         password: "{{ aap_setup_prep_inv_secrets.all.automationgateway_admin_password | default(aap_setup_prep_inv_vars.all.automationgateway_admin_password) }}"
@@ -175,9 +175,9 @@
         - "'automationhub' in aap_setup_prep_inv_nodes"
         - aap_setup_down_version is version('2.5', '>=')
 
-    - name: Wait for EDA controller service to be running
+    - name: Wait for EDA Controller service to be running
       ansible.builtin.uri: # use the first host from the list if no hostname is defined
-        url: https://{{ gateway_hostname }}/api/gateway/v1/status/
+        url: https://{{ gateway_hostname }}/api/gateway/v1/status/?service_keys=true
         method: GET
         user: admin
         password: "{{ aap_setup_prep_inv_secrets.all.automationgateway_admin_password | default(aap_setup_prep_inv_vars.all.automationgateway_admin_password) }}"
@@ -193,14 +193,14 @@
 
     - name: Wait for Automation Gateway service to be running
       ansible.builtin.uri: # use the first host from the list if no hostname is defined
-        url: https://{{ gateway_hostname }}/api/gateway/v1/status/
+        url: https://{{ gateway_hostname }}/api/gateway/v1/ping/
         method: GET
         user: admin
         password: "{{ aap_setup_prep_inv_secrets.all.automationgateway_admin_password | default(aap_setup_prep_inv_vars.all.automationgateway_admin_password) }}"
         validate_certs: "{{ gateway_validate_certs | default('false') }}"
         force_basic_auth: true
       register: __aap_setup_inst_result_gateway
-      until: __aap_setup_inst_result_gateway.json.services.gateway.status == "good"
+      until: __aap_setup_inst_result_gateway.json.status == "good"
       retries: 90
       delay: 10
       when:
