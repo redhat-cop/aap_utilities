@@ -1,0 +1,10 @@
+---
+apiVersion: eda.ansible.com/v1alpha1
+kind: EDA
+metadata:
+  name: {{ aap_ocp_install_eda['instance_name'] }}
+  namespace: {{ aap_ocp_install_eda['namespace'] | default(aap_ocp_install_namespace) }}
+spec:
+  replicas: {{ aap_ocp_install_eda['replicas'] | default(1) | int }}
+  automation_server_url: 'https://{{ __aap_ocp_install_controller_route }}/'
+...

@@ -1,0 +1,68 @@
+---
+- name: Stop and disable services
+  ansible.builtin.systemd:
+    name: "{{ item }}"
+    state: stopped
+    enabled: false
+  failed_when: false
+  loop:
+    - nginx.service
+    - postgresql.service
+    - pulpcore-api.service
+    - pulpcore-content.service
+    - pulpcore-resource-manager.service
+    - pulpcore.service
+    - redis.service
+  become: true
+
+- name: Remove software
+  ansible.builtin.dnf:
+    name:
+      - postgresql
+      - postgresql-server
+      - redis
+      - redhat-logos-httpd
+      - nginx
+      - nginx-filesystem
+      - automation-hub
+      - pulpcore-selinux
+      - python38-pulpcore
+      - python38-pulp-container
+      - python38-pulp-ansible
+      - python38-galaxy-importer
+      - python38-galaxy-ng
+    state: absent
+    autoremove: true
+  become: true
+
+- name: Remove created directories
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: absent
+  loop:
+    - /etc/galaxy-importer
+    - /etc/nginx
+    - /etc/pulp
+    - /root/hub
+  become: true
+
+- name: Remove added users
+  ansible.builtin.user:
+    name: "{{ item }}"
+    state: absent
+    remove: true
+  loop:
+    - postgres
+    - redis
+    - pulp
+    - nginx
+  become: true
+
+- name: Remove added groups
+  ansible.builtin.group:
+    name: "{{ item }}"
+    state: absent
+  loop:
+    - redis
+  become: true
+...

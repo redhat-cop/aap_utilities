@@ -1,0 +1,47 @@
+---
+# Variable applicable to connecting to OpenShift
+# aap_ocp_install_connection:
+#   host:
+#   username:
+#   password:
+#   api_key:
+#   verify_ssl:
+
+# Namespace to install into
+# aap_ocp_install_namespace:
+
+# Variable applicable to the operator installation
+# aap_ocp_install_operator:
+#   channel:
+
+# Variables applicable to the Ansible platform installation
+# aap_ocp_install_platform:
+#   instance_name:
+
+# Variable applicable to the controller installation
+# aap_ocp_install_controller:
+#   instance_name:
+#   replicas:
+#   link_text:
+
+# Variable applicable to the hub installation
+# aap_ocp_install_hub:
+#   instance_name:
+#   link_text:
+#   storage_type:
+#   file_storage_storage_class:
+#   file_storage_size:
+#   object_storage_s3_secret:
+#   object_storage_azure_secret:
+
+# Variable applicable to the EDA installation
+# aap_ocp_install_eda:
+#   namespace:
+#   instance_name:
+#   replicas:
+#   link_text:
+
+# Variables applicable to the Lightspeed installation
+# aap_ocp_install_lightspeed:
+#
+...

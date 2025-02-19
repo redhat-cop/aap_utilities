@@ -1,0 +1,10 @@
+---
+# defaults file for infra.aap_utilities.aap_remove
+
+############################################################
+#               AAP Remove Vars                         #
+############################################################
+
+aap_remove_controller: false
+aap_remove_ah: false
+...

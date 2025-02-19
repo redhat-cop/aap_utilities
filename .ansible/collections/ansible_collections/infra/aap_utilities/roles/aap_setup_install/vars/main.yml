@@ -1,0 +1,8 @@
+---
+# Set the https port used for validating services are up
+__aap_setup_inst_controller_port: "{{ aap_setup_prep_inv_vars.automationcontroller.nginx_https_port | default('8443') }}"
+__aap_setup_inst_hub_port: "{{ aap_setup_prep_inv_vars.automationhub.nginx_https_port | default('8444') }}"
+__aap_setup_inst_eda_port: "{{ aap_setup_prep_inv_vars.automationeda.nginx_https_port | default('8445') }}"
+
+__aap_setup_inst_eda_group_name: "{{ (aap_setup_inst_containerized | bool) | ternary('automationeda', 'automationedacontroller') }}"
+...

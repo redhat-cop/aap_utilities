@@ -1,0 +1,10 @@
+---
+############################################################
+#               AAP backup settings.                       #
+############################################################
+
+# Default backup vars, these are default from installer
+aap_backup_dest: /var/tmp
+aap_backup_async: 10000
+aap_backup_poll: 20
+...

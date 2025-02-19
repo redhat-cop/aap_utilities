@@ -1,0 +1,26 @@
+---
+# defaults file for aap_setup_download
+
+# Acquire your token at https://access.redhat.com/management/api/
+# see https://access.redhat.com/articles/3626371
+#
+# aap_setup_down_offline_token:
+
+# which version of the installer to download
+aap_setup_down_version: "2.5"
+
+# Which system architecture to dowload for
+aap_setup_arch: x86_64
+
+# Which RHEL version are you using (8 or 9)
+aap_setup_rhel_version: "{{ ansible_distribution_major_version | default(8, true) }}"
+
+# where to download the setup installer file
+aap_setup_down_dest_dir: "{{ aap_setup_working_dir | default('/var/tmp') }}"
+
+# do you download the "setup-bundle" or only the (online) "setup"?
+aap_setup_down_type: setup-bundle
+
+# Download containerized installer
+aap_setup_containerized: false
+...

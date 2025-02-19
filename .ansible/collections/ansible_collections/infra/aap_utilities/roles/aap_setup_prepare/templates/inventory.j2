@@ -1,0 +1,28 @@
+{# output all the hosts and their groups #}
+
+{% for group_key in aap_setup_prep_inv_nodes %}
+
+{%if group_key in groups %}
+[{{ group_key }}]
+{% for node_key in aap_setup_prep_inv_nodes[group_key] %}
+{{ node_key }}{% if aap_setup_prep_inv_nodes[group_key][node_key] is defined %} {{ aap_setup_prep_inv_nodes[group_key][node_key] }}{% endif %}
+
+{% endfor %}
+
+{% endif %}
+
+{% endfor %}
+
+{# output all the variables and their groups #}
+
+{% for group_key in (aap_setup_prep_inv_vars | combine(aap_setup_prep_inv_secrets)) %}
+[{{ group_key }}:vars]
+{% set __inventory_vars = (aap_setup_prep_inv_vars[group_key] | default({})) | combine(aap_setup_prep_inv_secrets[group_key] | default({})) %}
+{% for var_key in __inventory_vars %}
+{% if var_key.endswith('_port') and not (aap_setup_prep_containerized | bool) %}{# workaround for AAP-1798 unless we are doing a containerized install #}
+{{ var_key }}='{{ __inventory_vars[var_key] }}'
+{% else %}
+{{ var_key }}={{ __inventory_vars[var_key] }}
+{% endif %}
+{% endfor %}
+{% endfor %}

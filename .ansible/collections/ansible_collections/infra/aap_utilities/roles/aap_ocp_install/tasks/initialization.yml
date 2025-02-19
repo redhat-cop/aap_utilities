@@ -1,0 +1,33 @@
+---
+- name: Get OpenShift API token
+  # Disabling check for FQCN on module names as using either community.okd or redhat.openshift collection is able to be used
+  openshift_auth: # noqa fqcn[action]
+    host: "{{ aap_ocp_install_connection['host'] | mandatory }}"
+    username: "{{ aap_ocp_install_connection['username'] | mandatory }}"
+    password: "{{ aap_ocp_install_connection['password'] | mandatory }}"
+    validate_certs: "{{ aap_ocp_install_connection['validate_certs'] | default(omit) }}"
+  register: __aap_ocp_install_auth_results
+  when: aap_ocp_install_connection['api_key'] is not defined
+
+- name: Set authentication for provided API key
+  ansible.builtin.set_fact:
+    __aap_ocp_install_auth_results:
+      openshift_auth:
+        host: "{{ aap_ocp_install_connection['host'] | mandatory }}"
+        api_key: "{{ aap_ocp_install_connection['api_key'] | mandatory }}"
+        validate_certs: "{{ aap_ocp_install_connection['validate_certs'] | default(omit) }}"
+  when: aap_ocp_install_connection['api_key'] is defined
+
+- name: Create namespace
+  when: aap_ocp_install_create_namespace | default(true) | bool
+  kubernetes.core.k8s:
+    host: "{{ __aap_ocp_install_auth_results['openshift_auth']['host'] }}"
+    api_key: "{{ __aap_ocp_install_auth_results['openshift_auth']['api_key'] }}"
+    validate_certs: "{{ aap_ocp_install_connection['validate_certs'] | default(omit) }}"
+    state: present
+    resource_definition: "{{ lookup('ansible.builtin.template', 'namespace.yaml.j2', template_vars=ns_vars) | from_yaml | ansible.builtin.combine(aap_ocp_install_namespace_manifest_overrides | default({}), recursive=true) }}"
+    apply: true
+  vars:
+    ns_vars:
+      ns_name: "{{ aap_ocp_install_namespace }}"
+...

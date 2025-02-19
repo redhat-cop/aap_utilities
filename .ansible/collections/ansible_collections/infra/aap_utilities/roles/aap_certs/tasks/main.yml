@@ -1,0 +1,40 @@
+---
+- name: Validate if controller certificates directory exists
+  become: true
+  ansible.builtin.stat:
+    path: "{{ aap_certs_controller_cert_dest | dirname }}"
+  register: __aap_certs_controller_dir
+
+- name: Install certificates for controller if directory exists
+  ansible.builtin.include_tasks: controller.yml
+  when:
+    - __aap_certs_controller_dir.stat.exists
+    - aap_certs_controller_ssl_cert is defined or aap_certs_controller_ssl_cert_content is defined
+    - aap_certs_controller_ssl_key is defined or aap_certs_controller_ssl_key_content is defined
+
+- name: Validate if automation hub certificates directory exists
+  become: true
+  ansible.builtin.stat:
+    path: "{{ aap_certs_autohub_cert_dest | dirname }}"
+  register: __aap_certs_autohub_dir
+
+- name: Install certificates for automation hub if directory exists
+  ansible.builtin.include_tasks: autohub.yml
+  when:
+    - __aap_certs_autohub_dir.stat.exists
+    - aap_certs_autohub_ssl_cert is defined or aap_certs_autohub_ssl_cert_content is defined
+    - aap_certs_autohub_ssl_key is defined or aap_certs_autohub_ssl_key_content is defined
+
+- name: Validate if eda controller certificates directory exists
+  become: true
+  ansible.builtin.stat:
+    path: "{{ aap_certs_eda_cert_dest | dirname }}"
+  register: __aap_certs_eda_dir
+
+- name: Install certificates for eda controller if directory exists
+  ansible.builtin.include_tasks: edacontroller.yml
+  when:
+    - __aap_certs_eda_dir.stat.exists
+    - aap_certs_eda_ssl_cert is defined or aap_certs_eda_ssl_cert_content is defined
+    - aap_certs_eda_ssl_key is defined or aap_certs_eda_ssl_key_content is defined
+...

@@ -1,0 +1,6 @@
+---
+# vars file for aap_setup_download
+aap_setup_down_release: ansible-automation-platform-{{ aap_setup_down_version }}-for-rhel-{{ aap_setup_rhel_version }}-{{ aap_setup_arch }}-files
+aap_setup_down_token_url: https://sso.redhat.com/auth/realms/redhat-external/protocol/openid-connect/token
+aap_setup_down_images_url: https://api.access.redhat.com/management/v1/images/cset/{{ aap_setup_down_release }}
+...

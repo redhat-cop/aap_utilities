@@ -1,0 +1,8 @@
+---
+aap_certs_controller_cert_dest: /etc/tower/tower.cert
+aap_certs_controller_key_dest: /etc/tower/tower.key
+aap_certs_autohub_cert_dest: /etc/pulp/certs/pulp_webserver.crt
+aap_certs_autohub_key_dest: /etc/pulp/certs/pulp_webserver.key
+aap_certs_eda_cert_dest: /etc/ansible-automation-platform/eda/server.cert
+aap_certs_eda_key_dest: /etc/ansible-automation-platform/eda/server.key
+...

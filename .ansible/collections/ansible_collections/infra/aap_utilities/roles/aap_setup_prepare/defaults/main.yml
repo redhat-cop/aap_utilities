@@ -1,0 +1,137 @@
+---
+# defaults file for aap_setup_prepare
+# where to find the installer file
+# the default is to get it from the role aap_setup_download
+aap_setup_prep_installer_file: "{{ aap_setup_down_installer_file }}"
+
+# where to extract the installer file
+aap_setup_prep_working_dir: "{{ aap_setup_working_dir | default('/var/tmp') }}"
+
+aap_setup_prep_containerized: "{{ aap_setup_containerized }}"
+
+# shall the default inventory template be processed
+# if false, you'll need to provide your own inventory at a later stage
+aap_setup_prep_process_template: true
+
+# variables required by the inventory template
+
+# dictionary of dictionaries of nodes in the cluster, where each top level key
+# is a group name, and 2nd level is the host's name:
+# aap_setup_prep_inv_nodes:
+#   automationcontroller:
+#     autoctl1.example.com: "ansible_user={{ ansible_user }} ansible_password={{ ansible_password }} ansible_become=True"
+#     autoctl2.example.com: "ansible_user={{ ansible_user }} ansible_password={{ ansible_password }} ansible_become=True"
+#   database:
+#   automationhub:
+#   automationedacontroller:
+
+# dictionary of list of variables, where each top key is a group, and
+# each 2nd level key is a variable name
+# both variables can actually be used the same, there are just two of them, so
+# that secret from non-secret variables can be split
+# (and the secret ones placed in a vault)
+aap_setup_prep_inv_vars: {}
+aap_setup_prep_inv_secrets: {}
+# aap_setup_prep_inv_vars:  # and/or _secrets
+#   all:
+#     # workaround to avoid enabling the codeready repo on the autohub server
+#     pulp_rhel_codeready_repo: []
+#
+#     ## CONTROLLER PARAMETERS ##
+#
+#     admin_password: '{{ ansible_password }}'
+#
+#     # registry_username and registry_password must be set when
+#     # registry_url is registry.redhat.io
+#     # See https://access.redhat.com/RegistryAuthentication#registry-service-accounts-for-shared-environments-4
+#     registry_username: '{{ aap_setup_prep_registry_username }}'
+#     registry_password: '{{ aap_setup_prep_registry_password }}'
+#     #registry_url: {{ aap_setup_prep_registry_url }}
+#
+#     # If set, this will install a custom CA certificate to the system trust store.
+#     #custom_ca_cert: /path/to/ca.crt
+#     # Certificate and key to install in nginx for the web UI and API
+#     #web_server_ssl_cert: /path/to/tower.cert
+#     #web_server_ssl_key: /path/to/tower.key
+#
+#     ## CONTROLLER DATABASE PARAMETERS ##
+#
+#     pg_password: '{{ ansible_password }}'
+#     pg_host: 'autodb.example.com'
+#     pg_port: '5432'
+#     pg_database: 'awx'
+#     pg_username: 'awx'
+#     pg_sslmode: 'prefer'  # set to 'verify-full' for client-side enforced SSL
+#
+#     ## AUTOMATION HUB PARAMETERS ##
+#
+#     automationhub_admin_password: '{{ ansible_password }}'
+#
+#     # Dictionary of settings/configuration to pass to galaxy-importer.
+#     # It will end up in /etc/galaxy-importer/galaxy-importer.cfg
+#     #automationhub_importer_settings:
+#
+#     # Whether or not automation hub enforces the approval mechanism before
+#     # collections are made available
+#     #automationhub_require_content_approval:
+#
+#     # Whether or not automation hub should be deployed with TLS enabled
+#     #automationhub_disable_https:
+#
+#     # Whether or not automation hub should be deployed with the HTTP Strict
+#     # Transport Security (HSTS) web-security policy mechanism enabled
+#     #automationhub_disable_hsts:
+#
+#     # Whether or not automation hub should validate certificate when requesting
+#     # itself (default :  False) because by default, Platform deploys with self-signed # certificates
+#     #automationhub_ssl_validate_certs:
+#
+#     # Same as web_server_ssl_cert but for automation hub UI and API
+#     #automationhub_ssl_cert:
+#
+#     # Same as web_server_ssl_key but for automation hub UI and API
+#     #automationhub_ssl_key:
+#
+#     # automation hub provides artifacts in /var/lib/pulp. By default, this is set to
+#     # true so automation controller automatically backs up the artifacts by default.
+#     # If a partition (e.g., LVM, NFS, CephFS, etc.) was mounted there, an enterprise
+#     # organization would ensure it is always backed up. If this is the case, you can
+#     # set automationhub_backup_collections :  false and the backup/restore process
+#     # will not have to backup/restore /var/lib/pulp
+#     #automationhub_backup_collections:
+#
+#     ## AUTOMATION HUB DATABASE PARAMETERS ##
+#
+#     automationhub_pg_host: 'autodb.example.com'
+#     automationhub_pg_port: '5432'
+#     automationhub_pg_database: 'automationhub'
+#     automationhub_pg_username: 'automationhub'
+#     automationhub_pg_password: '{{ ansible_password }}'
+#     automationhub_pg_sslmode: 'prefer'  # set to 'verify-full' for client-side enforced SSL
+#     ## AUTOMATION EDA PARAMETERS ##
+#
+#     automationedacontroller_admin_password: '{{ ansible_password }}'
+#     automationedacontroller_controller_verify_ssl: true  # or false if self-signed
+#     # The full routable URL used by EDA to connect to a controller host.
+#     # This URL is required if there is no Automation Controller configured
+#     # in inventory.
+#     # automation_controller_main_url: 'https://autoctl.example.com'
+#
+#     ## AUTOMATION EDA DATABASE PARAMETERS ##
+#     automationedacontroller_pg_host: 'autodb.example.com'
+#     automationedacontroller_pg_port: '5432'
+#     automationedacontroller_pg_database: 'automationeda'
+#     automationedacontroller_pg_username: 'automationeda'
+#     automationedacontroller_pg_password: '{{ ansible_password }}'
+#     automationedacontroller_pg_sslmode: 'prefer'
+#
+#     ## DATABASE SERVER PARAMETERS ##
+#
+#     # Server-side SSL settings for PostgreSQL (when we are installing it).
+#     # postgres_use_ssl: False
+#     # postgres_ssl_cert: /path/to/pgsql.crt
+#     # postgres_ssl_key: /path/to/pgsql.key
+
+# list of fixes to apply to the installation scripts, use with CAUTION!
+aap_setup_prep_fixes: []
+...

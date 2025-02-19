@@ -1,0 +1,27 @@
+---
+# paths to the source certificates
+# they can be created with:
+# openssl req -x509 -nodes -sha256 -days 824 -newkey rsa:2048 \
+#   -keyout tower.key -out tower.cert
+# or
+#   -keyout pulp.key -out pulp.cert
+# or
+#   -keyout server.key -out server.cert
+# aap_certs_controller_ssl_cert: "{{ playbook_dir }}/tower.cert"
+# aap_certs_controller_ssl_key: "{{ playbook_dir }}/tower.key"
+# aap_certs_autohub_ssl_cert: "{{ playbook_dir }}/pulp.cert"
+# aap_certs_autohub_ssl_key: "{{ playbook_dir }}/pulp.key"
+# aap_certs_eda_ssl_cert: "{{ playbook_dir }}/server.cert"
+# aap_certs_eda_ssl_key: "{{ playbook_dir }}/server.key"
+#
+# content of the certificates and keys (mutex with above vars)
+# aap_certs_controller_ssl_cert_content: "-----BEGIN CERTIFICATE----- xxxxxx -----END CERTIFICATE-----"
+# aap_certs_controller_ssl_key_content: "-----BEGIN PRIVATE KEY----- xxxxxx -----END PRIVATE KEY-----"
+# aap_certs_autohub_ssl_cert_content: "-----BEGIN CERTIFICATE----- xxxxxx -----END CERTIFICATE-----"
+# aap_certs_autohub_ssl_key_content: "-----BEGIN PRIVATE KEY----- xxxxxx -----END PRIVATE KEY-----"
+# aap_certs_eda_ssl_cert_content: "-----BEGIN CERTIFICATE----- xxxxxx -----END CERTIFICATE-----"
+# aap_certs_eda_ssl_key_content: "-----BEGIN PRIVATE KEY----- xxxxxx -----END PRIVATE KEY-----"
+
+# boolean to decide if the existing certificates are kept
+aap_certs_create_backup: false
+...

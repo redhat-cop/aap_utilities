@@ -1,0 +1,12 @@
+---
+# tasks file for aap_setup_install
+
+- name: Apply relevant fixes / workarounds
+  ansible.builtin.include_tasks:
+    file: fixes/{{ item }}.yml
+  loop: "{{ aap_setup_inst_fixes }}"
+
+- name: Install AAP
+  ansible.builtin.include_tasks:
+    file: "{{ (aap_setup_inst_containerized | bool) | ternary('containerized.yml', 'setup.yml') }}"
+...

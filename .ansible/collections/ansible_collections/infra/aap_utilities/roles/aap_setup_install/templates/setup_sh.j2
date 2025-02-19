@@ -1,0 +1,12 @@
+{# template to generate the command line for the setup.sh installation script #}
+
+./setup.sh -i "{{ aap_setup_inst_inventory }}"
+{%- for varkey in aap_setup_inst_extra_vars %}
+ -e {{ varkey }}={{ aap_setup_inst_extra_vars[varkey] | quote }}
+{%- endfor -%}
+{%- for varsfile in __extra_vars_files.results %}
+ -e @{{ varsfile.dest }}
+{%- endfor -%}
+{%- if aap_setup_inst_log_dir is defined %}
+ -p {{ aap_setup_inst_log_dir }}
+{%- endif -%}

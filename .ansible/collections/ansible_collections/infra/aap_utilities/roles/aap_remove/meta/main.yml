@@ -1,0 +1,23 @@
+---
+galaxy_info:
+  author: Tom Page
+  description: Role to remove the Ansible Automation Platform
+  company: Red Hat
+
+  license: GPL-3.0-or-later
+
+  min_ansible_version: 2.15.0
+
+  platforms:
+    - name: EL
+      versions:
+        - "8"
+
+  galaxy_tags:
+    - linux
+    - system
+    - ansible
+    - remove
+
+dependencies: []
+...
