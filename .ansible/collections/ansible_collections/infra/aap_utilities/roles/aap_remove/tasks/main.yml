@@ -1,0 +1,18 @@
+---
+# tasks file for aap_remove
+
+- name: Include controller removal tasks
+  ansible.builtin.include_tasks: controller_remove.yml
+  when: aap_remove_controller
+  tags:
+    - controller
+    - remove
+
+- name: Include automation hub removal tasks
+  ansible.builtin.include_tasks: ah_remove.yml
+  when: aap_remove_ah
+  tags:
+    - hub
+    - ah
+    - remove
+...

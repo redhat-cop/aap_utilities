@@ -1,0 +1,11 @@
+---
+# vars file for aap_setup_prepare
+
+# list of absolutely required RPM packages
+__aap_setup_prep_required_packages:
+  - unzip # required by unarchive module, not present on a minimal/core RHEL
+  - tar # required by unarchive module, not present on a minimal/core RHEL
+  - ansible-core # must be pre-installed on the bastion if not running as root
+  - git # must be pre-installed on the bastion if not running as root
+  - rsync # optional, required to copy bundle from bastion to other hosts
+...

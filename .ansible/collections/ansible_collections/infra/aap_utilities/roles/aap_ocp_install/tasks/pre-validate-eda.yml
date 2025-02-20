@@ -1,0 +1,57 @@
+---
+- name: Ensure eda instance name variable is set (block)
+  block:
+    - name: Ensure eda instance name variable is set
+      ansible.builtin.assert:
+        that:
+          - aap_ocp_install_eda['instance_name'] | default('', true) | length > 0
+        quiet: true
+  rescue:
+    - name: Update validation errors fact - eda instance_name
+      ansible.builtin.set_fact:
+        __aap_ocp_install_prevalidate_errors: >
+          {{ __aap_ocp_install_prevalidate_errors + ["aap_ocp_install_eda['instance_name'] must be set"] }}
+
+- name: Ensure EDA namespace variable is set (block)
+  when: aap_ocp_install_eda['namespace'] is defined
+  block:
+    - name: Ensure EDA namespace variable is set
+      ansible.builtin.assert:
+        that:
+          - aap_ocp_install_eda['namespace'] | default("", true) | regex_search('^[a-z0-9]([-a-z0-9]*[a-z0-9])?$')
+        quiet: true
+  rescue:
+    - name: Update validation errors fact - namespace
+      ansible.builtin.set_fact:
+        __aap_ocp_install_prevalidate_errors: >
+          {{ __aap_ocp_install_prevalidate_errors + ["aap_ocp_install_eda['namespace'] must be a lowercase RFC 1123 label consisting of lower case alphanumeric characters
+          or '-', and must start and end with an alphanumeric character (e.g. 'my-name',  or '123-abc'"] }}
+
+- name: Ensure EDA link text variable is set (block)
+  when: aap_ocp_install_eda['link_text'] is defined
+  block:
+    - name: Ensure EDA link text variable is set
+      ansible.builtin.assert:
+        that:
+          - aap_ocp_install_eda['link_text'] | default('', true) | length > 0
+        quiet: true
+  rescue:
+    - name: Update validation errors fact - EDA link_text
+      ansible.builtin.set_fact:
+        __aap_ocp_install_prevalidate_errors: >
+          {{ __aap_ocp_install_prevalidate_errors + ["aap_ocp_install_eda['link_text'] must be a non-empty string"] }}
+
+- name: Ensure EDA replicas is valid (block)
+  when: aap_ocp_install_eda['replicas'] is defined
+  block:
+    - name: Ensure EDA replicas is valid
+      ansible.builtin.assert:
+        that:
+          - (aap_ocp_install_eda['replicas'] | int) > 0
+        quiet: true
+  rescue:
+    - name: Update validation errors fact - EDA replicas
+      ansible.builtin.set_fact:
+        __aap_ocp_install_prevalidate_errors: >
+          {{ __aap_ocp_install_prevalidate_errors + ["aap_ocp_install_eda['replicas'] must be a number greater than 0"] }}
+...

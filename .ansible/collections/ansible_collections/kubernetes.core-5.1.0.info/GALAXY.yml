@@ -1,0 +1,8 @@
+download_url: https://galaxy.ansible.com/api/v3/plugin/ansible/content/published/collections/artifacts/kubernetes-core-5.1.0.tar.gz
+format_version: 1.0.0
+name: core
+namespace: kubernetes
+server: https://galaxy.ansible.com/api/
+signatures: []
+version: 5.1.0
+version_url: /api/v3/plugin/ansible/content/published/collections/index/kubernetes/core/versions/5.1.0/

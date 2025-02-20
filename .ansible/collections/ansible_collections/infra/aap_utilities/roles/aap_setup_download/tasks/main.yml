@@ -1,0 +1,45 @@
+---
+# tasks file for aap_setup_download
+- name: Login to Red Hat APIs
+  ansible.builtin.uri:
+    url: "{{ aap_setup_down_token_url }}"
+    method: POST
+    body_format: form-urlencoded
+    body:
+      grant_type: refresh_token
+      client_id: rhsm-api
+      refresh_token: "{{ aap_setup_down_offline_token }}"
+  register: __aap_setup_down_login
+
+- name: Collecting the available installers
+  ansible.builtin.uri:
+    url: "{{ aap_setup_down_images_url }}"
+    method: GET
+    return_content: true
+    headers:
+      Authorization: Bearer {{ __aap_setup_down_login.json.access_token }}
+  register: __aap_setup_down_output
+
+- name: Select the Specified installer to download
+  ansible.builtin.set_fact:
+    __aap_setup_down_images: "{{ __aap_setup_down_output.json.body | selectattr('filename', 'match', ((aap_setup_containerized | bool) | ternary('ansible-automation-platform-containerized-setup',
+      'ansible-automation-platform-setup'))) | sort(attribute='datePublished', reverse=True) | selectattr('filename', 'search', (aap_setup_down_type | string) + '-'
+      + (aap_setup_down_version | string)) }}"
+
+- name: Downloading the latest installer of type {{ aap_setup_down_type }}
+  ansible.builtin.get_url:
+    url: "{{ __aap_setup_down_images[:3][0].downloadHref }}"
+    dest: "{{ aap_setup_down_dest_dir }}/{{ __aap_setup_down_images[:3][0].filename }}"
+    mode: "0644"
+    headers:
+      Authorization: Bearer {{ __aap_setup_down_login.json.access_token }}
+  register: __aap_setup_down_downloads
+
+- name: Extract the name of the downloaded installer to aap_setup_down_installer_file
+  ansible.builtin.set_fact:
+    aap_setup_down_installer_file: "{{ __aap_setup_down_downloads.dest }}"
+
+- name: Set aap_setup_down_version fact
+  ansible.builtin.set_fact:
+    aap_setup_down_version: "{{ aap_setup_down_version }}"
+...

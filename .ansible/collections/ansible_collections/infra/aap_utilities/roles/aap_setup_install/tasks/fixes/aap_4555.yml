@@ -1,0 +1,23 @@
+---
+# Fix for https://issues.redhat.com/browse/AAP-4555 - it'll move away the
+# setup.log before starting the installation
+
+- name: AAP_4555 | check if setup.log does exist
+  ansible.builtin.stat:
+    path: "{{ aap_setup_inst_setup_dir }}/setup.log"
+  register: __aap_setup_inst_log
+
+- name: AAP_4555 | create a backup of setup.log if it exists
+  ansible.builtin.copy:
+    content: ""
+    dest: "{{ aap_setup_inst_setup_dir }}/setup.log"
+    backup: true # we use the backup feature of copy to save setup.log
+    remote_src: true
+    mode: "0664"
+  when: __aap_setup_inst_log.stat.exists
+
+- name: AAP_4555 | make sure setup.log doesn't exist
+  ansible.builtin.file:
+    path: "{{ aap_setup_inst_setup_dir }}/setup.log"
+    state: absent
+...

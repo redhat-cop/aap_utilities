@@ -1,0 +1,57 @@
+---
+apiVersion: aap.ansible.com/v1alpha1
+kind: AnsibleAutomationPlatform
+metadata:
+  name: {{ aap_ocp_install_platform['instance_name'] }}
+  namespace: {{ aap_ocp_install_platform['namespace'] | default(aap_ocp_install_namespace) }}
+spec:
+  # Platform
+  image_pull_policy: IfNotPresent
+
+  # Components
+{% if aap_ocp_install_controller is defined and aap_ocp_install_controller['install'] is defined and aap_ocp_install_controller['install'] %}
+  controller:
+    disabled: false
+    create_preload_data: {{ aap_ocp_install_controller['create_preload_data'] | default(true) | bool }}
+    garbage_collect_secrets: {{ aap_ocp_install_controller['garbage_collect_secrets'] | default(false) | bool }}
+    image_pull_policy: {{ aap_ocp_install_controller['image_pull_policy'] | default('IfNotPresent') }}
+    projects_persistence: {{ aap_ocp_install_controller['projects_persistence'] | default(false) | bool }}
+    projects_storage_size: {{ aap_ocp_install_controller['projects_storage_size'] | default('8Gi') }}
+    replicas: {{ aap_ocp_install_controller['replicas'] | default(1) | int }}
+    admin_user: {{ aap_ocp_install_controller['admin_user'] | default('admin') }}
+{% else %}
+  controller:
+    disabled: true
+{% endif %}
+
+{% if aap_ocp_install_eda is defined and aap_ocp_install_eda['install'] is defined and aap_ocp_install_eda['install'] %}
+  eda:
+    disabled: false
+    replicas: {{ aap_ocp_install_eda['replicas'] | default(1) | int }}
+{% else %}
+  eda:
+    disabled: true
+{% endif %}
+
+{% if aap_ocp_install_hub is defined and aap_ocp_install_hub['install'] is defined and aap_ocp_install_hub['install'] %}
+  hub:
+    disabled: false
+    ## Modify to contain your RWM storage class name
+    storage_type: {{ aap_ocp_install_hub['storage_type'] | default('file') }}
+{% if aap_ocp_install_hub['storage_type'] is defined and aap_ocp_install_hub['storage_type'] == 'file' %}
+{% if aap_ocp_install_hub['file_storage_storage_class'] is defined %}
+    file_storage_storage_class: {{ aap_ocp_install_hub['file_storage_storage_class'] | default('default') }}
+{% endif %}
+    file_storage_size: {{ aap_ocp_install_hub['file_storage_size'] | default('10Gi') }}
+{% elif aap_ocp_install_hub['storage_type'] is defined and aap_ocp_install_hub['storage_type'] == 'S3' %}
+    object_storage_s3_secret: {{ aap_ocp_install_hub['object_storage_s3_secret'] }}
+{% elif aap_ocp_install_hub['storage_type'] is defined and aap_ocp_install_hub['storage_type'] == 'azure' %}
+    object_storage_azure_secret: {{ aap_ocp_install_hub['object_storage_azure_secret'] }}
+{% endif %}
+{% else %}
+  hub:
+    disabled: true
+{% endif %}
+
+  lightspeed:
+    disabled: {{ aap_ocp_install_lightspeed is defined and aap_ocp_install_lightspeed['install'] is defined and aap_ocp_install_lightspeed['install'] | bool }}

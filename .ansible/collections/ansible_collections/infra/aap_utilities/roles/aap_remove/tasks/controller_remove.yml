@@ -1,0 +1,68 @@
+---
+# Following this article: https://access.redhat.com/solutions/6733721
+
+- name: Stop and disable services
+  ansible.builtin.systemd:
+    name: "{{ item }}"
+    state: stopped
+    enabled: false
+  become: true
+  failed_when: false
+  loop:
+    - automation-controller.service
+    - postgresql.service
+    - redis.service
+    - nginx.service
+    - supervisord.service
+    - receptor.service
+
+- name: Remove software
+  ansible.builtin.dnf:
+    name:
+      - postgresql
+      - postgresql-server
+      - automation-controller
+      - automation-controller-server
+      - automation-controller-ui
+      - automation-controller-venv-tower
+      - redis
+    state: absent
+    autoremove: true
+  become: true
+
+- name: Remove created directories
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: absent
+  loop:
+    - /etc/tower
+    - /var/lib/pgsql
+    - /var/lib/awx
+    - /var/lib/rabbitmq
+    - /var/lib/pgsql/data
+    - /var/lib/automation-platform-bundle
+  become: true
+
+- name: Remove added users
+  ansible.builtin.user:
+    name: "{{ item }}"
+    state: absent
+    remove: true
+  loop:
+    - postgres
+    - redis
+    - nginx
+    - awx
+    - receptor
+  become: true
+
+- name: Remove added groups
+  ansible.builtin.group:
+    name: "{{ item }}"
+    state: absent
+  loop:
+    - redis
+    - nginx
+    - cgred
+  become: true
+...

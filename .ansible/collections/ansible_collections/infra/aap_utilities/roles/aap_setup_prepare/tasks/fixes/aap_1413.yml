@@ -1,0 +1,14 @@
+---
+# AAP-1413 : Installation of Automation Hub fails due to symlink no such file
+# or directory, Installation of PAH (Private Automation Hub) fails at step
+# `pulp.pulp_installer.pulp_webserver : Symlink nginx snippets`.
+
+- name: AAP-1413 | fix pulp/pulp_installer/roles/pulp_webserver/tasks/nginx.yml
+  ansible.builtin.lineinfile:
+    path: "{{ aap_setup_prep_setup_dir }}/collections/ansible_collections/pulp/pulp_installer/roles/pulp_webserver/tasks/nginx.yml"
+    line: '        src: "{{ __aap_setup_prep_snippet_fix }}"'
+    regex: '^ *src: ".. __pulp_webserver_snippet.stdout'
+    state: present
+  vars:
+    __aap_setup_prep_snippet_fix: !unsafe "{{ __pulp_webserver_snippet.stdout | trim | regex_replace('\\\\s+.*$', '') }}"
+...

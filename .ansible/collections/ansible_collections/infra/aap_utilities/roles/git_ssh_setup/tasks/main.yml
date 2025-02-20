@@ -1,0 +1,60 @@
+---
+# tasks file for git_ssh_setup
+
+- name: Install some additional convenience software on the control node
+  ansible.builtin.package:
+    name: "{{ git_needed_software }}"
+    state: present
+
+- name: Make sure git-shell is in /etc/shells
+  ansible.builtin.lineinfile:
+    dest: /etc/shells
+    line: /usr/bin/git-shell
+
+- name: Ensure git user exists and uses git-shell
+  ansible.builtin.user:
+    name: "{{ git_server_user }}"
+    comment: Git server user
+    shell: /usr/bin/git-shell
+
+- name: Define projects directory variable
+  ansible.builtin.set_fact:
+    full_projects_dir: /home/{{ git_server_user }}/{{ git_projects_dir }}
+
+- name: Ensure home directory exists and has the correct access rights
+  ansible.builtin.file:
+    path: /home/{{ git_server_user }}
+    owner: "{{ git_server_user }}"
+    group: "{{ git_server_user }}"
+    mode: ug+rX
+    state: directory
+
+- name: Ensure projects directory exists and has the correct access rights
+  ansible.builtin.file:
+    path: "{{ full_projects_dir }}"
+    owner: "{{ git_server_user }}"
+    group: "{{ git_server_user }}"
+    mode: ug+rwsX
+    state: directory
+
+- name: Create empty bare repositories if missing
+  ansible.builtin.command:
+    cmd: git init --bare --shared=group {{ full_projects_dir }}/{{ item }}.git # noqa command-instead-of-module
+    creates: "{{ full_projects_dir }}/{{ item }}.git"
+  become: true
+  become_user: "{{ git_server_user }}"
+  loop: "{{ git_projects }}"
+
+- name: Create and manage client Git users
+  ansible.builtin.include_tasks:
+    file: git_users.yml
+  loop: "{{ git_client_users }}"
+  loop_control:
+    loop_var: client_item
+
+- name: Debug
+  ansible.builtin.debug:
+    msg: >
+      Git repos can be used with e.g.
+      'git clone {{ git_client_users[0].name }}@{{ ansible_host }}:{{ full_projects_dir }}/{{ git_projects[0] }}.git'
+...

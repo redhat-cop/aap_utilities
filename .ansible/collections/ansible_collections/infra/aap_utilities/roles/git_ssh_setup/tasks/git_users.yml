@@ -1,0 +1,18 @@
+---
+# tasks file for git_ssh_setup
+
+- name: Git_users | add client user to group - {{ git_server_user }}
+  ansible.builtin.user:
+    name: "{{ client_item.name }}"
+    groups: "{{ git_server_user }}" # group has been created with the user of same name
+    append: true
+    generate_ssh_key: true
+    ssh_key_type: "{{ client_item.ssh_key_type | default(omit) }}"
+  register: user_result
+
+- name: Git_users | add the public keys to the git user authorized keys
+  ansible.posix.authorized_key:
+    user: "{{ git_server_user }}"
+    state: present
+    key: "{{ user_result.ssh_public_key }}"
+...

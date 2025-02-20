@@ -1,0 +1,69 @@
+ancestor: null
+releases:
+  2.2.3:
+    changes:
+      breaking_changes:
+      - removed the warn on the builtin command role as module feature depreciated
+        in recent ansible release.
+    fragments:
+    - remove_warn.yml
+    release_date: '2022-11-30'
+  2.2.4:
+    changes:
+      bugfixes:
+      - Fix hostnames for install check
+      - Fixed tag in aap_remove role for automation hub.
+      - Update license information in each role.
+      minor_changes:
+      - Added ability to add extra vars files in aap_setup_install role.
+      - Bumped the default aap version to 2.3
+    fragments:
+    - 133-hostname-fix.yml
+    - extra_vars_files.yml
+    - fix_tag.yml
+    - licensing.yml
+    release_date: '2023-03-13'
+  2.3.0:
+    changes:
+      bugfixes:
+      - Availability checks will use credentials from either aap_setup_prep_inv_secrets
+        or aap_setup_prep_inv_vars
+      - Use correct variable name for OCP connection details
+      deprecated_features:
+      - The kerberos role is now depreciated as it is not compatible with Execution
+        Environments.
+      minor_changes:
+      - galaxy.yml added to enable install from source
+    fragments:
+    - kerberos.yml
+    - ocp_install_connection_var.yml
+    - source_build.yml
+    - use-inv-secrets.yml
+    release_date: '2023-08-03'
+  2.4.0:
+    release_date: '2024-01-16'
+  2.5.0:
+    release_date: '2024-05-14'
+  2.5.1:
+    changes:
+      minor_changes:
+      - Added support for providing OpenShift auth via api key for ocp install
+      - Changed isntances of ansible.builtin.yum module to dnf, this module is backwards
+        comapatible, but the yum module has been removed.
+    fragments:
+    - api_key.yml
+    release_date: '2024-06-05'
+  2.5.2:
+    changes:
+      bugfixes:
+      - Fixed an issue where where download would error trying to download a second
+        version of the installer.
+      minor_changes:
+      - Added ability to download the containerized installer.
+      - Added ability to install EDA Controller on OCP
+      - Tweaked how the installer to download is choosen, this should have no effective
+        changes.
+    fragments:
+    - add_eda_install_on_ocp.yaml
+    - download_fix_and_update.yml
+    release_date: '2024-07-09'

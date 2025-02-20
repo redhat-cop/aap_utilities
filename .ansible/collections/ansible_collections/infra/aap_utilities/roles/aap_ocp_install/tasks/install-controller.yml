@@ -1,0 +1,63 @@
+---
+- name: Create controller namespace
+  kubernetes.core.k8s:
+    host: "{{ __aap_ocp_install_auth_results['openshift_auth']['host'] }}"
+    api_key: "{{ __aap_ocp_install_auth_results['openshift_auth']['api_key'] }}"
+    validate_certs: "{{ aap_ocp_install_connection['validate_certs'] | default(omit) }}"
+    state: present
+    resource_definition: "{{ lookup('ansible.builtin.template', 'namespace.yaml.j2', template_vars=ns_vars) | from_yaml | ansible.builtin.combine(aap_ocp_install_controller['namespace_manifest_overrides'] | default({}), recursive=true) }}"
+    apply: true
+  vars:
+    ns_vars:
+      ns_name: "{{ aap_ocp_install_controller['namespace'] }}"
+  when:
+    - aap_ocp_install_controller['namespace'] is defined
+
+- name: Create automation controller instance
+  kubernetes.core.k8s:
+    host: "{{ __aap_ocp_install_auth_results['openshift_auth']['host'] }}"
+    api_key: "{{ __aap_ocp_install_auth_results['openshift_auth']['api_key'] }}"
+    validate_certs: "{{ aap_ocp_install_connection['validate_certs'] | default(omit) }}"
+    state: present
+    resource_definition: "{{ lookup('template', 'controller/instance.yaml.j2') | from_yaml | ansible.builtin.combine(aap_ocp_install_controller['controller_manifest_overrides'] | default({}), recursive=true) }}"
+    apply: true
+
+- name: Wait for operator to create the automation controller route
+  kubernetes.core.k8s_info:
+    host: "{{ __aap_ocp_install_auth_results['openshift_auth']['host'] }}"
+    api_key: "{{ __aap_ocp_install_auth_results['openshift_auth']['api_key'] }}"
+    validate_certs: "{{ aap_ocp_install_connection['validate_certs'] | default(omit) }}"
+    kind: Route
+    name: "{{ aap_ocp_install_controller['instance_name'] | mandatory }}"
+    api_version: route.openshift.io/v1
+    namespace: "{{ aap_ocp_install_controller['namespace'] | default(aap_ocp_install_namespace) | mandatory }}"
+  register: __aap_ocp_install_controller_route_result
+  until: __aap_ocp_install_controller_route_result['resources']
+  retries: 60 # Wait for 15 minutes (60*15/60)
+  delay: 15
+
+- name: Store automation controller route
+  ansible.builtin.set_fact:
+    __aap_ocp_install_controller_route: "{{ __aap_ocp_install_controller_route_result['resources'][0]['status']['ingress'][0]['host'] }}"
+
+- name: Ensure automation controller login is available
+  ansible.builtin.uri:
+    url: https://{{ __aap_ocp_install_controller_route }}
+    validate_certs: "{{ aap_ocp_install_connection['validate_certs'] | default(omit) }}"
+    method: GET
+    status_code:
+      - 200
+  register: __aap_ocp_install_controller_available
+  until: (__aap_ocp_install_controller_available['status'] == 200) and ('migrations_notran' not in __aap_ocp_install_controller_available['url'])
+  retries: 120 # Wait for 30 minutes (120*15/60)
+  delay: 15
+
+- name: Create automation controller console link
+  kubernetes.core.k8s:
+    host: "{{ __aap_ocp_install_auth_results['openshift_auth']['host'] }}"
+    api_key: "{{ __aap_ocp_install_auth_results['openshift_auth']['api_key'] }}"
+    validate_certs: "{{ aap_ocp_install_connection['validate_certs'] | default(omit) }}"
+    state: present
+    resource_definition: "{{ lookup('template', 'controller/consolelink.yaml.j2') | from_yaml | ansible.builtin.combine(aap_ocp_install_controller['consolelink_manifest_overrides'] | default({}), recursive=true) }}"
+    apply: true
+...

@@ -1,0 +1,26 @@
+---
+galaxy_info:
+  author: Brant Evans
+  description: Installs Ansible Automation Platform (AAP) on OpenShift Container Platform (OCP)
+  company: Red Hat
+
+  license: GPL-3.0-or-later
+
+  min_ansible_version: 2.15.0
+
+  platforms:
+    - name: EL
+      versions:
+        - "7"
+        - "8"
+        - "9"
+
+  galaxy_tags:
+    - aap
+    - ansible
+
+dependencies: []
+collections:
+  - redhat.openshift
+  - community.okd
+...

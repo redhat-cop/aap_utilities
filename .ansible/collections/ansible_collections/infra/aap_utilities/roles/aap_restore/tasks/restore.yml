@@ -1,0 +1,11 @@
+---
+# Run the Setup to restore AAP
+- name: Run the Ansible AAP Setup Program with restore option
+  become: true
+  ansible.builtin.command: ./setup.sh -e 'restore_backup_file={{ aap_restore_location | quote }}' -r
+  args:
+    chdir: "{{ aap_setup_prep_setup_dir }}"
+  async: 10000
+  poll: 20
+  changed_when: false # these will always run and will always report "changed" otherwise
+...

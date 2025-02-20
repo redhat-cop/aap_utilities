@@ -1,0 +1,44 @@
+---
+# tasks file for aap_setup_prepare
+
+# we check first so that the installation can happen without root access
+- name: Check if the absolutely necessary packages are installed # noqa command-instead-of-module
+  ansible.builtin.command:
+    cmd: rpm -q {{ __aap_setup_prep_required_packages | join(' ') }}
+  register: __aap_setup_prep_packages_result
+  ignore_errors: true
+  changed_when: false
+  check_mode: false # run this command even in check mode
+
+- name: Install absolutely necessary packages
+  ansible.builtin.dnf:
+    name: "{{ __aap_setup_prep_required_packages }}"
+    state: present
+  become: true
+  when: "'is not installed' in __aap_setup_prep_packages_result.stdout"
+
+- name: Extract the given installer tarball
+  ansible.builtin.unarchive:
+    src: "{{ aap_setup_prep_installer_file }}"
+    dest: "{{ aap_setup_prep_working_dir }}"
+    list_files: true
+    remote_src: true
+    exclude: inventory
+  register: __aap_setup_prep_extract
+
+- name: Set aap_setup_prep_setup_dir
+  ansible.builtin.set_fact:
+    aap_setup_prep_setup_dir: "{{ aap_setup_prep_working_dir }}/{{ __aap_setup_prep_extract.files[0] }}"
+
+- name: Populate AAP setup.sh inventory file from template
+  ansible.builtin.template:
+    src: inventory.j2
+    dest: "{{ aap_setup_prep_setup_dir }}/inventory"
+    mode: "640"
+  when: aap_setup_prep_process_template | bool
+
+- name: Apply relevant fixes / workarounds
+  ansible.builtin.include_tasks:
+    file: fixes/{{ item }}.yml
+  loop: "{{ aap_setup_prep_fixes }}"
+...

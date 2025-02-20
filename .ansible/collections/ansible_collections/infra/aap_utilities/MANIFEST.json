@@ -1,0 +1,51 @@
+{
+ "collection_info": {
+  "namespace": "infra",
+  "name": "aap_utilities",
+  "version": "2.5.2-devel",
+  "authors": [
+   "Adebisi Oyawale @aoyawale",
+   "Kedar Kulkarni @kedark3",
+   "Tom Page @Tompage1994",
+   "Sean Sullivan @sean-m-sullivan",
+   "Eric Lavarde @ericzolf",
+   "Brant Evans @branic",
+   "Christopher Renwick @crenwick93"
+  ],
+  "readme": "README.md",
+  "tags": [
+   "ansible_automation_platform",
+   "aap",
+   "aap_utils",
+   "aap_utilities",
+   "collection",
+   "utilities",
+   "utils",
+   "tower",
+   "tower_utilities",
+   "tower_utils",
+   "infrastructure"
+  ],
+  "description": "A collection of utility roles for usage with Ansible Automation Platform",
+  "license": [
+   "GPL-3.0-or-later"
+  ],
+  "license_file": null,
+  "dependencies": {
+   "ansible.posix": ">=1.0.0",
+   "kubernetes.core": ">=2.2.0"
+  },
+  "repository": "https://github.com/redhat-cop/aap_utilities/",
+  "documentation": null,
+  "homepage": null,
+  "issues": "https://github.com/redhat-cop/aap_utilities//issues"
+ },
+ "file_manifest_file": {
+  "name": "FILES.json",
+  "ftype": "file",
+  "chksum_type": "sha256",
+  "chksum_sha256": "011a25b6fe519b6c89928385ca118bc486d2ff7186657835252606edc2740fa6",
+  "format": 1
+ },
+ "format": 1
+}
