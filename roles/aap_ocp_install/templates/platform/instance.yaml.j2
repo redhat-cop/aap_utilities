@@ -54,4 +54,4 @@ spec:
 {% endif %}
 
   lightspeed:
-    disabled: {{ aap_ocp_install_lightspeed is defined and aap_ocp_install_lightspeed['install'] is defined and aap_ocp_install_lightspeed['install'] | bool }}
+    disabled: {{ not (aap_ocp_install_lightspeed is defined and aap_ocp_install_lightspeed['install'] is defined and aap_ocp_install_lightspeed['install'] | bool) }}
