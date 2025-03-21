@@ -1,11 +1,12 @@
 ---
 - name: Create operator group
+  when: operatorgroup_create | default(true) | bool
   kubernetes.core.k8s:
     host: "{{ __aap_ocp_install_auth_results['openshift_auth']['host'] }}"
     api_key: "{{ __aap_ocp_install_auth_results['openshift_auth']['api_key'] }}"
     validate_certs: "{{ aap_ocp_install_connection['validate_certs'] | default(omit) }}"
     state: present
-    resource_definition: "{{ lookup('template', 'operator/operatorgroup.yaml.j2') | from_yaml }}"
+    resource_definition: "{{ lookup('template', 'operator/operatorgroup.yaml.j2') | from_yaml | ansible.builtin.combine(aap_ocp_install_operator['operatorgroup_manifest_overrides'] | default({}), recursive=true) }}"
     apply: true
 
 - name: Create subscription
@@ -14,7 +15,7 @@
     api_key: "{{ __aap_ocp_install_auth_results['openshift_auth']['api_key'] }}"
     validate_certs: "{{ aap_ocp_install_connection['validate_certs'] | default(omit) }}"
     state: present
-    resource_definition: "{{ lookup('template', 'operator/subscription.yaml.j2') | from_yaml }}"
+    resource_definition: "{{ lookup('template', 'operator/subscription.yaml.j2') | from_yaml | ansible.builtin.combine(aap_ocp_install_operator['subscription_manifest_overrides'] | default({}), recursive=true) }}"
     apply: true
 
 - name: Wait for operator installation to complete

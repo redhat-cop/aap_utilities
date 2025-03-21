@@ -1,0 +1,6 @@
+[allowlist]
+  description = "Global Allowlist"
+  paths = [
+    # Ignore downloaded collections
+    '''(?:^|\/)\.ansible\/collections\/''',
+  ]

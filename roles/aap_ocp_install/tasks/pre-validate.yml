@@ -94,23 +94,43 @@
   when:
     - ( 'operator' in ansible_run_tags ) or ( 'all' in ansible_run_tags and aap_ocp_install_operator is defined )
 
+- name: Retrieve the requested operator channel version numbers
+  ansible.builtin.set_fact:
+    __aap_ocp_install_major_version: "{{ aap_ocp_install_operator['channel'] | regex_search(__aap_ocp_install_major_version_re, '\\1') | first }}"
+    __aap_ocp_install_minor_version: "{{ aap_ocp_install_operator['channel'] | regex_search(__aap_ocp_install_minor_version_re, '\\1') | first }}"
+  vars:
+    __aap_ocp_install_major_version_re: '(\d+)\.\d+'
+    __aap_ocp_install_minor_version_re: '\d+\.(\d+)'
+
+- name: Set a flag indicating whether to use the new (AAP 2.5+) operator installation method
+  ansible.builtin.set_fact:
+    __aap_ocp_install_25_install: "{{ (__aap_ocp_install_major_version | int) > 2 \
+                                  or ((__aap_ocp_install_major_version | int) == 2 \
+                                  and (__aap_ocp_install_minor_version | int) >= 5) }}"
+
+- name: Ensure platform variables are set
+  ansible.builtin.include_tasks:
+    file: pre-validate-platform.yml
+  when:
+    - (( 'platform' in ansible_run_tags ) or ( 'all' in ansible_run_tags and aap_ocp_install_platform is defined )) and __aap_ocp_install_25_install
+
 - name: Ensure controller variables are set
   ansible.builtin.include_tasks:
     file: pre-validate-controller.yml
   when:
-    - ( 'controller' in ansible_run_tags ) or ( 'all' in ansible_run_tags and aap_ocp_install_controller is defined )
+    - (( 'controller' in ansible_run_tags ) or ( 'all' in ansible_run_tags and aap_ocp_install_controller is defined )) and not __aap_ocp_install_25_install
 
 - name: Ensure hub variables are set
   ansible.builtin.include_tasks:
     file: pre-validate-hub.yml
   when:
-    - ( 'hub' in ansible_run_tags ) or ( 'all' in ansible_run_tags and aap_ocp_install_hub is defined )
+    - (( 'hub' in ansible_run_tags ) or ( 'all' in ansible_run_tags and aap_ocp_install_hub is defined )) and not __aap_ocp_install_25_install
 
 - name: Ensure eda variables are set
   ansible.builtin.include_tasks:
     file: pre-validate-eda.yml
   when:
-    - ( 'eda' in ansible_run_tags ) or ( 'all' in ansible_run_tags and aap_ocp_install_eda is defined )
+    - (( 'eda' in ansible_run_tags ) or ( 'all' in ansible_run_tags and aap_ocp_install_eda is defined )) and not __aap_ocp_install_25_install
 
 - name: Ensure no validation errors found
   ansible.builtin.debug:

@@ -5,7 +5,7 @@
     api_key: "{{ __aap_ocp_install_auth_results['openshift_auth']['api_key'] }}"
     validate_certs: "{{ aap_ocp_install_connection['validate_certs'] | default(omit) }}"
     state: present
-    resource_definition: "{{ lookup('template', 'hub/instance.yaml.j2') | from_yaml }}"
+    resource_definition: "{{ lookup('template', 'hub/instance.yaml.j2') | from_yaml | ansible.builtin.combine(aap_ocp_install_hub['namespace_manifest_overrides'] | default({}), recursive=true) }}"
     apply: true
 
 - name: Wait for operator to create the automation hub route
@@ -44,6 +44,6 @@
     api_key: "{{ __aap_ocp_install_auth_results['openshift_auth']['api_key'] }}"
     validate_certs: "{{ aap_ocp_install_connection['validate_certs'] | default(omit) }}"
     state: present
-    resource_definition: "{{ lookup('template', 'hub/consolelink.yaml.j2') | from_yaml }}"
+    resource_definition: "{{ lookup('template', 'hub/consolelink.yaml.j2') | from_yaml | ansible.builtin.combine(aap_ocp_install_hub['hub_manifest_overrides'] | default({}), recursive=true) }}"
     apply: true
 ...

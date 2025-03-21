@@ -13,6 +13,7 @@ The following input variables are available:
 
 |Variable Name|Default Value|Required|Description|Example|
 |---:|:---:|:---:|:---|:---:|
+|`aap_setup_down_version`|"`{{ aap_setup_down_version }}`"|no|defines the minor version to download (e.g. 2.5), note that `aap_setup_down_version` is a fact set by the role `aap_setup_download`|'2.5'|
 |`aap_setup_inst_setup_dir`|"`{{ aap_setup_prep_setup_dir }}`"|no|absolute path where to find the extracted installation tarball on the remote host, note that `aap_setup_prep_setup_dir` is a fact set by the role `aap_setup_prepare`|'/var/tmp/myinstaller'|
 |`aap_setup_inst_inventory`|"`inventory`"|no|path to the inventory file/directory to be used for the installation, the path can be absolute or relative to the previous directory|'/etc/ansible/inventory'|
 |`aap_setup_inst_extra_vars`|`{}`|no|dictionary of extra vars to use when calling setup.sh|see [defaults/main.yml](defaults/main.yml)|

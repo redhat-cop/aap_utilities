@@ -12,7 +12,7 @@
   ansible.builtin.command: ./setup.sh -e 'backup_dest={{ aap_backup_dest | quote }}' -b
   args:
     chdir: "{{ aap_setup_prep_setup_dir }}"
-  async: 10000
-  poll: 20
+  async: "{{ aap_backup_async }}"
+  poll: "{{ aap_backup_poll }}"
   changed_when: false # these will always run and will always report "changed" otherwise
 ...

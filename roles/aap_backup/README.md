@@ -13,6 +13,8 @@ Available variables are listed below, along with default values defined (see def
 ```yaml
 aap_setup_prep_setup_dir:  # Must be set, though if the aap_setup_prepare role has been run prior, a fact will be set.
 aap_backup_dest: "/root"
+aap_backup_async: 10000
+aap_backup_poll: 20
 ```
 
 ## Example Playbook

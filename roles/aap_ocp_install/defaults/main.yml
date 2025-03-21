@@ -14,6 +14,10 @@
 # aap_ocp_install_operator:
 #   channel:
 
+# Variables applicable to the Ansible platform installation
+# aap_ocp_install_platform:
+#   instance_name:
+
 # Variable applicable to the controller installation
 # aap_ocp_install_controller:
 #   instance_name:
@@ -24,6 +28,11 @@
 # aap_ocp_install_hub:
 #   instance_name:
 #   link_text:
+#   storage_type:
+#   file_storage_storage_class:
+#   file_storage_size:
+#   object_storage_s3_secret:
+#   object_storage_azure_secret:
 
 # Variable applicable to the EDA installation
 # aap_ocp_install_eda:
@@ -31,4 +40,8 @@
 #   instance_name:
 #   replicas:
 #   link_text:
+
+# Variables applicable to the Lightspeed installation
+# aap_ocp_install_lightspeed:
+#
 ...
