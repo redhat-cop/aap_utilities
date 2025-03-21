@@ -4,6 +4,21 @@ infra.aap\_Utilities Release Notes
 
 .. contents:: Topics
 
+v2.6.0
+======
+
+Minor Changes
+-------------
+
+- Added support to allow installation of AAP 2.5 using the new platform operator method
+- Added support to install latest AAP 2.5 version
+- aap_backup - Updated tasks and default to parametrize async and poll to respect long running backup for AAP2.4+ with private automation hub
+
+Bugfixes
+--------
+
+- Fixed inventory not rendering properly due to another recent change.
+
 v2.5.2
 ======
 

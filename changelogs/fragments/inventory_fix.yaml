@@ -1,3 +1,0 @@
----
-bugfixes:
-  - Fixed inventory not rendering properly due to another recent change. #259

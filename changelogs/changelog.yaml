@@ -67,3 +67,19 @@ releases:
     - add_eda_install_on_ocp.yaml
     - download_fix_and_update.yml
     release_date: '2024-07-09'
+  2.6.0:
+    changes:
+      bugfixes:
+      - Fixed inventory not rendering properly due to another recent change.
+      minor_changes:
+      - Added support to allow installation of AAP 2.5 using the new platform operator
+        method
+      - Added support to install latest AAP 2.5 version
+      - aap_backup - Updated tasks and default to parametrize async and poll to respect
+        long running backup for AAP2.4+ with private automation hub
+    fragments:
+    - aap_backup_task.yaml
+    - add_aap25_support.yaml
+    - add_ocp_aap25_support.yaml
+    - inventory_fix.yaml
+    release_date: '2025-03-21'
