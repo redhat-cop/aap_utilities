@@ -38,4 +38,8 @@
 - name: Extract the name of the downloaded installer to aap_setup_down_installer_file
   ansible.builtin.set_fact:
     aap_setup_down_installer_file: "{{ __aap_setup_down_downloads.dest }}"
+
+- name: Set aap_setup_down_version fact
+  ansible.builtin.set_fact:
+    aap_setup_down_version: "{{ aap_setup_down_version }}"
 ...

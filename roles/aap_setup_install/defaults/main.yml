@@ -1,6 +1,9 @@
 ---
 # defaults file for aap_setup_install
 
+# which version of the installer to download
+aap_setup_down_version: "{{ aap_setup_down_version }}"
+
 # where is the setup directory
 aap_setup_inst_setup_dir: "{{ aap_setup_prep_setup_dir }}"
 
@@ -71,6 +74,14 @@ ah_hostname: "{{ (aap_setup_prep_inv_nodes['automationhub'].keys() | list)[0] }}
 
 eda_hostname: "{{ (aap_setup_prep_inv_nodes[__aap_setup_inst_eda_group_name].keys() | list)[0] }}"
 # eda_validate_certs: false
+
+# gateway_hostname: "{{ inventory_hostname }}"
+gateway_hostname: "{{ (aap_setup_prep_inv_nodes['automationgateway'].keys() | list)[0] }}"
+# gateway_username: "admin"
+# gateway_password: ""
+# gateway_oauthtoken: ""
+# gateway_config_file: ""
+# gateway_validate_certs: false
 
 # force the installation of AAP even if it's already running
 aap_setup_inst_force: false

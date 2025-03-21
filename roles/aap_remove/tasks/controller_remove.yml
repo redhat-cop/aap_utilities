@@ -47,6 +47,7 @@
   ansible.builtin.user:
     name: "{{ item }}"
     state: absent
+    force: true
     remove: true
   loop:
     - postgres

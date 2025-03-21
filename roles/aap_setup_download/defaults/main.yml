@@ -7,7 +7,7 @@
 # aap_setup_down_offline_token:
 
 # which version of the installer to download
-aap_setup_down_version: "2.4"
+aap_setup_down_version: "2.5"
 
 # Which system architecture to dowload for
 aap_setup_arch: x86_64

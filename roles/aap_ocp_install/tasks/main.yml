@@ -29,13 +29,23 @@
       tags:
         - operator
 
+    - name: Include Ansible Automation Platform platform install tasks
+      ansible.builtin.include_tasks:
+        file: install-platform.yml
+        apply:
+          tags:
+            - platform
+      when: aap_ocp_install_platform is defined and __aap_ocp_install_25_install
+      tags:
+        - platform
+
     - name: Include Ansible Automation Platform controller install tasks
       ansible.builtin.include_tasks:
         file: install-controller.yml
         apply:
           tags:
             - controller
-      when: aap_ocp_install_controller is defined
+      when: aap_ocp_install_controller is defined and not __aap_ocp_install_25_install
       tags:
         - controller
 
@@ -45,7 +55,7 @@
         apply:
           tags:
             - hub
-      when: aap_ocp_install_hub is defined
+      when: aap_ocp_install_hub is defined and not __aap_ocp_install_25_install
       tags:
         - hub
 
@@ -55,7 +65,7 @@
         apply:
           tags:
             - eda
-      when: aap_ocp_install_eda is defined
+      when: aap_ocp_install_eda is defined and not __aap_ocp_install_25_install
       tags:
         - eda
 
