@@ -38,11 +38,11 @@
 
 - name: Store automation platform route
   ansible.builtin.set_fact:
-    __aap_ocp_install_platform_route: "{{ __aap_ocp_install_platform_route_result['resources'][0]['status']['ingress'][0]['host'] }}"
+    aap_ocp_install_platform_route: "https://{{ __aap_ocp_install_platform_route_result['resources'][0]['status']['ingress'][0]['host'] }}"
 
 - name: Ensure automation platform login is available
   ansible.builtin.uri:
-    url: "https://{{ __aap_ocp_install_platform_route }}"
+    url: "{{ aap_ocp_install_platform_route }}"
     validate_certs: "{{ aap_ocp_install_connection['validate_certs'] | default(omit) }}"
     method: GET
     status_code:
@@ -71,13 +71,13 @@
 
 - name: Store automation controller route
   ansible.builtin.set_fact:
-    __aap_ocp_install_controller_route: "{{ __aap_ocp_install_controller_route_result['resources'][0]['status']['ingress'][0]['host'] }}"
+    aap_ocp_install_controller_route: "https://{{ __aap_ocp_install_controller_route_result['resources'][0]['status']['ingress'][0]['host'] }}"
   when:
     - aap_ocp_install_controller is defined and aap_ocp_install_controller['install'] is defined and aap_ocp_install_controller['install']
 
 - name: Ensure automation controller API is available
   ansible.builtin.uri:
-    url: "https://{{ __aap_ocp_install_controller_route }}/api"
+    url: "{{ aap_ocp_install_controller_route }}/api"
     validate_certs: "{{ aap_ocp_install_connection['validate_certs'] | default(omit) }}"
     method: GET
     status_code:
@@ -107,13 +107,13 @@
 
 - name: Store automation eda route
   ansible.builtin.set_fact:
-    __aap_ocp_install_eda_route: "{{ __aap_ocp_install_eda_route_result['resources'][0]['status']['ingress'][0]['host'] }}"
+    aap_ocp_install_eda_route: "https://{{ __aap_ocp_install_eda_route_result['resources'][0]['status']['ingress'][0]['host'] }}"
   when:
     - aap_ocp_install_eda is defined and aap_ocp_install_eda['install'] is defined and aap_ocp_install_eda['install']
 
 - name: Ensure automation eda API is available
   ansible.builtin.uri:
-    url: "https://{{ __aap_ocp_install_eda_route }}/api"
+    url: "{{ aap_ocp_install_eda_route }}/api"
     validate_certs: "{{ aap_ocp_install_connection['validate_certs'] | default(omit) }}"
     method: GET
     status_code:
@@ -143,13 +143,13 @@
 
 - name: Store automation hub route
   ansible.builtin.set_fact:
-    __aap_ocp_install_hub_route: "{{ __aap_ocp_install_hub_route_result['resources'][0]['status']['ingress'][0]['host'] }}"
+    aap_ocp_install_hub_route: "https://{{ __aap_ocp_install_hub_route_result['resources'][0]['status']['ingress'][0]['host'] }}"
   when:
     - aap_ocp_install_hub is defined and aap_ocp_install_hub['install'] is defined and aap_ocp_install_hub['install']
 
 - name: Ensure automation hub API is available
   ansible.builtin.uri:
-    url: "https://{{ __aap_ocp_install_hub_route }}/api/galaxy/pulp/api/v3/"
+    url: "{{ aap_ocp_install_hub_route }}/api/galaxy/pulp/api/v3/"
     validate_certs: "{{ aap_ocp_install_connection['validate_certs'] | default(omit) }}"
     method: GET
     status_code:

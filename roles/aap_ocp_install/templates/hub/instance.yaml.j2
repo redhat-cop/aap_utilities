@@ -3,7 +3,7 @@ apiVersion: automationhub.ansible.com/v1beta1
 kind: AutomationHub
 metadata:
   name: {{ aap_ocp_install_hub['instance_name'] }}
-  namespace: {{ aap_ocp_install_namespace }}
+  namespace: {{ aap_ocp_install_hub['namespace'] | default(aap_ocp_install_namespace) }}
 spec:
 #   sso_secret: automation-hub-sso
 #   pulp_settings:

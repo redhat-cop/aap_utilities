@@ -1,0 +1,6 @@
+---
+bugfixes:
+  - aap_ocp_install - PAH not able to be installed in separate namespace when installing AAP 2.4 and below
+  - aap_ocp_install - PAH install used wrong variable name for manifest overrides
+  - aap_ocp_install - Expose route variables
+...
