@@ -38,11 +38,11 @@
 
 - name: Store EDA route
   ansible.builtin.set_fact:
-    __aap_ocp_install_eda_route: "{{ __aap_ocp_install_eda_route_result['resources'][0]['status']['ingress'][0]['host'] }}"
+    aap_ocp_install_eda_route: "https://{{ __aap_ocp_install_eda_route_result['resources'][0]['status']['ingress'][0]['host'] }}"
 
 - name: Ensure EDA login is available
   ansible.builtin.uri:
-    url: https://{{ __aap_ocp_install_eda_route }}
+    url: "{{ aap_ocp_install_eda_route }}"
     validate_certs: "{{ aap_ocp_install_connection['validate_certs'] | default(omit) }}"
     method: GET
     status_code:
