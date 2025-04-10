@@ -4,6 +4,16 @@ infra.aap\_Utilities Release Notes
 
 .. contents:: Topics
 
+v2.6.1
+======
+
+Bugfixes
+--------
+
+- aap_ocp_install - Expose route variables
+- aap_ocp_install - PAH install used wrong variable name for manifest overrides
+- aap_ocp_install - PAH not able to be installed in separate namespace when installing AAP 2.4 and below
+
 v2.6.0
 ======
 

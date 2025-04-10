@@ -83,3 +83,13 @@ releases:
     - add_ocp_aap25_support.yaml
     - inventory_fix.yaml
     release_date: '2025-03-21'
+  2.6.1:
+    changes:
+      bugfixes:
+      - aap_ocp_install - Expose route variables
+      - aap_ocp_install - PAH install used wrong variable name for manifest overrides
+      - aap_ocp_install - PAH not able to be installed in separate namespace when
+        installing AAP 2.4 and below
+    fragments:
+    - ocp-install-fixes.yml
+    release_date: '2025-04-10'
