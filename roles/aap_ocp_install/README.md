@@ -53,10 +53,6 @@ The aap_ocp_install_platform and aap_ocp_install_lightspeed Dictionaries are onl
 
 \* If the channel indicates version 2.5 or above of AAP, then the new AAP operator platform installation method will be used.
 
-> ℹ️ **NOTE**
->
-> When `approval` is set to `Manual` the operator will be installed with `Automatic` approval and then after installation the approval will be updated to Manual.
-
 ### aap_ocp_install_controller keys
 
 | Key Name                       | Required | Default Value                           | Description                                                                                                            |
