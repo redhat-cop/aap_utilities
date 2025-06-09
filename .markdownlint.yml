@@ -1,6 +1,9 @@
 ---
 default: true
 
+ignores:
+  - ".github/**"
+
 # MD003/heading-style/header-style - Heading style
 # This will ensure that the heading format is consistent across all markdown files
 MD003:
