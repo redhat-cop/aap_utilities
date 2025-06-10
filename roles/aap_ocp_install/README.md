@@ -43,13 +43,14 @@ The aap_ocp_install_platform and aap_ocp_install_lightspeed Dictionaries are onl
 
 ### aap_ocp_install_operator keys
 
-| Key Name                         | Required  | Default Value | Description                                                         |
-|----------------------------------|:---------:|---------------|---------------------------------------------------------------------|
-| channel                          | Yes*      | None          | Channel to subscribe (e.g. stable-2.2 or stable-2.2-cluster-scoped) |
-| approval                         |           | Automatic     | Update approval method. Valid values are Automatic or Manual.       |
-| operatorgroup_create             |           | true          | Create the `OperatorGroup` for the Operator                         |
-| operatorgroup_manifest_overrides |           |               | YAML Manifest to override the generated `OperatorGroup` resource    |
-| subscription_manifest_overrides  |           |               | YAML Manifest to override the generated `Subscription` resource     |
+| Key Name                         | Required | Default Value | Description                                                                    |
+|----------------------------------|:--------:|---------------|--------------------------------------------------------------------------------|
+| channel                          | Yes*     | None          | Channel to subscribe (e.g. stable-2.5 or stable-2.5-cluster-scoped)            |
+| approval                         |          | Automatic     | Update approval method. Valid values are Automatic or Manual.                  |
+| starting_csv                     |          |               | Set the starting ClusterServiceVersion (e.g. aap-operator.v2.5.0-0.1728520175) |
+| operatorgroup_create             |          | true          | Create the `OperatorGroup` for the Operator                                    |
+| operatorgroup_manifest_overrides |          |               | YAML Manifest to override the generated `OperatorGroup` resource               |
+| subscription_manifest_overrides  |          |               | YAML Manifest to override the generated `Subscription` resource                |
 
 \* If the channel indicates version 2.5 or above of AAP, then the new AAP operator platform installation method will be used.
 
@@ -59,7 +60,7 @@ The aap_ocp_install_platform and aap_ocp_install_lightspeed Dictionaries are onl
 |--------------------------------|:--------:|-----------------------------------------|------------------------------------------------------------------------------------------------------------------------|
 | instance_name                  | Yes      | None                                    | Name of the controller instance to create                                                                              |
 | namespace                      |          | None                                    | Name of the namespace to create the controller instance in. If not specified `aap_ocp_install_namespace` will be used. |
-| namespace_manifest_overrides   |          | None                                    | YAML Manifest to override the generated `Namespace` resource for the controller if the `namespace` key is defined |
+| namespace_manifest_overrides   |          | None                                    | YAML Manifest to override the generated `Namespace` resource for the controller if the `namespace` key is defined      |
 | admin_user                     |          | admin                                   | Username to use for the admin account                                                                                  |
 | replicas                       |          | 1                                       | How many replicas to create.                                                                                           |
 | garbage_collect_secrets        |          | false                                   | Whether or not to remove secrets upon instance removal                                                                 |
@@ -68,9 +69,9 @@ The aap_ocp_install_platform and aap_ocp_install_lightspeed Dictionaries are onl
 | projects_persistence           |          | false                                   | Whether or not the /var/lib/projects directory will be persistent                                                      |
 | projects_storage_size          |          | 8Gi                                     | Size of /var/lib/projects persistent volume claim (PVC)                                                                |
 | link_text                      |          | Automation Controller (<INSTANCE_NAME>) | Text used for creating the OCP application link                                                                        |
-| controller_manifest_overrides  |          | None                           | YAML Manifest to override the generated `AutomationController` resource link                                                                        |
-| consolelink_manifest_overrides |          | None                           | YAML Manifest to override the generated `ConsoleLink` resource                                                                         |
-| install                        | *        | false                                   | Whether or not to install the Controller platform component in AAP 2.5 or later    |
+| controller_manifest_overrides  |          | None                                    | YAML Manifest to override the generated `AutomationController` resource link                                           |
+| consolelink_manifest_overrides |          | None                                    | YAML Manifest to override the generated `ConsoleLink` resource                                                         |
+| install                        | *        | false                                   | Whether or not to install the Controller platform component in AAP 2.5 or later                                        |
 
 \* These settings are only used for installing AAP 2.5 or later.
 
@@ -80,20 +81,20 @@ The aap_ocp_install_platform and aap_ocp_install_lightspeed Dictionaries are onl
 
 ### aap_ocp_install_hub keys
 
-| Key Name                           | Required | Default Value                    | Description                                                       |
-|------------------------------------|:--------:|----------------------------------|-------------------------------------------------------------------|
-| instance_name                      | Yes      | None                             | Name of the hub instance to create                                |
-| namespace                          |          | None                             | Name of the namespace to create the hub instance in. If not specified `aap_ocp_install_namespace` will be used. |
-| namespace_manifest_overrides       |          | None                             | YAML Manifest to override the generated `Namespace` resource for the hub if the `namespace` key is defined |
-| link_text                          |          | Automation Hub (<INSTANCE_NAME>) | Text used for creating the OCP application link                   |
-| hub_manifest_overrides             |          | None                             | YAML Manifest to override the generated `AutomationHub` resource  |
-| consolelink_manifest_overrides     |          | None                             | YAML Manifest to override the generated `ConsoleLink` resource    |
-| storage_type                       | *        | file                             | Hub storage type (file, S3 or azure)                              |
-| file_storage_storage_class         | *        | None                             | OpenShift StorageClass to use for file storage type for hub       |
-| file_storage_size                  | *        | 10Gi                             | Storage size for file storage type for hub                        |
-| object_storage_s3_secret           | *        | None                             | Name of an OpenShift Secret used to access S3 storage for hub     |
-| object_storage_azure_secret        | *        | None                             | Name of an OpenShift Secret used to access Azure storage for hub  |
-| install                            | *        | false                            | Whether or not to install the Hub platform component in AAP 2.5 or later    |
+| Key Name                       | Required | Default Value                    | Description                                                                                                     |
+|--------------------------------|:--------:|----------------------------------|-----------------------------------------------------------------------------------------------------------------|
+| instance_name                  | Yes      | None                             | Name of the hub instance to create                                                                              |
+| namespace                      |          | None                             | Name of the namespace to create the hub instance in. If not specified `aap_ocp_install_namespace` will be used. |
+| namespace_manifest_overrides   |          | None                             | YAML Manifest to override the generated `Namespace` resource for the hub if the `namespace` key is defined      |
+| link_text                      |          | Automation Hub (<INSTANCE_NAME>) | Text used for creating the OCP application link                                                                 |
+| hub_manifest_overrides         |          | None                             | YAML Manifest to override the generated `AutomationHub` resource                                                |
+| consolelink_manifest_overrides |          | None                             | YAML Manifest to override the generated `ConsoleLink` resource                                                  |
+| storage_type                   | *        | file                             | Hub storage type (file, S3 or azure)                                                                            |
+| file_storage_storage_class     | *        | None                             | OpenShift StorageClass to use for file storage type for hub                                                     |
+| file_storage_size              | *        | 10Gi                             | Storage size for file storage type for hub                                                                      |
+| object_storage_s3_secret       | *        | None                             | Name of an OpenShift Secret used to access S3 storage for hub                                                   |
+| object_storage_azure_secret    | *        | None                             | Name of an OpenShift Secret used to access Azure storage for hub                                                |
+| install                        | *        | false                            | Whether or not to install the Hub platform component in AAP 2.5 or later                                        |
 
 \* These settings are only used for installing AAP 2.5 or later.
 
@@ -103,15 +104,15 @@ The aap_ocp_install_platform and aap_ocp_install_lightspeed Dictionaries are onl
 
 ### aap_ocp_install_eda keys
 
-| Key Name      | Required | Default Value                    | Description                                     |
-|------------------------------------|:--------:|----------------------------------|-------------------------------------------------|
-| instance_name                      | Yes      | None                             | Name of the EDA instance to create              |
-| namespace                          |          | None                             | Name of the namespace to create the EDA instance in. If not specified `aap_ocp_install_namespace` will be used. |
-| namespace_manifest_overrides       |          | None                             | YAML Manifest to override the generated `Namespace` resource for the EDA if the `namespace` key is defined |
-| link_text                          |          | EDA Controller (<INSTANCE_NAME>) | Text used for creating the OCP application link |
-| eda_manifest_overrides             |          | None                             | YAML Manifest to override the generated `EDA` resource  |
-| consolelink_manifest_overrides     |          | None                             | YAML Manifest to override the generated `ConsoleLink` resource    |
-| install                            | *        | false                            | Whether or not to install the EDA platform component in AAP 2.5 or later    |
+| Key Name                       | Required | Default Value                    | Description                                                                                                     |
+|--------------------------------|:--------:|----------------------------------|-----------------------------------------------------------------------------------------------------------------|
+| instance_name                  | Yes      | None                             | Name of the EDA instance to create                                                                              |
+| namespace                      |          | None                             | Name of the namespace to create the EDA instance in. If not specified `aap_ocp_install_namespace` will be used. |
+| namespace_manifest_overrides   |          | None                             | YAML Manifest to override the generated `Namespace` resource for the EDA if the `namespace` key is defined      |
+| link_text                      |          | EDA Controller (<INSTANCE_NAME>) | Text used for creating the OCP application link                                                                 |
+| eda_manifest_overrides         |          | None                             | YAML Manifest to override the generated `EDA` resource                                                          |
+| consolelink_manifest_overrides |          | None                             | YAML Manifest to override the generated `ConsoleLink` resource                                                  |
+| install                        | *        | false                            | Whether or not to install the EDA platform component in AAP 2.5 or later                                        |
 
 \* These settings are only used for installing AAP 2.5 or later.
 
@@ -121,11 +122,11 @@ The aap_ocp_install_platform and aap_ocp_install_lightspeed Dictionaries are onl
 
 ### aap_ocp_install_platform keys
 
-| Key Name      | Required | Default Value                    | Description                                     |
-|---------------|:--------:|----------------------------------|-------------------------------------------------|
-| instance_name | Yes      | None                             | Name of the AAP Platform instance to create     |
-| namespace     |          | None                             | Name of the namespace to create the AAP platform instance in. If not specified `aap_ocp_install_namespace` will be used. |
-| link_text     |          | (<INSTANCE_NAME>)                | Text used for creating the platform OCP application link |
+| Key Name      | Required | Default Value     | Description                                                                                                              |
+|---------------|:--------:|-------------------|--------------------------------------------------------------------------------------------------------------------------|
+| instance_name | Yes      | None              | Name of the AAP Platform instance to create                                                                              |
+| namespace     |          | None              | Name of the namespace to create the AAP platform instance in. If not specified `aap_ocp_install_namespace` will be used. |
+| link_text     |          | (<INSTANCE_NAME>) | Text used for creating the platform OCP application link                                                                 |
 
 > ℹ️ **NOTE**
 >
@@ -133,9 +134,9 @@ The aap_ocp_install_platform and aap_ocp_install_lightspeed Dictionaries are onl
 
 ### aap_ocp_install_lightspeed keys
 
-| Key Name      | Required | Default Value                    | Description                                     |
-|---------------|:--------:|----------------------------------|-------------------------------------------------|
-| install       | No       | false                            | Whether or not to install the platform Lightspeed components  |
+| Key Name | Required | Default Value | Description                                                  |
+|----------|:--------:|---------------|--------------------------------------------------------------|
+| install  | No       | false         | Whether or not to install the platform Lightspeed components |
 
 > ℹ️ **NOTE**
 >

@@ -6,7 +6,8 @@ metadata:
   namespace: {{ aap_ocp_install_namespace }}
 spec:
   channel: {{ aap_ocp_install_operator['channel'] }}
-  installPlanApproval: Automatic
+  installPlanApproval: {{ aap_ocp_install_operator['approval'] | default('Automatic') }}
+  startingCSV: {{ aap_ocp_install_operator['starting_csv'] | default(omit) }}
   name: ansible-automation-platform-operator
   source: redhat-operators
   sourceNamespace: openshift-marketplace
