@@ -93,3 +93,10 @@ releases:
     fragments:
     - ocp-install-fixes.yml
     release_date: '2025-04-10'
+  2.7.0:
+    changes:
+      minor_changes:
+      - aap_ocp_install - Enhanced support for manual approval of OLM operators.
+    fragments:
+    - ocp-olm-manual-approval.yml
+    release_date: '2025-06-16'

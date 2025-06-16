@@ -1,7 +1,7 @@
 ---
 namespace: infra
 name: aap_utilities
-version: 2.6.1-devel
+version: 2.7.0-devel
 description: A collection of utility roles for usage with Ansible Automation Platform
 readme: README.md
 authors:
@@ -18,6 +18,8 @@ build_ignore:
     - galaxy.yml.j2
     - .github
     - .markdownlint.yml
+    - .ansible-lint
+    - .yamllint.yml
     - .pre-commit-config.yaml
     - .gitignore
     - .gitattributes

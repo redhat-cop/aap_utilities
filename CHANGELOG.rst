@@ -4,6 +4,14 @@ infra.aap\_Utilities Release Notes
 
 .. contents:: Topics
 
+v2.7.0
+======
+
+Minor Changes
+-------------
+
+- aap_ocp_install - Enhanced support for manual approval of OLM operators.
+
 v2.6.1
 ======
 
