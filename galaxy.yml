@@ -39,4 +39,5 @@ tags:
 dependencies:
     "ansible.posix": ">=1.0.0"
     "kubernetes.core": ">=2.2.0"
+    "redhat.openshift": ">=4.0.2"
 ...
