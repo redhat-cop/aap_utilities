@@ -3,7 +3,7 @@
 [![pre-commit tests](https://github.com/redhat-cop/aap_utilities/actions/workflows/pre-commit.yml/badge.svg)](https://github.com/redhat-cop/aap_utilities/actions/workflows/pre-commit.yml)
 [![Galaxy Release](https://github.com/redhat-cop/aap_utilities/actions/workflows/release.yml/badge.svg)](https://github.com/redhat-cop/aap_utilities/actions/workflows/release.yml)
 
-This ansible collection includes a number of roles which can be useful for installing and managing AWX or Ansible Automation Platform.
+This ansible collection includes a number of roles which can be useful for installing Ansible Automation Platform.
 Using this collection, you'll be able to automate following tasks:
 
 * RHEL based installs
@@ -30,7 +30,7 @@ The following collections are required to use this collection if you are using t
 |------------------|:---------------:|
 | ansible.posix    | 1.0.0           |
 | kubernetes.core  | 2.2.0           |
-| redhat.openshift | 2.0.1           |
+| redhat.openshift | 4.0.2           |
 
 > ⚠️ **IMPORTANT**
 >
@@ -40,19 +40,20 @@ The `aap_install_ocp` role requires the `kubernetes` (version 12.0.0 or later) P
 
 ## Links to Ansible Automation Platform Collections
 
-|                                      Collection Name                                         |                 Purpose                  |
-|:--------------------------------------------------------------------------------------------:|:----------------------------------------:|
-| [awx.awx/Ansible.controller repo](https://github.com/ansible/awx/tree/devel/awx_collection) |   Automation controller modules          |
-|        [Ansible Hub Configuration](https://github.com/ansible/automation_hub_collection)     |       Automation hub configuration       |
+| Collection Name                                                                     | Purpose                       |
+|:-----------------------------------------------------------------------------------:|:-----------------------------:|
+| [Ansible.controller repo](https://github.com/ansible/awx/tree/devel/awx_collection) | Automation controller modules |
+| [Ansible Hub Configuration](https://github.com/ansible/galaxy_collection)           | Automation hub configuration  |
 
 ## Links to other Validated Configuration Collections for Ansible Automation Platform
 
-|                                      Collection Name                                       |                 Purpose                  |
-|:------------------------------------------------------------------------------------------:|:----------------------------------------:|
-| [Controller Configuration](https://github.com/redhat-cop/controller_configuration) |   Automation controller configuration    |
-|             [EE Utilities](https://github.com/redhat-cop/ee_utilities)             | Execution Environment creation utilities |
-|     [AAP installation Utilities](https://github.com/redhat-cop/aap_utilities)      |  Ansible Automation Platform Utilities   |
-|   [AAP Configuration Template](https://github.com/redhat-cop/aap_configuration_template)   |  Configuration Template for this suite   |
+| Collection Name                                                                                     | Purpose                                   |
+|:---------------------------------------------------------------------------------------------------:|:-----------------------------------------:|
+| [AAP >= 2.5 Configuration](https://github.com/redhat-cop/infra.aap_configuration)                   | Ansible Automation Platform configuration |
+| [AAP <= 2.4 Controller Configuration](https://github.com/redhat-cop/infra.controller_configuration) | Automation controller configuration       |
+| [EE Utilities](https://github.com/redhat-cop/ee_utilities)                                          | Execution Environment creation utilities  |
+| [AAP installation Utilities](https://github.com/redhat-cop/aap_utilities)                           | Ansible Automation Platform Utilities     |
+| [AAP Configuration Template](https://github.com/redhat-cop/aap_configuration_template)              | Configuration Template for this suite     |
 
 ## Included content
 
