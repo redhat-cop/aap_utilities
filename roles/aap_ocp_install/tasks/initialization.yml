@@ -1,7 +1,6 @@
 ---
 - name: Get OpenShift API token
-  # Disabling check for FQCN on module names as using either community.okd or redhat.openshift collection is able to be used
-  openshift_auth: # noqa fqcn[action]
+  redhat.openshift.openshift_auth:
     host: "{{ aap_ocp_install_connection['host'] | mandatory }}"
     username: "{{ aap_ocp_install_connection['username'] | mandatory }}"
     password: "{{ aap_ocp_install_connection['password'] | mandatory }}"
