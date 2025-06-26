@@ -53,6 +53,7 @@
   delay: 15
 
 - name: Create EDA console link
+  when: aap_ocp_install_eda['create_link'] | default(true)
   kubernetes.core.k8s:
     host: "{{ __aap_ocp_install_auth_results['openshift_auth']['host'] }}"
     api_key: "{{ __aap_ocp_install_auth_results['openshift_auth']['api_key'] }}"
