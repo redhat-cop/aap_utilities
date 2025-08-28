@@ -66,7 +66,7 @@
       when: aap_setup_inst_log_dir is defined
       ansible.builtin.template:
         src: ansible.cfg.j2
-        dest: "{{ aap_setup_inst_setup_dir }}/ansible.cfg.j2"
+        dest: "{{ aap_setup_inst_setup_dir }}/ansible.cfg"
         mode: "0644"
 
     - name: Run the Ansible Automation Platform setup program
