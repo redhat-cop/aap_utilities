@@ -100,3 +100,10 @@ releases:
     fragments:
     - ocp-olm-manual-approval.yml
     release_date: '2025-06-16'
+  2.8.0:
+    changes:
+      minor_changes:
+      - aap_ocp_install - Add option to disable ConsoleLink CR creation
+    fragments:
+    - optional_consolelink.yaml
+    release_date: '2025-09-01'

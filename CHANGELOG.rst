@@ -4,6 +4,14 @@ infra.aap\_Utilities Release Notes
 
 .. contents:: Topics
 
+v2.8.0
+======
+
+Minor Changes
+-------------
+
+- aap_ocp_install - Add option to disable ConsoleLink CR creation
+
 v2.7.0
 ======
 
