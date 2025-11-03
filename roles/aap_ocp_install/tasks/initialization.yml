@@ -17,6 +17,15 @@
         validate_certs: "{{ aap_ocp_install_connection['validate_certs'] | default(omit) }}"
   when: aap_ocp_install_connection['api_key'] is defined
 
+- name: Include validate-connection tasks
+  ansible.builtin.include_tasks:
+    file: validate-connection.yml
+    apply:
+      tags:
+        - always
+  tags:
+    - always
+
 - name: Create namespace
   when: aap_ocp_install_create_namespace | default(true) | bool
   kubernetes.core.k8s:
