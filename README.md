@@ -1,7 +1,7 @@
 # Red Hat Communities of Practice Ansible Automation Platform Utilities Collection
 
 [![pre-commit tests](https://github.com/redhat-cop/aap_utilities/actions/workflows/pre-commit.yml/badge.svg)](https://github.com/redhat-cop/aap_utilities/actions/workflows/pre-commit.yml)
-[![Galaxy Release](https://github.com/redhat-cop/aap_utilities/actions/workflows/release.yml/badge.svg)](https://github.com/redhat-cop/aap_utilities/actions/workflows/release.yml)
+[![Galaxy Release](https://github.com/redhat-cop/aap_utilities/actions/workflows/release_auto.yml/badge.svg)%5D(https://github.com/redhat-cop/aap_utilities/actions/workflows/release_auto.yml)
 
 This ansible collection includes a number of roles which can be useful for installing Ansible Automation Platform.
 Using this collection, you'll be able to automate following tasks:
