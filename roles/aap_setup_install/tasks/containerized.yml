@@ -1,7 +1,7 @@
 ---
 - name: Check Automation Controller Running
   ansible.builtin.uri:
-    url: https://{{ controller_hostname }}:{{ __aap_setup_inst_controller_port }}/
+    url: https://{{ controller_hostname }}:{{ __aap_setup_inst_controller_port }}/api/
     method: GET
     user: admin
     password: "{{ aap_setup_prep_inv_secrets.all.controller_admin_password | default(aap_setup_prep_inv_vars.all.controller_admin_password) }}"
@@ -80,7 +80,7 @@
 
     - name: Wait for automation controller to be running
       ansible.builtin.uri: # use the first host from the list if no hostname is defined
-        url: https://{{ controller_hostname }}:{{ __aap_setup_inst_controller_port }}/
+        url: https://{{ controller_hostname }}:{{ __aap_setup_inst_controller_port }}/api/
         method: GET
         user: admin
         password: "{{ aap_setup_prep_inv_secrets.all.controller_admin_password | default(aap_setup_prep_inv_vars.all.controller_admin_password) }}"
