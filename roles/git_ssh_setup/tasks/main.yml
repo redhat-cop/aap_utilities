@@ -37,15 +37,14 @@
     mode: ug+rwsX
     state: directory
 
-- name: Create empty bare repositories if missing
-  ansible.builtin.command:
-    cmd: git init --bare --shared=group {{ full_projects_dir }}/{{ item }}.git # noqa command-instead-of-module
-    creates: "{{ full_projects_dir }}/{{ item }}.git"
-  become: true
-  become_user: "{{ git_server_user }}"
+- name: Create and setup each Git project
+  ansible.builtin.include_tasks:
+    file: git_projects.yml
   loop: "{{ git_projects }}"
+  loop_control:
+    loop_var: project_item
 
-- name: Create and manage client Git users
+- name: Create and manage each client Git users
   ansible.builtin.include_tasks:
     file: git_users.yml
   loop: "{{ git_client_users }}"
@@ -54,7 +53,7 @@
 
 - name: Debug
   ansible.builtin.debug:
-    msg: >
+    msg: >-
       Git repos can be used with e.g.
-      'git clone {{ git_client_users[0].name }}@{{ ansible_host }}:{{ full_projects_dir }}/{{ git_projects[0] }}.git'
+      'git clone {{ git_client_users[0].name }}@{{ ansible_host }}:{{ full_projects_dir }}/{{ git_projects[0] }}.git'.
 ...
