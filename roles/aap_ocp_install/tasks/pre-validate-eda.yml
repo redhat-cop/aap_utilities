@@ -18,7 +18,7 @@
     - name: Ensure EDA namespace variable is set
       ansible.builtin.assert:
         that:
-          - aap_ocp_install_eda['namespace'] | default("", true) | regex_search('^[a-z0-9]([-a-z0-9]*[a-z0-9])?$')
+          - aap_ocp_install_eda['namespace'] | default("", true) is match('^[a-z0-9]([-a-z0-9]*[a-z0-9])?$')
         quiet: true
   rescue:
     - name: Update validation errors fact - namespace

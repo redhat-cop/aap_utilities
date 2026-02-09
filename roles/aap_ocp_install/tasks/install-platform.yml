@@ -32,7 +32,7 @@
     api_version: route.openshift.io/v1
     namespace: "{{ aap_ocp_install_platform['namespace'] | default(aap_ocp_install_namespace) | mandatory }}"
   register: __aap_ocp_install_platform_route_result
-  until: __aap_ocp_install_platform_route_result['resources']
+  until: __aap_ocp_install_platform_route_result['resources'] | length > 0
   retries: 60  # Wait for 15 minutes (60*15/60)
   delay: 15
 
@@ -65,7 +65,7 @@
   when:
     - aap_ocp_install_controller is defined and aap_ocp_install_controller['install'] is defined and aap_ocp_install_controller['install']
   register: __aap_ocp_install_controller_route_result
-  until: __aap_ocp_install_controller_route_result['resources']
+  until: __aap_ocp_install_controller_route_result['resources'] | length > 0
   retries: 60  # Wait for 15 minutes (60*15/60)
   delay: 15
 
@@ -101,7 +101,7 @@
   when:
     - aap_ocp_install_eda is defined and aap_ocp_install_eda['install'] is defined and aap_ocp_install_eda['install']
   register: __aap_ocp_install_eda_route_result
-  until: __aap_ocp_install_eda_route_result['resources']
+  until: __aap_ocp_install_eda_route_result['resources'] | length > 0
   retries: 60  # Wait for 15 minutes (60*15/60)
   delay: 15
 
@@ -137,7 +137,7 @@
   when:
     - aap_ocp_install_hub is defined and aap_ocp_install_hub['install'] is defined and aap_ocp_install_hub['install']
   register: __aap_ocp_install_hub_route_result
-  until: __aap_ocp_install_hub_route_result['resources']
+  until: __aap_ocp_install_hub_route_result['resources'] | length > 0
   retries: 60  # Wait for 15 minutes (60*15/60)
   delay: 15
 
