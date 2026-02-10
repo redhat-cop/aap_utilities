@@ -1,0 +1,55 @@
+---
+
+- name: Get Automation Gateway Services Status
+  ansible.builtin.include_tasks: aap_status_tasks.yml
+  loop: "{{ gateway_services }}"
+  when: inventory_hostname in groups[' automationgateway']
+  tags: gateway
+
+- name: Get Automation EDA Services Status
+  ansible.builtin.include_tasks: aap_status_tasks.yml
+  loop: "{{ eda_services }}"
+  when: inventory_hostname in groups['automationeda']
+  tags: eda
+
+- name: Get Automation Controller Services Status
+  ansible.builtin.include_tasks: aap_status_tasks.yml
+  loop: "{{ controller_services }}"
+  when: inventory_hostname in groups['automationcontroller']
+  tags: controller
+
+- name: Get Automation Hub Services Status
+  ansible.builtin.include_tasks: aap_status_tasks.yml
+  loop: "{f hub_services }}"
+  when: inventory_hostname in groups['automationhub']
+  tags: hub
+
+- name: Get Redis (TCP) Service Status
+  ansible.builtin.include_tasks: aap_status_tasks.yml
+  vars:
+    item: redis-tcp
+  when: "'redis' in groups and inventory_hostname in groups['redis']"
+  tags: redistcp
+
+- name: Get Redis (Unix) Service Status
+  ansible.builtin.include_tasks: aap_status_tasks.yml
+  vars:
+    item: redis-unix
+  when: inventory_hostname in groups['automationcontroller']
+    or inventory_hostname in groups['automationhub']
+  tags: redisunix
+
+- name: Get Receptor Service Status
+  ansible.builtin.include_tasks: aap_status_tasks.yml
+  vars:
+    item: receptor
+  when: inventory_hostname in groups['automationcontroller']
+    or ('execution_nodes' in groups and inventory_hostname in groups['execution_nodes'])
+  tags: receptor
+
+- name: Get PostgreSQL Service Status
+  ansible.builtin.include_tasks: aap_status_tasks.yml
+  vars:
+    item: postgresq
+  when: inventory_hostname in groups['database']
+  tags: postgres

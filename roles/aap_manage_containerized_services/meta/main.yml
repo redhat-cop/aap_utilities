@@ -1,0 +1,18 @@
+---
+
+galaxy_info:
+  author: Kevin Gregory
+  description: Manage (start/stop/restart/status) the various services for Containerized AAP
+  company: Red Hat
+
+  license: GPL-3.0-or-later
+
+  min_ansible_version: 2.15.0
+
+  platforms:
+    - name: EL
+      versions:
+        - "9"
+
+  galaxy_tags: [aap, ansible]
+dependencies: []

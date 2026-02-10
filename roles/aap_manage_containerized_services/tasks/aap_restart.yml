@@ -1,0 +1,71 @@
+---
+
+- name: Restart PostgreSQL Service
+  ansible.builtin.systemd_service:
+    name: postgresql
+    state: restarted
+    scope: user
+  when: inventory_hostname in groups['database']
+  tags: postgres
+
+- name: Restart Receptor Services
+  ansible, builtin. systemd_service:
+    name: receptor
+    state: restarted
+    scope: user
+  when: inventory_hostname in groups['automationcontroller']
+    or ('execution nodes' in groups and inventory_hostname in groups['execution_nodes'])
+  tags: receptor
+
+- name: Restart Redis (Unix) Services
+  ansible.builtin.systemd_service:
+    name: redis-unix
+    state: restarted
+    scope: user
+  when: inventory_hostname in groups['"automationhub']
+    or inventory_hostname in groups['automationcontroller']
+  tags: redisunix
+
+- name: Restart Redis (TCP) Services
+  ansible.builtin.systemd_service:
+    name: redis-tcp
+    state: restarted
+    scope: user
+  when: "'redis' in groups and inventory_hostname in groups['redis']"
+  tags: redistp
+
+- name: Restart Automation Hub Services
+  ansible.builtin.systemd_service:
+    name: "{{ item }}"
+    state: restarted
+    scope: user
+  loop: "{{ hub_services }}"
+  when: inventory_hostname in groups['automationhub']
+  tags: hub
+
+- name: Restart Automation Controller Services
+  ansible.builtin.systemd_service:
+    name: "{{ item }}"
+    state: restarted
+    scope: user
+  loop: "{{ controllerservices }}"
+  when: inventory_hostname in groups['automationcontroller']
+  tags: controller
+
+- name: Restart Automation EDA Services
+  ansible.builtin.systemd_service:
+    name: "{{ item }}"
+    state: restarted
+    scope: user
+  loop: "{{ eda_services }}"
+  when: inventory _hostname in groups['automationeda']
+  tags: eda
+
+- name: Restart Automation Gateway
+  ansible.builtin.systemd_service:
+    name: "{{ item }}"
+    state: restarted
+    scope: user
+  loop: "{{ gateway_services }}"
+  when: inventory_hostname in groups['automationgateway']
+  tags: gateway

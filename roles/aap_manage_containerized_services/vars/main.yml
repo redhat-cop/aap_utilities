@@ -1,0 +1,25 @@
+---
+
+# These are the services that have more than one value. Services with a single value are declared in the task files.
+gateway_services:
+  - automation-gateway
+  - automation-gateway-proxy
+eda_services:
+  - automation-eda-activation-worker-1
+  - automation-eda-activation-worker-2
+  - automation-eda-api
+  - automation-eda-daphne
+  - automation-eda-scheduler
+  - automation-eda-web
+  - automation-eda-worker-1
+  - automation-eda-worker-2
+controller_services:
+  - automation-controller-rsyslog
+  - automation-controller-task
+  - automation-controller-web
+hub_services:
+  - automation-hub-api
+  - automation-hub-content
+  - automation-hub-web
+  - automation-hub-worker-1
+  - automation-hub-worker-2
