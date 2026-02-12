@@ -32,8 +32,8 @@ None
 
   roles:
     - role: infra.aap_utilities.aap_manage_containerized_services
-      # Valid values for the variable below are: "status", "start", "stop", or "restart".
-      # The default value/operation of the variable is "status".
+      # Valid values for the variable below are: "status", "start", "stop", and "restart".
+      # The default operation (value of the variable) is "status".
       svc_action: 
 ```
 ## How To Use
