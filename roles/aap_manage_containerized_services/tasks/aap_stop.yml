@@ -18,7 +18,6 @@
   when: inventory_hostname in groups['automationeda']
   tags: eda
 
-
 - name: Stop Automation Controller Services
   ansible.builtin.systemd_service:
     name: "{{ item }}"
