@@ -41,7 +41,7 @@ None
 Create a playbook using the example above as a guide, and execute it as normal. To avoid unnecessary output from skipped hosts, use "`ANSIBLE_DISPLAY_SKIPPED_HOSTS=false`" with the `ansible-playbook` command:
 
 ```
-ANSIBLE_DISPLAY_SKIPPED_HOSTS=false ansible-playbook -i <path_to_inventory> example_playbook.yml -e "svc_action=<status>"
+ANSIBLE_DISPLAY_SKIPPED_HOSTS=false ansible-playbook -i <path_to_inventory> example_playbook.yml -e "svc_action=<action>"
 ```
 
 ## License
