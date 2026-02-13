@@ -53,3 +53,5 @@
     item: postgresq
   when: inventory_hostname in groups['database']
   tags: postgres
+
+...

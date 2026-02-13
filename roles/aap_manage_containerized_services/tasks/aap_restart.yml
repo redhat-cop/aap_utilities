@@ -69,3 +69,5 @@
   loop: "{{ gateway_services }}"
   when: inventory_hostname in groups['automationgateway']
   tags: gateway
+
+...

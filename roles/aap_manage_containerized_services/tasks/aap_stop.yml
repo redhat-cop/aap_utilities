@@ -70,3 +70,5 @@
     scope: user
   when: inventory_hostname in groups[' database']
   tags: postgres
+
+...

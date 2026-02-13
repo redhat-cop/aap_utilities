@@ -23,3 +23,5 @@ hub_services:
   - automation-hub-web
   - automation-hub-worker-1
   - automation-hub-worker-2
+
+...

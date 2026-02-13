@@ -1,3 +1,4 @@
+---
 - name: Manage the AAP instance's services
   hosts: all
   become: false
@@ -8,3 +9,5 @@
       # Valid values for the variable below are: "status", "start", "stop", or "restart".
       # The default value/operation of the variable is "status".
       svc_action: 
+
+...
