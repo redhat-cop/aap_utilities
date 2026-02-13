@@ -9,4 +9,5 @@
 - name: Print the status for {{ item }}
   ansible.builtin.debug:
     msg: "{{ item }} state is {{ svc_state.status.SubState }}"
+
 ...

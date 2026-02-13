@@ -24,7 +24,7 @@ None
 
 ## Example Playbook
 
-```
+```yaml
 - name: Manage the AAP instance's services
   hosts: all
   become: false
@@ -36,11 +36,12 @@ None
       # The default operation (value of the variable) is "status".
       svc_action: 
 ```
+
 ## How To Use
 
 Create a playbook using the example above as a guide, and execute it as normal. To avoid unnecessary output from skipped hosts, use "`ANSIBLE_DISPLAY_SKIPPED_HOSTS=false`" with the `ansible-playbook` command:
 
-```
+```text
 ANSIBLE_DISPLAY_SKIPPED_HOSTS=false ansible-playbook -i <path_to_inventory> example_playbook.yml -e "svc_action=<action>"
 ```
 

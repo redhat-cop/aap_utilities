@@ -1,4 +1,5 @@
 ---
+
 - name: Manage the AAP instance's services
   hosts: all
   become: false
