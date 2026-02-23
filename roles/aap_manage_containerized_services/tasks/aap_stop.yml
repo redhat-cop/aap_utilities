@@ -35,7 +35,7 @@
   loop: "{{ hub_services }}"
   when: inventory_hostname in groups['automationhub']
   tags: hub
-    
+
 - name: Stop Redis (TCP) Services
   ansible.builtin.systemd_service:
     name: redis-tcp
