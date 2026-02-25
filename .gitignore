@@ -14,8 +14,9 @@ collections/*
 !collections/requirements.yml
 *.tar.gz
 
-# Ignore Vim working files
+# Ignore Vim working and backup files
 .*.swp
+*~
 
 # Ignore test directory
 test
@@ -24,3 +25,7 @@ test
 /.ansible
 /ansible.cfg
 /ansible_collections
+
+# ignore generated documentation
+*.html
+*.pdf
