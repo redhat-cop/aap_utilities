@@ -1,6 +1,8 @@
 ---
 - name: If login succeeded revoke OpenShift API token
-  when: __aap_ocp_install_auth_results['openshift_auth']['api_key'] is defined and aap_ocp_install_connection['api_key'] is not defined
+  when:
+    - __aap_ocp_install_auth_results['openshift_auth']['api_key'] is defined
+    - aap_ocp_install_connection['api_key'] is not defined
   redhat.openshift.openshift_auth:
     host: "{{ aap_ocp_install_connection['host'] | mandatory }}"
     validate_certs: "{{ aap_ocp_install_connection['validate_certs'] | default(omit) }}"

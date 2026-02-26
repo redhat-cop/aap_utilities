@@ -20,6 +20,7 @@ repos:
       # Roles will trigger an "unknown file type"
       # https://github.com/ansible/ansible-lint/issues/808
       - id: ansible-lint
+        language_version: python3
         pass_filenames: false
         always_run: true
         entry: ansible-lint

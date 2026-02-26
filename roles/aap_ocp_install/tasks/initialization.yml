@@ -1,21 +1,23 @@
 ---
 - name: Get OpenShift API token
+  when:
+    - aap_ocp_install_connection['api_key'] is not defined
   redhat.openshift.openshift_auth:
     host: "{{ aap_ocp_install_connection['host'] | mandatory }}"
     username: "{{ aap_ocp_install_connection['username'] | mandatory }}"
     password: "{{ aap_ocp_install_connection['password'] | mandatory }}"
     validate_certs: "{{ aap_ocp_install_connection['validate_certs'] | default(omit) }}"
   register: __aap_ocp_install_auth_results
-  when: aap_ocp_install_connection['api_key'] is not defined
 
 - name: Set authentication for provided API key
+  when:
+    - aap_ocp_install_connection['api_key'] is defined
   ansible.builtin.set_fact:
     __aap_ocp_install_auth_results:
       openshift_auth:
         host: "{{ aap_ocp_install_connection['host'] | mandatory }}"
         api_key: "{{ aap_ocp_install_connection['api_key'] | mandatory }}"
         validate_certs: "{{ aap_ocp_install_connection['validate_certs'] | default(omit) }}"
-  when: aap_ocp_install_connection['api_key'] is defined
 
 - name: Include validate-connection tasks
   ansible.builtin.include_tasks:
@@ -27,7 +29,8 @@
     - always
 
 - name: Create namespace
-  when: aap_ocp_install_create_namespace | default(true) | bool
+  when:
+    - aap_ocp_install_create_namespace | default(true) | bool
   kubernetes.core.k8s:
     host: "{{ __aap_ocp_install_auth_results['openshift_auth']['host'] }}"
     api_key: "{{ __aap_ocp_install_auth_results['openshift_auth']['api_key'] }}"
