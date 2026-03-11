@@ -3,6 +3,7 @@
 # directory detecting all hosts never returning from a started task.
 # If TASK_UUID is defined, the validation is limited to this specific task.
 # Usage: analyse_receptor_stdout.py [/var/lib/awx/receptor/.../stdout] [task-uuid]
+# VERSION: v2026-03-11-09
 
 import json
 import os
@@ -22,7 +23,16 @@ RUNNER_STOP = {
 }
 
 
+def del_runner(started_dict, stopped_key):
+    """Remove a stopped runner from dictionary of started ones"""
+    if stopped_key in started_dict:
+        del started_dict[stopped_key]
+    else:
+        print(f"WARNING: '{stopped_key}' was never started", file=sys.stderr)
+
+
 def get_lingering_runners(stdout_file, task_uuid=None):
+    """Return a dictionary of tasks started but not finished"""
     runners_started = {}
     if task_uuid:  # we only check this specific task
         with open(stdout_file, "r") as stdout_fp:
@@ -39,7 +49,7 @@ def get_lingering_runners(stdout_file, task_uuid=None):
                     and event["event"] in RUNNER_STOP
                     and event["event_data"]["task_uuid"] == task_uuid
                 ):
-                    del runners_started[event["event_data"]["host"]]
+                    del_runner(runners_started, event["event_data"]["host"])
     else:  # we check all tasks
         with open(stdout_file, "r") as stdout_fp:
             for line in stdout_fp:
@@ -57,7 +67,7 @@ def get_lingering_runners(stdout_file, task_uuid=None):
                         + "/"
                         + event["event_data"]["task_uuid"]
                     )
-                    del runners_started[key]
+                    del_runner(runners_started, key)
     return runners_started
 
 
