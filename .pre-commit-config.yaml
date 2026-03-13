@@ -13,13 +13,14 @@ repos:
   #       entry: "yamllint"
   #       types: [yaml]
   - repo: https://github.com/ansible/ansible-lint.git
-    rev: v26.1.0
+    rev: v26.2.0
     hooks:
       # see discussions here about what arguments are used, and behavior
       # https://github.com/ansible/ansible-lint/issues/649
       # Roles will trigger an "unknown file type"
       # https://github.com/ansible/ansible-lint/issues/808
       - id: ansible-lint
+        language_version: python3
         pass_filenames: false
         always_run: true
         entry: ansible-lint
@@ -29,7 +30,7 @@ repos:
           - ansible-core>=2.13
           - yamllint>=1.26,<2.0
   - repo: https://github.com/DavidAnson/markdownlint-cli2
-    rev: v0.20.0
+    rev: v0.21.0
     hooks:
       - id: markdownlint-cli2
 ...

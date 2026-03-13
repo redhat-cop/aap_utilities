@@ -20,52 +20,61 @@
         - always
 
     - name: Include Ansible Automation Platform operator install tasks
+      when:
+        - aap_ocp_install_operator is defined
       ansible.builtin.include_tasks:
         file: install-operator.yml
         apply:
           tags:
             - operator
-      when: aap_ocp_install_operator is defined
       tags:
         - operator
 
     - name: Include Ansible Automation Platform platform install tasks
+      when:
+        - aap_ocp_install_platform is defined
+        - __aap_ocp_install_25_install | bool
       ansible.builtin.include_tasks:
         file: install-platform.yml
         apply:
           tags:
             - platform
-      when: aap_ocp_install_platform is defined and __aap_ocp_install_25_install
       tags:
         - platform
 
     - name: Include Ansible Automation Platform controller install tasks
+      when:
+        - aap_ocp_install_controller is defined
+        - not __aap_ocp_install_25_install | bool
       ansible.builtin.include_tasks:
         file: install-controller.yml
         apply:
           tags:
             - controller
-      when: aap_ocp_install_controller is defined and not __aap_ocp_install_25_install
       tags:
         - controller
 
     - name: Include Ansible Automation Platform hub install tasks
+      when:
+        - aap_ocp_install_hub is defined
+        - not __aap_ocp_install_25_install | bool
       ansible.builtin.include_tasks:
         file: install-hub.yml
         apply:
           tags:
             - hub
-      when: aap_ocp_install_hub is defined and not __aap_ocp_install_25_install
       tags:
         - hub
 
     - name: Include Ansible Automation Platform EDA install tasks
+      when:
+        - aap_ocp_install_eda is defined
+        - not __aap_ocp_install_25_install | bool
       ansible.builtin.include_tasks:
         file: install-eda.yml
         apply:
           tags:
             - eda
-      when: aap_ocp_install_eda is defined and not __aap_ocp_install_25_install
       tags:
         - eda
 
