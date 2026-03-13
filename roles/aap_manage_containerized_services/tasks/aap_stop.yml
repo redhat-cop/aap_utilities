@@ -23,7 +23,7 @@
     name: "{{ item }}"
     state: stopped
     scope: user
-    loop: "{{ controller_services }}"
+  loop: "{{ controller_services }}"
   when: inventory_hostname in groups['automationcontroller']
   tags: controller
 
