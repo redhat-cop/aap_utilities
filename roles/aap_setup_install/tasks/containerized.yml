@@ -1,5 +1,5 @@
 ---
-- name: Check Automation Controller Running
+- name: containerized | Check Automation Controller Running
   ansible.builtin.uri:
     url: https://{{ controller_hostname }}:{{ __aap_setup_inst_controller_port }}/api/
     method: GET
@@ -14,7 +14,7 @@
     - "'automationcontroller' in aap_setup_prep_inv_nodes"
     - not aap_setup_inst_force | bool
 
-- name: Check Automation Hub Running
+- name: containerized | Check Automation Hub Running
   ansible.builtin.uri:
     url: https://{{ ah_hostname }}:{{ __aap_setup_inst_hub_port }}/api/galaxy/
     method: GET
@@ -29,7 +29,7 @@
     - "'automationhub' in aap_setup_prep_inv_nodes"
     - not aap_setup_inst_force | bool
 
-- name: Check EDA Controller Running
+- name: containerized | Check EDA Controller Running
   ansible.builtin.uri:
     url: https://{{ eda_hostname }}:{{ __aap_setup_inst_eda_port }}/
     method: GET
@@ -44,7 +44,7 @@
     - "'automationeda' in aap_setup_prep_inv_nodes"
     - not aap_setup_inst_force | bool
 
-- name: Install AAP
+- name: containerized | Install AAP
   when: >
     aap_setup_inst_force
     or ('automationcontroller' in aap_setup_prep_inv_nodes
@@ -54,7 +54,7 @@
     or ('automationeda' in aap_setup_prep_inv_nodes
         and __aap_setup_inst_eda_check.status != 200)
   block:
-    - name: Copy extra vars files to workspace
+    - name: containerized | Copy extra vars files to workspace
       ansible.builtin.copy:
         src: "{{ item }}"
         dest: "{{ aap_setup_inst_setup_dir }}"
@@ -62,14 +62,14 @@
       loop: "{{ aap_setup_inst_extra_vars_files }}"
       register: __extra_vars_files
 
-    - name: Updated log file location
+    - name: containerized | Updated log file location
       when: aap_setup_inst_log_dir is defined
       ansible.builtin.template:
         src: ansible.cfg.j2
         dest: "{{ aap_setup_inst_setup_dir }}/ansible.cfg"
         mode: "0644"
 
-    - name: Run the Ansible Automation Platform setup program
+    - name: containerized | Run the Ansible Automation Platform setup program
       ansible.builtin.command: "{{ lookup('template', 'containerized_sh.j2') }}"
       args:
         chdir: "{{ aap_setup_inst_setup_dir }}"
@@ -78,7 +78,7 @@
       changed_when: false
       # these will always run and will always report "changed" otherwise
 
-    - name: Wait for automation controller to be running
+    - name: containerized | Wait for automation controller to be running
       ansible.builtin.uri: # use the first host from the list if no hostname is defined
         url: https://{{ controller_hostname }}:{{ __aap_setup_inst_controller_port }}/api/
         method: GET
@@ -93,7 +93,7 @@
       delay: 10
       when: "'automationcontroller' in aap_setup_prep_inv_nodes"
 
-    - name: Wait for automation hub to be running
+    - name: containerized | Wait for automation hub to be running
       ansible.builtin.uri: # use the first host from the list if no hostname is defined
         url: https://{{ ah_hostname }}:{{ __aap_setup_inst_hub_port }}/api/galaxy/
         method: GET
@@ -108,7 +108,7 @@
       delay: 10
       when: "'automationhub' in aap_setup_prep_inv_nodes"
 
-    - name: Wait for EDA controller to be running
+    - name: containerized | Wait for EDA controller to be running
       ansible.builtin.uri: # use the first host from the list if no hostname is defined
         url: https://{{ eda_hostname }}:{{ __aap_setup_inst_eda_port }}/
         method: GET

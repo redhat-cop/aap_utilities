@@ -1,5 +1,5 @@
 ---
-- name: If login succeeded revoke OpenShift API token
+- name: finalization | If login succeeded revoke OpenShift API token
   when:
     - __aap_ocp_install_auth_results['openshift_auth']['api_key'] is defined
     - aap_ocp_install_connection['api_key'] is not defined

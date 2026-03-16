@@ -1,5 +1,5 @@
 ---
-- name: Create EDA controller namespace
+- name: install-eda | Create EDA controller namespace
   when:
     - aap_ocp_install_eda['namespace'] is defined
   kubernetes.core.k8s:
@@ -13,7 +13,7 @@
     ns_vars:
       ns_name: "{{ aap_ocp_install_eda['namespace'] }}"
 
-- name: Create EDA instance
+- name: install-eda | Create EDA instance
   kubernetes.core.k8s:
     host: "{{ __aap_ocp_install_auth_results['openshift_auth']['host'] }}"
     api_key: "{{ __aap_ocp_install_auth_results['openshift_auth']['api_key'] }}"
@@ -22,7 +22,7 @@
     resource_definition: "{{ lookup('template', 'eda/instance.yaml.j2') | from_yaml | ansible.builtin.combine(aap_ocp_install_eda['eda_manifest_overrides'] | default({}), recursive=true) }}"
     apply: true
 
-- name: Wait for operator to create the EDA route
+- name: install-eda | Wait for operator to create the EDA route
   kubernetes.core.k8s_info:
     host: "{{ __aap_ocp_install_auth_results['openshift_auth']['host'] }}"
     api_key: "{{ __aap_ocp_install_auth_results['openshift_auth']['api_key'] }}"
@@ -37,11 +37,11 @@
   retries: 60 # Wait for 15 minutes (60*15/60)
   delay: 15
 
-- name: Store EDA route
+- name: install-eda | Store EDA route
   ansible.builtin.set_fact:
     aap_ocp_install_eda_route: "https://{{ __aap_ocp_install_eda_route_result['resources'][0]['status']['ingress'][0]['host'] }}"
 
-- name: Ensure EDA login is available
+- name: install-eda | Ensure EDA login is available
   ansible.builtin.uri:
     url: "{{ aap_ocp_install_eda_route }}"
     validate_certs: "{{ aap_ocp_install_connection['validate_certs'] | default(omit) }}"
@@ -54,7 +54,7 @@
   retries: 120 # Wait for 30 minutes (120*15/60)
   delay: 15
 
-- name: Create EDA console link
+- name: install-eda | Create EDA console link
   when:
     - aap_ocp_install_eda['create_link'] | default(true) | bool
   kubernetes.core.k8s:

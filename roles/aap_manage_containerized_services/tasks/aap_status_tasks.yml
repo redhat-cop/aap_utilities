@@ -1,12 +1,12 @@
 ---
 
-- name: Get the status for {{ item }}
+- name: aap_status_tasks | Get the status for {{ item }}
   ansible.builtin.systemd_service:
     name: "{{ item }}"
     scope: user
   register: svc_state
 
-- name: Print the status for {{ item }}
+- name: aap_status_tasks | Print the status for {{ item }}
   ansible.builtin.debug:
     msg: "{{ item }} state is {{ svc_state.status.SubState }}"
 

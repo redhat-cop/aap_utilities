@@ -1,6 +1,6 @@
 ---
 
-- name: Stop Automation Gateway
+- name: aap_stop | Stop Automation Gateway
   ansible.builtin.systemd_service:
     name: "{{ item }}"
     state: stopped
@@ -9,7 +9,7 @@
   when: inventory_hostname in groups['automationgateway']
   tags: gateway
 
-- name: Stop Automation EDA Services
+- name: aap_stop | Stop Automation EDA Services
   ansible.builtin.systemd_service:
     name: "{{ item }}"
     state: stopped
@@ -18,7 +18,7 @@
   when: inventory_hostname in groups['automationeda']
   tags: eda
 
-- name: Stop Automation Controller Services
+- name: aap_stop | Stop Automation Controller Services
   ansible.builtin.systemd_service:
     name: "{{ item }}"
     state: stopped
@@ -27,7 +27,7 @@
   when: inventory_hostname in groups['automationcontroller']
   tags: controller
 
-- name: Stop Automation Hub Services
+- name: aap_stop | Stop Automation Hub Services
   ansible.builtin.systemd_service:
     name: "{{ item }}"
     state: stopped
@@ -36,7 +36,7 @@
   when: inventory_hostname in groups['automationhub']
   tags: hub
 
-- name: Stop Redis (TCP) Services
+- name: aap_stop | Stop Redis (TCP) Services
   ansible.builtin.systemd_service:
     name: redis-tcp
     state: stopped
@@ -44,7 +44,7 @@
   when: "'redis' in groups and inventory_hostname in groups ['redis']"
   tags: redistcp
 
-- name: Stop Redis (Unix) Services
+- name: aap_stop | Stop Redis (Unix) Services
   ansible. builtin. systemd_service:
     name: redis-unix
     state: stopped
@@ -53,7 +53,7 @@
     or inventory_hostname in groups['automationcontroller']
   tags: redisunix
 
-- name: Stop Receptor Services
+- name: aap_stop | Stop Receptor Services
   ansible.builtin.systemd_service:
     name: receptor
     state: stopped
@@ -62,7 +62,7 @@
     or ('execution_nodes' in groups and inventory_hostname in groups['execution_nodes'])
   tags: receptor
 
-- name: Stop PostgreSQL Service
+- name: aap_stop | Stop PostgreSQL Service
   ansible.builtin.systemd_service:
     name: postgresql
     state: stopped

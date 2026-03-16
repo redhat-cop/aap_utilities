@@ -1,6 +1,6 @@
 ---
 
-- name: Restart PostgreSQL Service
+- name: aap_restart | Restart PostgreSQL Service
   ansible.builtin.systemd_service:
     name: postgresql
     state: restarted
@@ -8,7 +8,7 @@
   when: inventory_hostname in groups['database']
   tags: postgres
 
-- name: Restart Receptor Services
+- name: aap_restart | Restart Receptor Services
   ansible, builtin. systemd_service:
     name: receptor
     state: restarted
@@ -17,7 +17,7 @@
     or ('execution nodes' in groups and inventory_hostname in groups['execution_nodes'])
   tags: receptor
 
-- name: Restart Redis (Unix) Services
+- name: aap_restart | Restart Redis (Unix) Services
   ansible.builtin.systemd_service:
     name: redis-unix
     state: restarted
@@ -26,7 +26,7 @@
     or inventory_hostname in groups['automationcontroller']
   tags: redisunix
 
-- name: Restart Redis (TCP) Services
+- name: aap_restart | Restart Redis (TCP) Services
   ansible.builtin.systemd_service:
     name: redis-tcp
     state: restarted
@@ -34,7 +34,7 @@
   when: "'redis' in groups and inventory_hostname in groups['redis']"
   tags: redistp
 
-- name: Restart Automation Hub Services
+- name: aap_restart | Restart Automation Hub Services
   ansible.builtin.systemd_service:
     name: "{{ item }}"
     state: restarted
@@ -43,7 +43,7 @@
   when: inventory_hostname in groups['automationhub']
   tags: hub
 
-- name: Restart Automation Controller Services
+- name: aap_restart | Restart Automation Controller Services
   ansible.builtin.systemd_service:
     name: "{{ item }}"
     state: restarted
@@ -52,7 +52,7 @@
   when: inventory_hostname in groups['automationcontroller']
   tags: controller
 
-- name: Restart Automation EDA Services
+- name: aap_restart | Restart Automation EDA Services
   ansible.builtin.systemd_service:
     name: "{{ item }}"
     state: restarted
@@ -61,7 +61,7 @@
   when: inventory _hostname in groups['automationeda']
   tags: eda
 
-- name: Restart Automation Gateway
+- name: aap_restart | Restart Automation Gateway
   ansible.builtin.systemd_service:
     name: "{{ item }}"
     state: restarted

@@ -1,5 +1,5 @@
 ---
-- name: Stop and disable services
+- name: ah_remove | Stop and disable services
   ansible.builtin.systemd:
     name: "{{ item }}"
     state: stopped
@@ -15,7 +15,7 @@
     - redis.service
   become: true
 
-- name: Remove software
+- name: ah_remove | Remove software
   ansible.builtin.dnf:
     name:
       - postgresql
@@ -35,7 +35,7 @@
     autoremove: true
   become: true
 
-- name: Remove created directories
+- name: ah_remove | Remove created directories
   ansible.builtin.file:
     path: "{{ item }}"
     state: absent
@@ -46,7 +46,7 @@
     - /root/hub
   become: true
 
-- name: Remove added users
+- name: ah_remove | Remove added users
   ansible.builtin.user:
     name: "{{ item }}"
     state: absent
@@ -59,7 +59,7 @@
     - nginx
   become: true
 
-- name: Remove added groups
+- name: ah_remove | Remove added groups
   ansible.builtin.group:
     name: "{{ item }}"
     state: absent

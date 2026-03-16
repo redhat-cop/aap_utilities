@@ -1,5 +1,5 @@
 ---
-- name: EDA Controller | get certificate file content
+- name: edacontroller | Get certificate file content
   when:
     - aap_certs_eda_ssl_cert is defined
     - aap_certs_eda_ssl_key is defined
@@ -7,7 +7,7 @@
     aap_certs_eda_ssl_cert_content: "{{ lookup('ansible.builtin.file', aap_certs_eda_ssl_cert) }}"
     aap_certs_eda_ssl_key_content: "{{ lookup('ansible.builtin.file', aap_certs_eda_ssl_key) }}"
 
-- name: EDA Controller | update certificate file
+- name: edacontroller | Update certificate file
   become: true
   ansible.builtin.template:
     src: cert_content.j2
@@ -20,7 +20,7 @@
   vars:
     file_content: "{{ aap_certs_eda_ssl_cert_content }}"
 
-- name: EDA Controller | update certificate key file
+- name: edacontroller | Update certificate key file
   become: true
   ansible.builtin.template:
     src: cert_content.j2

@@ -1,6 +1,6 @@
 ---
 
-- name: Start PostgreSQL Service
+- name: aap_start | Start PostgreSQL Service
   ansible.builtin.systemd_service:
     name: postgresql
     state: started
@@ -8,7 +8,7 @@
   when: inventory_hostname in groups['database']
   tags: postgres
 
-- name: Start Receptor Services
+- name: aap_start | Start Receptor Services
   ansible, builtin. systemd_service:
     name: receptor
     state: started
@@ -17,7 +17,7 @@
     or ('execution nodes' in groups and inventory_hostname in groups['execution_nodes'])
   tags: receptor
 
-- name: Start Redis (Unix) Services
+- name: aap_start | Start Redis (Unix) Services
   ansible.builtin.systemd_service:
     name: redis-unix
     state: started
@@ -26,7 +26,7 @@
     or inventory_hostname in groups['automationcontroller']
   tags: redisunix
 
-- name: Start Redis (TCP) Services
+- name: aap_start | Start Redis (TCP) Services
   ansible.builtin.systemd_service:
     name: redis-tcp
     state: started
@@ -34,7 +34,7 @@
   when: "'redis' in groups and inventory_hostname in groups['redis']"
   tags: redistcp
 
-- name: Start Automation Hub Services
+- name: aap_start | Start Automation Hub Services
   ansible.builtin.systemd_service:
     name: "{{ item }}"
     state: started
@@ -43,7 +43,7 @@
   when: inventory_hostname in groups['automationhub']
   tags: hub
 
-- name: Start Automation Controller Services
+- name: aap_start | Start Automation Controller Services
   ansible.builtin.systemd_service:
     name: "{{ item }}"
     state: started
@@ -52,7 +52,7 @@
   when: inventory_hostname in groups['automationcontroller']
   tags: controller
 
-- name: Start Automation EDA Services
+- name: aap_start | Start Automation EDA Services
   ansible.builtin.systemd_service:
     name: "{{ item }}"
     state: started
@@ -61,7 +61,7 @@
   when: inventory _hostname in groups['automationeda']
   tags: eda
 
-- name: Start Automation Gateway
+- name: aap_start | Start Automation Gateway
   ansible.builtin.systemd_service:
     name: "{{ item }}"
     state: started

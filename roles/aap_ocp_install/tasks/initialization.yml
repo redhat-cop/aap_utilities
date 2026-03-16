@@ -1,5 +1,5 @@
 ---
-- name: Get OpenShift API token
+- name: initialization | Get OpenShift API token
   when:
     - aap_ocp_install_connection['api_key'] is not defined
   redhat.openshift.openshift_auth:
@@ -9,7 +9,7 @@
     validate_certs: "{{ aap_ocp_install_connection['validate_certs'] | default(omit) }}"
   register: __aap_ocp_install_auth_results
 
-- name: Set authentication for provided API key
+- name: initialization | Set authentication for provided API key
   when:
     - aap_ocp_install_connection['api_key'] is defined
   ansible.builtin.set_fact:
@@ -19,7 +19,7 @@
         api_key: "{{ aap_ocp_install_connection['api_key'] | mandatory }}"
         validate_certs: "{{ aap_ocp_install_connection['validate_certs'] | default(omit) }}"
 
-- name: Include validate-connection tasks
+- name: initialization | Include validate-connection tasks
   ansible.builtin.include_tasks:
     file: validate-connection.yml
     apply:
@@ -28,7 +28,7 @@
   tags:
     - always
 
-- name: Create namespace
+- name: initialization | Create namespace
   when:
     - aap_ocp_install_create_namespace | default(true) | bool
   kubernetes.core.k8s:

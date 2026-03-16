@@ -1,7 +1,7 @@
 ---
 # Following this article: https://access.redhat.com/solutions/6733721
 
-- name: Stop and disable services
+- name: controller_remove | Stop and disable services
   ansible.builtin.systemd:
     name: "{{ item }}"
     state: stopped
@@ -16,7 +16,7 @@
     - supervisord.service
     - receptor.service
 
-- name: Remove software
+- name: controller_remove | Remove software
   ansible.builtin.dnf:
     name:
       - postgresql
@@ -30,7 +30,7 @@
     autoremove: true
   become: true
 
-- name: Remove created directories
+- name: controller_remove | Remove created directories
   ansible.builtin.file:
     path: "{{ item }}"
     state: absent
@@ -43,7 +43,7 @@
     - /var/lib/automation-platform-bundle
   become: true
 
-- name: Remove added users
+- name: controller_remove | Remove added users
   ansible.builtin.user:
     name: "{{ item }}"
     state: absent
@@ -57,7 +57,7 @@
     - receptor
   become: true
 
-- name: Remove added groups
+- name: controller_remove | Remove added groups
   ansible.builtin.group:
     name: "{{ item }}"
     state: absent
