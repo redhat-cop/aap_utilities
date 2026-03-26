@@ -10,6 +10,10 @@ on:
   schedule:
     - cron: "0 6 * * *"
 
+permissions:
+  contents: read
+  pull-requests: read
+
 jobs:
   pre-commit_and_sanity:
     uses: "redhat-cop/ansible_collections_tooling/.github/workflows/pre_commit_and_sanity.yml@main"

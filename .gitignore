@@ -1,3 +1,8 @@
+# Local secrets and credentials
+.env
+*.pem
+*.key
+
 # Ignore PyCache and compiled python
 **/__pycache__/**
 *.pyc

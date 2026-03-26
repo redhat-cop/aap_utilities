@@ -8,13 +8,16 @@ on:
   issue_comment:
     types: [created, edited]
 
+permissions:
+  issues: write
+
 jobs:
   remove-inactive:
     runs-on: ubuntu-latest
     steps:
       - name: remove inactive
         if: github.event.issue.state == 'open' && github.event.issue.user != 'github-actions'
-        uses: actions-cool/issues-helper@v3
+        uses: actions-cool/issues-helper@200c78641dbf33838311e5a1e0c31bbdb92d7cf0 # v3
         with:
           actions: 'remove-labels'
           issue-number: ${{ github.event.issue.number }}
