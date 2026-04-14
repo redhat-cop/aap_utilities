@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 # Script to analyze an Ansible receptor stdout file, by default in the current
 # directory detecting all hosts never returning from a started task.
 # If TASK_UUID is defined, the validation is limited to this specific task.
