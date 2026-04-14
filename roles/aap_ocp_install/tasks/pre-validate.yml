@@ -99,6 +99,7 @@
     file: pre-validate-operator.yml
 
 - name: pre-validate | Retrieve the requested operator channel version numbers
+  when: aap_ocp_install_operator is defined and aap_ocp_install_operator['channel'] is defined
   ansible.builtin.set_fact:
     __aap_ocp_install_major_version: "{{ aap_ocp_install_operator['channel'] | regex_search(__aap_ocp_install_major_version_re, '\\1') | first }}"
     __aap_ocp_install_minor_version: "{{ aap_ocp_install_operator['channel'] | regex_search(__aap_ocp_install_minor_version_re, '\\1') | first }}"
@@ -107,10 +108,16 @@
     __aap_ocp_install_minor_version_re: '\d+\.(\d+)'
 
 - name: pre-validate | Set a flag indicating whether to use the new (AAP 2.5+) operator installation method
+  when: __aap_ocp_install_major_version is defined and __aap_ocp_install_minor_version is defined
   ansible.builtin.set_fact:
     __aap_ocp_install_25_install: "{{ (__aap_ocp_install_major_version | int) > 2 \
                                   or ((__aap_ocp_install_major_version | int) == 2 \
                                   and (__aap_ocp_install_minor_version | int) >= 5) }}"
+
+- name: pre-validate | Default the 2.5+ install flag to false when operator channel is not defined
+  when: __aap_ocp_install_25_install is not defined
+  ansible.builtin.set_fact:
+    __aap_ocp_install_25_install: false
 
 - name: pre-validate | Ensure platform variables are set
   when:

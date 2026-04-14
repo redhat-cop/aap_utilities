@@ -54,7 +54,7 @@ aap_setup_inst_extra_vars: {}
 # You shouldn't need to define them again and again but they should be defined
 #
 # controller_hostname: "{{ inventory_hostname }}"
-controller_hostname: "{{ (aap_setup_prep_inv_nodes['automationcontroller'].keys() | list)[0] }}"
+controller_hostname: "{{ (aap_setup_prep_inv_nodes['automationcontroller'] is mapping) | ternary((aap_setup_prep_inv_nodes['automationcontroller'].keys() | list)[0], aap_setup_prep_inv_nodes['automationcontroller'][0]) }}"
 # controller_username: "admin"
 # controller_password: ""
 # controller_oauthtoken: ""
@@ -66,17 +66,17 @@ controller_hostname: "{{ (aap_setup_prep_inv_nodes['automationcontroller'].keys(
 # You shouldn't need to define them again and again but they should be defined
 #
 # ah_hostname: "{{ inventory_hostname }}"
-ah_hostname: "{{ (aap_setup_prep_inv_nodes['automationhub'].keys() | list)[0] }}"
+ah_hostname: "{{ (aap_setup_prep_inv_nodes['automationhub'] is mapping) | ternary((aap_setup_prep_inv_nodes['automationhub'].keys() | list)[0], aap_setup_prep_inv_nodes['automationhub'][0]) }}"
 # ah_username: "admin"
 # ah_password: ""
 # ah_oauthtoken: ""
 # ah_validate_certs: false
 
-eda_hostname: "{{ (aap_setup_prep_inv_nodes[__aap_setup_inst_eda_group_name].keys() | list)[0] }}"
+eda_hostname: "{{ (aap_setup_prep_inv_nodes[__aap_setup_inst_eda_group_name] is mapping) | ternary((aap_setup_prep_inv_nodes[__aap_setup_inst_eda_group_name].keys() | list)[0], aap_setup_prep_inv_nodes[__aap_setup_inst_eda_group_name][0]) }}"
 # eda_validate_certs: false
 
 # gateway_hostname: "{{ inventory_hostname }}"
-gateway_hostname: "{{ (aap_setup_prep_inv_nodes['automationgateway'].keys() | list)[0] }}"
+gateway_hostname: "{{ (aap_setup_prep_inv_nodes['automationgateway'] is mapping) | ternary((aap_setup_prep_inv_nodes['automationgateway'].keys() | list)[0], aap_setup_prep_inv_nodes['automationgateway'][0]) }}"
 # gateway_username: "admin"
 # gateway_password: ""
 # gateway_oauthtoken: ""

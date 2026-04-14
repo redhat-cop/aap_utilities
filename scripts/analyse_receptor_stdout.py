@@ -34,47 +34,46 @@ def del_runner(started_dict, stopped_key):
 def get_lingering_runners(stdout_file, task_uuid=None):
     """Return a dictionary of tasks started but not finished"""
     runners_started = {}
-    if task_uuid:  # we only check this specific task
-        with open(stdout_file, "r") as stdout_fp:
-            for line in stdout_fp:
+    with open(stdout_file, "r", encoding="utf-8", errors="replace") as stdout_fp:
+        for line_num, line in enumerate(stdout_fp, 1):
+            try:
                 event = json.loads(line)
-                if (
-                    "event" in event
-                    and event["event"] in RUNNER_START
-                    and event["event_data"]["task_uuid"] == task_uuid
-                ):
-                    runners_started[event["event_data"]["host"]] = event
-                elif (
-                    "event" in event
-                    and event["event"] in RUNNER_STOP
-                    and event["event_data"]["task_uuid"] == task_uuid
-                ):
-                    del_runner(runners_started, event["event_data"]["host"])
-    else:  # we check all tasks
-        with open(stdout_file, "r") as stdout_fp:
-            for line in stdout_fp:
-                event = json.loads(line)
-                if "event" in event and event["event"] in RUNNER_START:
-                    key = (
-                        event["event_data"]["host"]
-                        + "/"
-                        + event["event_data"]["task_uuid"]
-                    )
-                    runners_started[key] = event
-                elif "event" in event and event["event"] in RUNNER_STOP:
-                    key = (
-                        event["event_data"]["host"]
-                        + "/"
-                        + event["event_data"]["task_uuid"]
-                    )
-                    del_runner(runners_started, key)
+            except json.JSONDecodeError:
+                print(f"WARNING: skipping malformed JSON on line {line_num}", file=sys.stderr)
+                continue
+
+            if "event" not in event:
+                continue
+
+            event_data = event.get("event_data")
+            if not event_data:
+                continue
+
+            host = event_data.get("host")
+            event_task_uuid = event_data.get("task_uuid")
+            if not host or not event_task_uuid:
+                continue
+
+            if task_uuid and event_task_uuid != task_uuid:
+                continue
+
+            if event["event"] in RUNNER_START:
+                key = host if task_uuid else f"{host}/{event_task_uuid}"
+                runners_started[key] = event
+            elif event["event"] in RUNNER_STOP:
+                key = host if task_uuid else f"{host}/{event_task_uuid}"
+                del_runner(runners_started, key)
+
     return runners_started
 
 
 if __name__ == "__main__":
     if not os.path.isfile(STDOUT_FILE):
-        sys.exit(f"File '{STDOUT_FILE}' doesn't exist or isn't readable")
+        print(f"Error: File '{STDOUT_FILE}' doesn't exist or isn't a regular file", file=sys.stderr)
+        sys.exit(1)
+    if not os.access(STDOUT_FILE, os.R_OK):
+        print(f"Error: File '{STDOUT_FILE}' is not readable", file=sys.stderr)
+        sys.exit(1)
     runners_lingering = get_lingering_runners(STDOUT_FILE, TASK_UUID)
-    # print the remaining events without finishing one...
     print(json.dumps(runners_lingering, indent=2))
     print("==>", len(runners_lingering.keys()), "lingering task(s) found")

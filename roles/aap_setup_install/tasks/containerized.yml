@@ -1,5 +1,6 @@
 ---
 - name: containerized | Check Automation Controller Running
+  no_log: true
   ansible.builtin.uri:
     url: https://{{ controller_hostname }}:{{ __aap_setup_inst_controller_port }}/api/
     method: GET
@@ -15,6 +16,7 @@
     - not aap_setup_inst_force | bool
 
 - name: containerized | Check Automation Hub Running
+  no_log: true
   ansible.builtin.uri:
     url: https://{{ ah_hostname }}:{{ __aap_setup_inst_hub_port }}/api/galaxy/
     method: GET
@@ -30,6 +32,7 @@
     - not aap_setup_inst_force | bool
 
 - name: containerized | Check EDA Controller Running
+  no_log: true
   ansible.builtin.uri:
     url: https://{{ eda_hostname }}:{{ __aap_setup_inst_eda_port }}/
     method: GET

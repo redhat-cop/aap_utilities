@@ -1,5 +1,6 @@
 ---
 - name: setup | Check Automation Controller Running
+  no_log: true
   ansible.builtin.uri:
     url: https://{{ controller_hostname }}/
     method: GET
@@ -16,6 +17,7 @@
     - not aap_setup_inst_force | bool
 
 - name: setup | Check Automation Hub Running
+  no_log: true
   ansible.builtin.uri:
     url: https://{{ ah_hostname }}/api/galaxy/
     method: GET
@@ -32,6 +34,7 @@
     - not aap_setup_inst_force | bool
 
 - name: setup | Check EDA Controller Running
+  no_log: true
   ansible.builtin.uri:
     url: https://{{ eda_hostname }}/
     method: GET
@@ -48,6 +51,7 @@
     - not aap_setup_inst_force | bool
 
 - name: setup | Check Gateway API Status
+  no_log: true
   ansible.builtin.uri:
     url: https://{{ gateway_hostname }}/api/gateway/v1/status/?service_keys=true
     method: GET
@@ -71,10 +75,10 @@
       ternary(__aap_setup_inst_gateway_check.json.services.controller.status | default('') != 'good',  __aap_setup_inst_ctl_check.status | default(401) != 200)))
     or ('automationhub' in aap_setup_prep_inv_nodes
       and (aap_setup_down_version is version('2.5', '>=') |
-      ternary(__aap_setup_inst_gateway_check.json.services.hub.status | default('') != 'good',  __aap_setup_inst_ctl_ah.status | default(401) != 200)))
+      ternary(__aap_setup_inst_gateway_check.json.services.hub.status | default('') != 'good',  __aap_setup_inst_ah_check.status | default(401) != 200)))
     or ('automationedacontroller' in aap_setup_prep_inv_nodes
       and (aap_setup_down_version is version('2.5', '>=') |
-      ternary(__aap_setup_inst_gateway_check.json.services.eda.status | default('') != 'good',  __aap_setup_inst_ctl_eda.status | default(401) != 200)))
+      ternary(__aap_setup_inst_gateway_check.json.services.eda.status | default('') != 'good',  __aap_setup_inst_eda_check.status | default(401) != 200)))
   block:
     - name: setup | Copy extra vars files to workspace
       ansible.builtin.copy:
