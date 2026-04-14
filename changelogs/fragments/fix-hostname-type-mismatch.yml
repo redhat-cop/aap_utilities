@@ -1,0 +1,4 @@
+---
+bugfixes:
+  - "aap_setup_install - handle both dict and list types for ``aap_setup_prep_inv_nodes`` hostname variables, fixing ``'list object' has no attribute 'keys'`` errors when inventory nodes are provided as a list (https://github.com/redhat-cop/aap_utilities/issues/327)."
+...
