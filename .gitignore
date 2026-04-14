@@ -36,3 +36,4 @@ test
 *.pdf
 
 importer_result.json
+.DS_Store
