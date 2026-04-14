@@ -82,14 +82,14 @@
       # these will always run and will always report "changed" otherwise
 
     - name: containerized | Wait for automation controller to be running
-      ansible.builtin.uri: # use the first host from the list if no hostname is defined
+      ansible.builtin.uri:
         url: https://{{ controller_hostname }}:{{ __aap_setup_inst_controller_port }}/api/
         method: GET
         user: admin
         password: "{{ aap_setup_prep_inv_secrets.all.controller_admin_password | default(aap_setup_prep_inv_vars.all.controller_admin_password) }}"
         force_basic_auth: true
         status_code: 200
-        validate_certs: "{{ controller_validate_certs | default(omit) }}"
+        validate_certs: "{{ controller_validate_certs | default('false') }}"
       register: __aap_setup_inst_result
       until: __aap_setup_inst_result.status == 200
       retries: 90
@@ -97,14 +97,14 @@
       when: "'automationcontroller' in aap_setup_prep_inv_nodes"
 
     - name: containerized | Wait for automation hub to be running
-      ansible.builtin.uri: # use the first host from the list if no hostname is defined
+      ansible.builtin.uri:
         url: https://{{ ah_hostname }}:{{ __aap_setup_inst_hub_port }}/api/galaxy/
         method: GET
         user: admin
         password: "{{ aap_setup_prep_inv_secrets.all.hub_admin_password | default(aap_setup_prep_inv_vars.all.hub_admin_password) }}"
         force_basic_auth: true
         status_code: 200
-        validate_certs: "{{ ah_validate_certs | default(omit) }}"
+        validate_certs: "{{ ah_validate_certs | default('false') }}"
       register: __aap_setup_inst_result_ah
       until: __aap_setup_inst_result_ah.status == 200
       retries: 90

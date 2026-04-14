@@ -1,0 +1,4 @@
+---
+bugfixes:
+  - "aap_setup_install - fix containerized wait tasks failing with ``CERTIFICATE_VERIFY_FAILED`` by defaulting ``validate_certs`` to ``false`` instead of ``omit``, matching the pre-check tasks (https://github.com/redhat-cop/aap_utilities/issues/319)."
+...
