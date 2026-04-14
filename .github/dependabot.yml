@@ -1,5 +1,4 @@
 ---
-# https://docs.github.com/en/code-security/dependabot/dependabot-version-updates
 version: 2
 updates:
   - package-ecosystem: github-actions
@@ -7,3 +6,22 @@ updates:
     schedule:
       interval: weekly
     open-pull-requests-limit: 10
+    cooldown:
+      default-days: 7
+
+  # Ansible collection; no Python requirements.txt today — keeps future pip deps covered
+  - package-ecosystem: pip
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 10
+    cooldown:
+      default-days: 7
+
+  - package-ecosystem: pre-commit
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 10
+    cooldown:
+      default-days: 7
