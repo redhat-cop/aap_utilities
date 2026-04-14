@@ -34,3 +34,5 @@ test
 # ignore generated documentation
 *.html
 *.pdf
+
+importer_result.json
