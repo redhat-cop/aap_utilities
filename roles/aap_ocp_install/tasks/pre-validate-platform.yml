@@ -49,7 +49,7 @@
     - name: pre-validate-platform | Ensure platform link text variable is set
       ansible.builtin.assert:
         that:
-          - aap_ocp_install_controller['link_text'] | default('', true) | length > 0
+          - aap_ocp_install_platform['link_text'] | default('', true) | length > 0
         quiet: true
   rescue:
     - name: pre-validate-platform | Update validation errors fact - platform link_text

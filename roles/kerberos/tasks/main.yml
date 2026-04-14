@@ -34,6 +34,7 @@
   become: true
 
 - name: Configure kerberos
+  become: true
   ansible.builtin.template:
     src: krb5.conf.j2
     dest: /etc/krb5.conf
@@ -54,7 +55,7 @@
       - "  If you are communicating with a single domain and don't want to enter usernames as username@MYDOMAIN.COM, but instead username:"
       - "    ansible_winrm_realm: 'YOURDOMAINHERE.COM'"
 
-- name: Warn about role depreciation
+- name: Warn about role deprecation
   ansible.builtin.debug:
-    msg: WARNING!!! You are using a version of redhat_cop.aap_utilities.kerberos that will soon be depreciated as it does not work with Execution Environments.
+    msg: WARNING!!! You are using a version of infra.aap_utilities.kerberos that will soon be deprecated as it does not work with Execution Environments.
 ...

@@ -26,7 +26,7 @@ collections/*
 # Ignore test directory
 test
 
-# Ignore unneded Ansible related files
+# Ignore unneeded Ansible related files
 /.ansible
 /ansible.cfg
 /ansible_collections

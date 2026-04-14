@@ -2,16 +2,19 @@
 # tasks file for git_ssh_setup
 
 - name: Install some additional convenience software on the control node
+  become: true
   ansible.builtin.package:
     name: "{{ git_needed_software }}"
     state: present
 
 - name: Make sure git-shell is in /etc/shells
+  become: true
   ansible.builtin.lineinfile:
     dest: /etc/shells
     line: /usr/bin/git-shell
 
 - name: Ensure git user exists and uses git-shell
+  become: true
   ansible.builtin.user:
     name: "{{ git_server_user }}"
     comment: Git server user
@@ -22,6 +25,7 @@
     full_projects_dir: /home/{{ git_server_user }}/{{ git_projects_dir }}
 
 - name: Ensure home directory exists and has the correct access rights
+  become: true
   ansible.builtin.file:
     path: /home/{{ git_server_user }}
     owner: "{{ git_server_user }}"
@@ -30,6 +34,7 @@
     state: directory
 
 - name: Ensure projects directory exists and has the correct access rights
+  become: true
   ansible.builtin.file:
     path: "{{ full_projects_dir }}"
     owner: "{{ git_server_user }}"

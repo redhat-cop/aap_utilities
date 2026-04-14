@@ -1,5 +1,6 @@
 ---
 - name: validate-connection | Validate OpenShift API key
+  no_log: true
   ansible.builtin.uri:
     url: "{{  __aap_ocp_install_auth_results['openshift_auth']['host'] }}/version"
     method: GET

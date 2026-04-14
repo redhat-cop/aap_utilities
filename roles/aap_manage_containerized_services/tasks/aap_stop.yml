@@ -14,7 +14,7 @@
     name: "{{ item }}"
     state: stopped
     scope: user
-  loop: "(f eda_services })"
+  loop: "{{ eda_services }}"
   when: inventory_hostname in groups['automationeda']
   tags: eda
 
@@ -41,11 +41,11 @@
     name: redis-tcp
     state: stopped
     scope: user
-  when: "'redis' in groups and inventory_hostname in groups ['redis']"
+  when: "'redis' in groups and inventory_hostname in groups['redis']"
   tags: redistcp
 
 - name: aap_stop | Stop Redis (Unix) Services
-  ansible. builtin. systemd_service:
+  ansible.builtin.systemd_service:
     name: redis-unix
     state: stopped
     scope: user
@@ -58,7 +58,7 @@
     name: receptor
     state: stopped
     scope: user
-  when: inventory_hostname in groups[' automationcontroller']
+  when: inventory_hostname in groups['automationcontroller']
     or ('execution_nodes' in groups and inventory_hostname in groups['execution_nodes'])
   tags: receptor
 
@@ -67,7 +67,7 @@
     name: postgresql
     state: stopped
     scope: user
-  when: inventory_hostname in groups[' database']
+  when: inventory_hostname in groups['database']
   tags: postgres
 
 ...
