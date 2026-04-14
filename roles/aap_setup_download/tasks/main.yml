@@ -22,9 +22,12 @@
 
 - name: Select the Specified installer to download
   ansible.builtin.set_fact:
-    __aap_setup_down_images: "{{ __aap_setup_down_output.json.body | selectattr('filename', 'match', ((aap_setup_containerized | bool) | ternary('ansible-automation-platform-containerized-setup',
-      'ansible-automation-platform-setup'))) | sort(attribute='datePublished', reverse=True) | selectattr('filename', 'search', (aap_setup_down_type | string) + '-'
-      + (aap_setup_down_version | string)) }}"
+    __aap_setup_down_images: "{{ __aap_setup_down_output.json.body
+      | selectattr('filename', 'match', __aap_setup_down_filename_prefix)
+      | sort(attribute='datePublished', reverse=True) | list }}"
+  vars:
+    __aap_setup_down_filename_prefix: >-
+      {{ (aap_setup_containerized | bool) | ternary('ansible-automation-platform-containerized-', 'ansible-automation-platform-') }}{{ aap_setup_down_type }}-{{ aap_setup_down_version }}
 
 - name: Display all the filenames available for download
   ansible.builtin.debug:
