@@ -15,15 +15,16 @@ The following input variables are required:
 
 * `aap_setup_down_offline_token` contains your offline token as described in the requirements.
 It has no default value and _must_ be defined.
-* `aap_setup_down_version` defines the minor version to download (e.g. `2.5`). Defaults to current latest `2.5` version.
+* `aap_setup_down_version` defines the minor version to download (e.g. `2.6`). Defaults to current latest `2.6` version.
 The default is the latest version available at time of writing.
-* `aap_setup_down_version_patch` defines the patch version to download (e.g `12`) Defaults to false which will always get latest.
+* `aap_setup_down_version_patch` defines the patch version to download (e.g `7`).
+  Defaults to `false` which will always get latest.
 * `aap_setup_down_dest_dir` is the directory to where you want to download the tarball.
 It is by default the working directory `aap_setup_working_dir` also used by other roles of the collection, or ultimately `/var/tmp`.
-* `aap_setup_down_type` can be either `setup`, `setup-bundle`, `containerized-setup`, depending which flavour of the tarball you want to download.
-* `aap_setup_rhel_version` defines the major RHEL version being used (currently 8 or 9). If you are gathering facts you possibly don't need to specify this as the role will attempt to work out the value required though you will if AAP will be installed on machines on a different OS than the installer will run on. Otherwise the default is 8.
+* `aap_setup_down_type` can be either `setup` or `setup-bundle`, depending on which flavour of the tarball you want to download.
+* `aap_setup_rhel_version` defines the major RHEL version being used (currently 8, 9 or 10). If you are gathering facts you possibly don't need to specify this as the role will attempt to work out the value required though you will if AAP will be installed on machines on a different OS than the installer will run on. Otherwise the default is 10.
 * `aap_setup_containerized` if set to `true` the role will download the the containerized installer.
-* `aap_setup_arch` define the processor architecture of the installer. Default to "x86_64"
+* `aap_setup_arch` define the processor architecture of the installer. Default to `x86_64`
 
 The full path of the downloaded file is stored in the fact `aap_setup_down_installer_file` so that it can be used for extraction.
 

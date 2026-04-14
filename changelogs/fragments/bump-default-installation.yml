@@ -1,0 +1,5 @@
+---
+bugfixes:
+  - Fixed readme because containerized-setup isn't a valid download type
+breaking_changes:
+  - The default installation is now containerized of AAP 2.6 on RHEL 10, instead of RPM of AAP 2.5 on RHEL 8

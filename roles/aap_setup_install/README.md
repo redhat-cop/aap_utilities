@@ -54,6 +54,7 @@ Else change to `become: true`.
 ```yaml
 ---
 aap_setup_down_type: "setup-bundle"
+aap_setup_containerized: false
 aap_setup_rhel_version: 8
 
 aap_setup_prep_inv_nodes:  # a dictionary of dictionaries!
