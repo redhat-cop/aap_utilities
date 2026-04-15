@@ -9,12 +9,12 @@
   tags: postgres
 
 - name: aap_start | Start Receptor Services
-  ansible, builtin. systemd_service:
+  ansible.builtin.systemd_service:
     name: receptor
     state: started
     scope: user
   when: inventory_hostname in groups['automationcontroller']
-    or ('execution nodes' in groups and inventory_hostname in groups['execution_nodes'])
+    or ('execution_nodes' in groups and inventory_hostname in groups['execution_nodes'])
   tags: receptor
 
 - name: aap_start | Start Redis (Unix) Services
@@ -22,7 +22,7 @@
     name: redis-unix
     state: started
     scope: user
-  when: inventory_hostname in groups['"automationhub']
+  when: inventory_hostname in groups['automationhub']
     or inventory_hostname in groups['automationcontroller']
   tags: redisunix
 
@@ -48,7 +48,7 @@
     name: "{{ item }}"
     state: started
     scope: user
-  loop: "{{ controllerservices }}"
+  loop: "{{ controller_services }}"
   when: inventory_hostname in groups['automationcontroller']
   tags: controller
 
@@ -58,7 +58,7 @@
     state: started
     scope: user
   loop: "{{ eda_services }}"
-  when: inventory _hostname in groups['automationeda']
+  when: inventory_hostname in groups['automationeda']
   tags: eda
 
 - name: aap_start | Start Automation Gateway

@@ -46,6 +46,18 @@
     - /root/hub
   become: true
 
+- name: ah_remove | Kill remaining processes for users to be removed
+  ansible.builtin.command:
+    cmd: "killall -u {{ item }}"
+  loop:
+    - postgres
+    - redis
+    - pulp
+    - nginx
+  become: true
+  failed_when: false
+  changed_when: false
+
 - name: ah_remove | Remove added users
   ansible.builtin.user:
     name: "{{ item }}"

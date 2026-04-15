@@ -43,6 +43,19 @@
     - /var/lib/automation-platform-bundle
   become: true
 
+- name: controller_remove | Kill remaining processes for users to be removed
+  ansible.builtin.command:
+    cmd: "killall -u {{ item }}"
+  loop:
+    - postgres
+    - redis
+    - nginx
+    - awx
+    - receptor
+  become: true
+  failed_when: false
+  changed_when: false
+
 - name: controller_remove | Remove added users
   ansible.builtin.user:
     name: "{{ item }}"

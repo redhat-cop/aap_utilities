@@ -5,11 +5,13 @@
     __git_ssh_setup_full_path: "{{ full_projects_dir }}/{{ project_item }}.git"
 
 - name: git_projects | Create empty bare repositories if missing
+  become: true
   ansible.builtin.command:
     cmd: git init --bare --shared=group {{ __git_ssh_setup_full_path }} # noqa command-instead-of-module
     creates: "{{ full_projects_dir }}/{{ project_item }}.git"
 
 - name: git_projects | Change ownership of repositories to '{{ git_server_user }}'
+  become: true
   ansible.builtin.file:
     path: "{{ __git_ssh_setup_full_path }}"
     owner: "{{ git_server_user }}"
@@ -17,6 +19,7 @@
     recurse: true
 
 - name: git_projects | Check if repository already in safe repositories
+  become: true
   ansible.builtin.command:
     cmd: git config --system --get safe.directory {{ __git_ssh_setup_full_path }} # noqa command-instead-of-module
   changed_when: false
@@ -24,6 +27,7 @@
   register: __git_ssh_setup_safe_dir
 
 - name: git_projects | Add repository to safe repositories if necessary
+  become: true
   ansible.builtin.command:
     cmd: git config --system --add safe.directory {{ __git_ssh_setup_full_path }} # noqa command-instead-of-module
   changed_when: true

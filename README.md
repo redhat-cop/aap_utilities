@@ -1,7 +1,7 @@
 # Red Hat Communities of Practice Ansible Automation Platform Utilities Collection
 
 [![pre-commit tests](https://github.com/redhat-cop/aap_utilities/actions/workflows/pre-commit.yml/badge.svg)](https://github.com/redhat-cop/aap_utilities/actions/workflows/pre-commit.yml)
-[![Galaxy Release](https://github.com/redhat-cop/aap_utilities/actions/workflows/release_auto.yml/badge.svg)%5D(https://github.com/redhat-cop/aap_utilities/actions/workflows/release_auto.yml)
+[![Galaxy Release](https://github.com/redhat-cop/aap_utilities/actions/workflows/release_auto.yml/badge.svg)](https://github.com/redhat-cop/aap_utilities/actions/workflows/release_auto.yml)
 
 This ansible collection includes a number of roles which can be useful for installing Ansible Automation Platform.
 Using this collection, you'll be able to automate following tasks:
@@ -16,7 +16,7 @@ Using this collection, you'll be able to automate following tasks:
 
 ## Getting Help
 
-We are on the Ansible Forums and Matrix, if you want to discuss something, ask for help, or participate in the community, please use the #infra-config-as-code tag on the fourm, or post to the chat in Matrix.
+We are on the Ansible Forums and Matrix, if you want to discuss something, ask for help, or participate in the community, please use the #infra-config-as-code tag on the forum, or post to the chat in Matrix.
 
 [Ansible Forums](https://forum.ansible.com/tag/infra-config-as-code)
 

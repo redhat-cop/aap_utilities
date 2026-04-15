@@ -1,0 +1,23 @@
+---
+bugfixes:
+  - "aap_manage_containerized_services - fix double underscore in include_tasks filename preventing role execution."
+  - "aap_manage_containerized_services - fix broken FQCN module names, corrupted Jinja2 expressions, invalid group names, and typos across all task files."
+  - "aap_setup_install - fix wrong registered variable names (__aap_setup_inst_ctl_ah, __aap_setup_inst_ctl_eda) causing undefined variable errors for hub/EDA install decisions on AAP < 2.5."
+  - "aap_ocp_install - fix platform link_text validation asserting the wrong variable (controller instead of platform)."
+  - "aap_ocp_install - guard operator channel version parsing to prevent failures when aap_ocp_install_operator is undefined."
+  - "aap_ocp_install - default __aap_ocp_install_25_install to false when operator channel is not defined."
+  - "kerberos - add missing become on krb5.conf template task."
+  - "kerberos - fix deprecated spelling and update collection name from redhat_cop to infra."
+  - "git_ssh_setup - add missing become on all system-level tasks."
+  - "galaxy.yml - fix double slash in issues URL."
+  - "README.md - fix broken Galaxy Release badge link and forum typo."
+  - "markdownlint - fix rule ID typo MD0046 to MD046."
+
+minor_changes:
+  - "Add no_log to sensitive tasks handling tokens, passwords, and certificates across aap_setup_download, aap_setup_install, aap_ocp_install, and aap_certs roles."
+  - "galaxy.yml - add dev-only files to build_ignore to reduce collection artifact size."
+  - "analyse_receptor_stdout.py - improve error handling with JSON parse guards, safe event_data access, explicit encoding, and proper exit codes."
+  - "CI workflows - fix issue-remove-inactive user object comparison and stray quote in issue-labeled comment."
+  - "changelogs/config.yaml - fix title capitalization to match FQCN."
+  - "CONTRIBUTING.md - fix grammar and typos."
+...

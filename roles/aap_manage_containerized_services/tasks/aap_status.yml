@@ -3,7 +3,7 @@
 - name: aap_status | Get Automation Gateway Services Status
   ansible.builtin.include_tasks: aap_status_tasks.yml
   loop: "{{ gateway_services }}"
-  when: inventory_hostname in groups[' automationgateway']
+  when: inventory_hostname in groups['automationgateway']
   tags: gateway
 
 - name: aap_status | Get Automation EDA Services Status
@@ -20,7 +20,7 @@
 
 - name: aap_status | Get Automation Hub Services Status
   ansible.builtin.include_tasks: aap_status_tasks.yml
-  loop: "{f hub_services }}"
+  loop: "{{ hub_services }}"
   when: inventory_hostname in groups['automationhub']
   tags: hub
 
@@ -50,7 +50,7 @@
 - name: aap_status | Get PostgreSQL Service Status
   ansible.builtin.include_tasks: aap_status_tasks.yml
   vars:
-    item: postgresq
+    item: postgresql
   when: inventory_hostname in groups['database']
   tags: postgres
 
