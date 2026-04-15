@@ -6,26 +6,15 @@ repos:
       - id: end-of-file-fixer
       - id: trailing-whitespace
 
-  - repo: https://github.com/ansible/ansible-lint.git
-    rev: v26.4.0
-    hooks:
-      - id: ansible-lint
-        pass_filenames: false
-        always_run: true
-        entry: ansible-lint
-        args:
-          - --profile=production
-
   - repo: https://github.com/DavidAnson/markdownlint-cli2
     rev: v0.22.0
     hooks:
       - id: markdownlint-cli2
-        exclude: ^(AGENTS.md|CLAUDE.md|.agents/*)
 
   - repo: https://github.com/djdanielsson/ansible-content-prek-actions
     rev: v26.4.1
     hooks:
+      - id: ansible-lint
       - id: changelog
       - id: galaxy-importer
-
-...
+      - id: sanity

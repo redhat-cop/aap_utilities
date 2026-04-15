@@ -1,10 +1,10 @@
 ---
-name: pre-commit tests
+name: pre-commit and sanity tests
 
 on:
-  pull_request:
   push:
     branches: [devel]
+  pull_request:
   schedule:
     - cron: "0 6 * * *"
 
@@ -19,4 +19,9 @@ jobs:
       - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6
         with:
           python-version: "3.x"
-      - uses: pre-commit/action@2c7b3805fd2a0fd8c1884dcaebf91fc102a13ecd # v3.0.1
+      - name: Run default pre-commit hooks
+        uses: pre-commit/action@2c7b3805fd2a0fd8c1884dcaebf91fc102a13ecd # v3.0.1
+      - name: Run sanity (manual stage)
+        uses: pre-commit/action@2c7b3805fd2a0fd8c1884dcaebf91fc102a13ecd # v3.0.1
+        with:
+          extra_args: --hook-stage manual sanity --all-files
