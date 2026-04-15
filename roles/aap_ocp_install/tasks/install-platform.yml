@@ -7,11 +7,34 @@
     api_key: "{{ __aap_ocp_install_auth_results['openshift_auth']['api_key'] }}"
     validate_certs: "{{ aap_ocp_install_connection['validate_certs'] | default(omit) }}"
     state: present
-    resource_definition: "{{ lookup('ansible.builtin.template', 'namespace.yaml.j2', template_vars=ns_vars) | from_yaml }}"
+    resource_definition: "{{ lookup('ansible.builtin.template', 'namespace.yaml.j2', template_vars=ns_vars) | from_yaml | ansible.builtin.combine(aap_ocp_install_platform['namespace_manifest_overrides'] | default({}), recursive=true) }}"
     apply: true
   vars:
     ns_vars:
       ns_name: "{{ aap_ocp_install_platform['namespace'] }}"
+
+- name: install-platform | Build base AnsibleAutomationPlatform from template
+  ansible.builtin.set_fact:
+    __aap_ocp_install_platform_cr: "{{ lookup('template', 'platform/instance.yaml.j2') | from_yaml }}"
+
+- name: install-platform | Apply platform-level manifest overrides to AnsibleAutomationPlatform
+  ansible.builtin.set_fact:
+    __aap_ocp_install_platform_cr: "{{ __aap_ocp_install_platform_cr | ansible.builtin.combine(aap_ocp_install_platform['platform_manifest_overrides'] | default({}), recursive=true) }}"
+
+- name: install-platform | Merge controller manifest overrides into spec.controller
+  when: aap_ocp_install_controller is defined
+  ansible.builtin.set_fact:
+    __aap_ocp_install_platform_cr: "{{ __aap_ocp_install_platform_cr | ansible.builtin.combine({'spec': {'controller': __aap_ocp_install_platform_cr['spec']['controller'] | ansible.builtin.combine(aap_ocp_install_controller['controller_manifest_overrides'] | default({}), recursive=true)}}, recursive=true) }}"
+
+- name: install-platform | Merge hub manifest overrides into spec.hub
+  when: aap_ocp_install_hub is defined
+  ansible.builtin.set_fact:
+    __aap_ocp_install_platform_cr: "{{ __aap_ocp_install_platform_cr | ansible.builtin.combine({'spec': {'hub': __aap_ocp_install_platform_cr['spec']['hub'] | ansible.builtin.combine(aap_ocp_install_hub['hub_manifest_overrides'] | default({}), recursive=true)}}, recursive=true) }}"
+
+- name: install-platform | Merge EDA manifest overrides into spec.eda
+  when: aap_ocp_install_eda is defined
+  ansible.builtin.set_fact:
+    __aap_ocp_install_platform_cr: "{{ __aap_ocp_install_platform_cr | ansible.builtin.combine({'spec': {'eda': __aap_ocp_install_platform_cr['spec']['eda'] | ansible.builtin.combine(aap_ocp_install_eda['eda_manifest_overrides'] | default({}), recursive=true)}}, recursive=true) }}"
 
 - name: install-platform | Create automation platform instance
   kubernetes.core.k8s:
@@ -19,7 +42,7 @@
     api_key: "{{ __aap_ocp_install_auth_results['openshift_auth']['api_key'] }}"
     validate_certs: "{{ aap_ocp_install_connection['validate_certs'] | default(omit) }}"
     state: present
-    resource_definition: "{{ lookup('template', 'platform/instance.yaml.j2') | from_yaml }}"
+    resource_definition: "{{ __aap_ocp_install_platform_cr }}"
     apply: true
 
 - name: install-platform | Wait for operator to create the automation platform route
@@ -199,6 +222,6 @@
     api_key: "{{ __aap_ocp_install_auth_results['openshift_auth']['api_key'] }}"
     validate_certs: "{{ aap_ocp_install_connection['validate_certs'] | default(omit) }}"
     state: present
-    resource_definition: "{{ lookup('template', 'platform/consolelink.yaml.j2') | from_yaml }}"
+    resource_definition: "{{ lookup('template', 'platform/consolelink.yaml.j2') | from_yaml | ansible.builtin.combine(aap_ocp_install_platform['consolelink_manifest_overrides'] | default({}), recursive=true) }}"
     apply: true
 ...

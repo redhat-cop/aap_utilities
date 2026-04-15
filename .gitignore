@@ -31,6 +31,9 @@ test
 /ansible.cfg
 /ansible_collections
 
+# Ignore python virtual environment
+.venv
+
 # ignore generated documentation
 *.html
 *.pdf

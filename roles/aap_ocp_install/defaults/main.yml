@@ -14,15 +14,20 @@
 # aap_ocp_install_operator:
 #   channel:
 
-# Variables applicable to the Ansible platform installation
+# Variables applicable to the Ansible platform installation (AAP 2.5+)
 # aap_ocp_install_platform:
 #   instance_name:
+#   namespace:
+#   namespace_manifest_overrides:
+#   platform_manifest_overrides:
+#   consolelink_manifest_overrides:
 
 # Variable applicable to the controller installation
 # aap_ocp_install_controller:
 #   instance_name:
 #   replicas:
 #   link_text:
+#   controller_manifest_overrides:
 
 # Variable applicable to the hub installation
 # aap_ocp_install_hub:
@@ -33,6 +38,7 @@
 #   file_storage_size:
 #   object_storage_s3_secret:
 #   object_storage_azure_secret:
+#   hub_manifest_overrides:
 
 # Variable applicable to the EDA installation
 # aap_ocp_install_eda:
@@ -40,6 +46,7 @@
 #   instance_name:
 #   replicas:
 #   link_text:
+#   eda_manifest_overrides:
 
 # Variables applicable to the Lightspeed installation
 # aap_ocp_install_lightspeed:

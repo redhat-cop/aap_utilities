@@ -212,4 +212,94 @@
       ansible.builtin.set_fact:
         __aap_ocp_install_prevalidate_errors: >
           {{ __aap_ocp_install_prevalidate_errors + ["aap_ocp_install_hub['object_storage_azure_secret'] must be the name of a valid Azure storage secret name"] }}
+
+- name: pre-validate-platform | Ensure platform namespace manifest overrides are a mapping when set (block)
+  when: aap_ocp_install_platform['namespace_manifest_overrides'] is defined
+  block:
+    - name: pre-validate-platform | Ensure platform namespace manifest overrides are a mapping when set
+      ansible.builtin.assert:
+        that:
+          - aap_ocp_install_platform['namespace_manifest_overrides'] is mapping
+        quiet: true
+  rescue:
+    - name: pre-validate-platform | Update validation errors fact - platform namespace_manifest_overrides
+      ansible.builtin.set_fact:
+        __aap_ocp_install_prevalidate_errors: >
+          {{ __aap_ocp_install_prevalidate_errors + ["aap_ocp_install_platform['namespace_manifest_overrides'] must be a mapping (dictionary)"] }}
+
+- name: pre-validate-platform | Ensure platform manifest overrides are a mapping when set (block)
+  when: aap_ocp_install_platform['platform_manifest_overrides'] is defined
+  block:
+    - name: pre-validate-platform | Ensure platform manifest overrides are a mapping when set
+      ansible.builtin.assert:
+        that:
+          - aap_ocp_install_platform['platform_manifest_overrides'] is mapping
+        quiet: true
+  rescue:
+    - name: pre-validate-platform | Update validation errors fact - platform_manifest_overrides
+      ansible.builtin.set_fact:
+        __aap_ocp_install_prevalidate_errors: >
+          {{ __aap_ocp_install_prevalidate_errors + ["aap_ocp_install_platform['platform_manifest_overrides'] must be a mapping (dictionary)"] }}
+
+- name: pre-validate-platform | Ensure platform console link manifest overrides are a mapping when set (block)
+  when: aap_ocp_install_platform['consolelink_manifest_overrides'] is defined
+  block:
+    - name: pre-validate-platform | Ensure platform console link manifest overrides are a mapping when set
+      ansible.builtin.assert:
+        that:
+          - aap_ocp_install_platform['consolelink_manifest_overrides'] is mapping
+        quiet: true
+  rescue:
+    - name: pre-validate-platform | Update validation errors fact - platform consolelink_manifest_overrides
+      ansible.builtin.set_fact:
+        __aap_ocp_install_prevalidate_errors: >
+          {{ __aap_ocp_install_prevalidate_errors + ["aap_ocp_install_platform['consolelink_manifest_overrides'] must be a mapping (dictionary)"] }}
+
+- name: pre-validate-platform | Ensure controller manifest overrides are a mapping when set (block)
+  when:
+    - aap_ocp_install_controller is defined
+    - aap_ocp_install_controller['controller_manifest_overrides'] is defined
+  block:
+    - name: pre-validate-platform | Ensure controller manifest overrides are a mapping when set
+      ansible.builtin.assert:
+        that:
+          - aap_ocp_install_controller['controller_manifest_overrides'] is mapping
+        quiet: true
+  rescue:
+    - name: pre-validate-platform | Update validation errors fact - controller_manifest_overrides
+      ansible.builtin.set_fact:
+        __aap_ocp_install_prevalidate_errors: >
+          {{ __aap_ocp_install_prevalidate_errors + ["aap_ocp_install_controller['controller_manifest_overrides'] must be a mapping (dictionary)"] }}
+
+- name: pre-validate-platform | Ensure hub manifest overrides are a mapping when set (block)
+  when:
+    - aap_ocp_install_hub is defined
+    - aap_ocp_install_hub['hub_manifest_overrides'] is defined
+  block:
+    - name: pre-validate-platform | Ensure hub manifest overrides are a mapping when set
+      ansible.builtin.assert:
+        that:
+          - aap_ocp_install_hub['hub_manifest_overrides'] is mapping
+        quiet: true
+  rescue:
+    - name: pre-validate-platform | Update validation errors fact - hub_manifest_overrides
+      ansible.builtin.set_fact:
+        __aap_ocp_install_prevalidate_errors: >
+          {{ __aap_ocp_install_prevalidate_errors + ["aap_ocp_install_hub['hub_manifest_overrides'] must be a mapping (dictionary)"] }}
+
+- name: pre-validate-platform | Ensure EDA manifest overrides are a mapping when set (block)
+  when:
+    - aap_ocp_install_eda is defined
+    - aap_ocp_install_eda['eda_manifest_overrides'] is defined
+  block:
+    - name: pre-validate-platform | Ensure EDA manifest overrides are a mapping when set
+      ansible.builtin.assert:
+        that:
+          - aap_ocp_install_eda['eda_manifest_overrides'] is mapping
+        quiet: true
+  rescue:
+    - name: pre-validate-platform | Update validation errors fact - eda_manifest_overrides
+      ansible.builtin.set_fact:
+        __aap_ocp_install_prevalidate_errors: >
+          {{ __aap_ocp_install_prevalidate_errors + ["aap_ocp_install_eda['eda_manifest_overrides'] must be a mapping (dictionary)"] }}
 ...

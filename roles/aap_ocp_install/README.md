@@ -11,18 +11,18 @@ In addition the kubernetes.core and redhat.openshift Ansible collections are req
 
 A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
 
-| Variable Name                                | Required | Default Value | Description                                                                                  |
-|----------------------------------------------|:--------:|---------------|----------------------------------------------------------------------------------------------|
-| aap_ocp_install_namespace                    |   Yes    |               | Namespace to create operator, controller, and hub in                                         |
-| aap_ocp_install_create_namespace             |    No    | true          | Create the Namespace for the operator, controller and hub. Valid values are: `true`, `false` |
-| aap_ocp_install_namespace_manifest_overrides |    No    |               | Namespace to create operator, controller, and hub in                                         |
-| aap_ocp_install_connection                   |   Yes    |               | Dictionary containing keys defined in the `connection variables table`                       |
-| aap_ocp_install_operator                     |   Yes*   |               | YAML Manifest to override the generated operator `Namespace` resource                        |
-| aap_ocp_install_controller                   |   Yes*   |               | Dictionary containing keys defined in the `controller variables table`                       |
-| aap_ocp_install_hub                          |   Yes*   |               | Dictionary containing keys defined in the `hub variables table`                              |
-| aap_ocp_install_eda                          |   Yes*   |               | Dictionary containing keys defined in the `eda variables table`                              |
-| aap_ocp_install_platform                     |   Yes*   |               | Dictionary containing keys defined in the `platform variables table`                         |
-| aap_ocp_install_lightspeed                   |    No    |               | Dictionary containing keys defined in the `lightspeed variables table`                       |
+| Variable Name                                  | Required   | Default Value   | Description                                                                                                |
+| ---------------------------------------------- | :--------: | --------------- | ----------------------------------------------------------------------------------------------             |
+| aap_ocp_install_namespace                      | Yes        |                 | Namespace to create operator, controller, and hub in                                                       |
+| aap_ocp_install_create_namespace               | No         | true            | Create the Namespace for the operator, controller and hub. Valid values are: `true`, `false`               |
+| aap_ocp_install_namespace_manifest_overrides   | No         |                 | YAML mapping merged into the generated default `Namespace` when `aap_ocp_install_create_namespace` is true |
+| aap_ocp_install_connection                     | Yes        |                 | Dictionary containing keys defined in the `connection variables table`                                     |
+| aap_ocp_install_operator                       | Yes*       |                 | Dictionary containing keys defined in the `operator variables table`                                       |
+| aap_ocp_install_controller                     | Yes*       |                 | Dictionary containing keys defined in the `controller variables table`                                     |
+| aap_ocp_install_hub                            | Yes*       |                 | Dictionary containing keys defined in the `hub variables table`                                            |
+| aap_ocp_install_eda                            | Yes*       |                 | Dictionary containing keys defined in the `eda variables table`                                            |
+| aap_ocp_install_platform                       | Yes*       |                 | Dictionary containing keys defined in the `platform variables table`                                       |
+| aap_ocp_install_lightspeed                     | No         |                 | Dictionary containing keys defined in the `lightspeed variables table`                                     |
 
 \* Variable and required keys must be defined when the type of tag is specified (e.g. `--tags controller` requires the aap_ocp_install_controller variable be defined).
 If the variable is omitted the corresponding component will not be installed (e.g. if only aap_ocp_install_hub variable is defined then the operator and controller installation will be skipped)
@@ -56,85 +56,101 @@ The aap_ocp_install_platform and aap_ocp_install_lightspeed Dictionaries are onl
 
 ### aap_ocp_install_controller keys
 
-| Key Name                       | Required | Default Value                           | Description                                                                                                            |
-|--------------------------------|:--------:|-----------------------------------------|------------------------------------------------------------------------------------------------------------------------|
-| instance_name                  |   Yes    |                                         | Name of the controller instance to create                                                                              |
-| namespace                      |          |                                         | Name of the namespace to create the controller instance in. If not specified `aap_ocp_install_namespace` will be used. |
-| namespace_manifest_overrides   |          |                                         | YAML Manifest to override the generated `Namespace` resource for the controller if the `namespace` key is defined      |
-| admin_user                     |          | admin                                   | Username to use for the admin account                                                                                  |
-| replicas                       |          | 1                                       | How many replicas to create.                                                                                           |
-| garbage_collect_secrets        |          | false                                   | Whether or not to remove secrets upon instance removal                                                                 |
-| image_pull_policy              |          | IfNotPresent                            | The image pull policy                                                                                                  |
-| create_preload_data            |          | true                                    | Whether or not to preload data upon instance creation                                                                  |
-| projects_persistence           |          | false                                   | Whether or not the /var/lib/projects directory will be persistent                                                      |
-| projects_storage_size          |          | 8Gi                                     | Size of /var/lib/projects persistent volume claim (PVC)                                                                |
-| controller_manifest_overrides  |          |                                         | YAML Manifest to override the generated `AutomationController` resource link                                           |
-| consolelink_manifest_overrides |          |                                         | YAML Manifest to override the generated `ConsoleLink` resource                                                         |
-| create_link                    |          | true                                    | Create an OCP console application link (i.e. apply ConsoleLink CR)                                                     |
-| link_text                      |          | Automation Controller (<INSTANCE_NAME>) | Text used when creating the OCP console application link                                                               |
-| install                        |    *     | false                                   | Whether or not to install the Controller platform component in AAP 2.5 or later                                        |
+| Key Name                         | Required   | Default Value                             | Description                                                                                                                             |
+| -------------------------------- | :--------: | ----------------------------------------- | ------------------------------------------------------------------------------------------------------------------------                |
+| instance_name                    | Yes        |                                           | Name of the controller instance to create                                                                                               |
+| namespace                        |            |                                           | Name of the namespace to create the controller instance in. If not specified `aap_ocp_install_namespace` will be used.                  |
+| namespace_manifest_overrides     |            |                                           | YAML Manifest to override the generated `Namespace` resource for the controller if the `namespace` key is defined                       |
+| admin_user                       |            | admin                                     | Username to use for the admin account                                                                                                   |
+| replicas                         |            | 1                                         | How many replicas to create.                                                                                                            |
+| garbage_collect_secrets          |            | false                                     | Whether or not to remove secrets upon instance removal                                                                                  |
+| image_pull_policy                |            | IfNotPresent                              | The image pull policy                                                                                                                   |
+| create_preload_data              |            | true                                      | Whether or not to preload data upon instance creation                                                                                   |
+| projects_persistence             |            | false                                     | Whether or not the /var/lib/projects directory will be persistent                                                                       |
+| projects_storage_size            |            | 8Gi                                       | Size of /var/lib/projects persistent volume claim (PVC)                                                                                 |
+| controller_manifest_overrides    |            |                                           | YAML mapping merged into the `AutomationController` CR (pre-2.5) or into `spec.controller` on the `AnsibleAutomationPlatform` CR (2.5+) |
+| consolelink_manifest_overrides   |            |                                           | YAML mapping merged into the generated `ConsoleLink` for the controller (pre-2.5 only; not used on the platform install path)           |
+| create_link                      |            | true                                      | Create an OCP console application link (i.e. apply ConsoleLink CR)                                                                      |
+| link_text                        |            | Automation Controller (<INSTANCE_NAME>)   | Text used when creating the OCP console application link                                                                                |
+| install                          | *          | false                                     | Whether or not to install the Controller platform component in AAP 2.5 or later                                                         |
 
 \* These settings are only used for installing AAP 2.5 or later.
 
 > ℹ️ **NOTE**
 >
-> The namespace, instance_name and link_text values will be ignored when using the platform installation method.
+> The namespace, instance_name and link_text values will be ignored when using the platform installation method. On AAP 2.5+, `controller_manifest_overrides` is merged into `spec.controller` on the `AnsibleAutomationPlatform` CR. Per-component `consolelink_manifest_overrides` is only used on the pre-2.5 install path; on 2.5+ use `aap_ocp_install_platform.consolelink_manifest_overrides` for the platform ConsoleLink.
 
 ### aap_ocp_install_hub keys
 
-| Key Name                       | Required | Default Value                    | Description                                                                                                     |
-|--------------------------------|:--------:|----------------------------------|-----------------------------------------------------------------------------------------------------------------|
-| instance_name                  |   Yes    |                                  | Name of the hub instance to create                                                                              |
-| namespace                      |          |                                  | Name of the namespace to create the hub instance in. If not specified `aap_ocp_install_namespace` will be used. |
-| namespace_manifest_overrides   |          |                                  | YAML Manifest to override the generated `Namespace` resource for the hub if the `namespace` key is defined      |
-| hub_manifest_overrides         |          |                                  | YAML Manifest to override the generated `AutomationHub` resource                                                |
-| consolelink_manifest_overrides |          |                                  | YAML Manifest to override the generated `ConsoleLink` resource                                                  |
-| storage_type                   |    *     | file                             | Hub storage type (file, S3 or azure)                                                                            |
-| file_storage_storage_class     |    *     |                                  | OpenShift StorageClass to use for file storage type for hub                                                     |
-| file_storage_size              |    *     | 10Gi                             | Storage size for file storage type for hub                                                                      |
-| object_storage_s3_secret       |    *     |                                  | Name of an OpenShift Secret used to access S3 storage for hub                                                   |
-| object_storage_azure_secret    |    *     |                                  | Name of an OpenShift Secret used to access Azure storage for hub                                                |
-| create_link                    |          | true                             | Create an OCP console application link (i.e. apply ConsoleLink CR)                                              |
-| link_text                      |          | Automation Hub (<INSTANCE_NAME>) | Text used for creating the OCP application link                                                                 |
-| install                        |    *     | false                            | Whether or not to install the Hub platform component in AAP 2.5 or later                                        |
+| Key Name                         | Required   | Default Value                      | Description                                                                                                               |
+| -------------------------------- | :--------: | ---------------------------------- | -----------------------------------------------------------------------------------------------------------------         |
+| instance_name                    | Yes        |                                    | Name of the hub instance to create                                                                                        |
+| namespace                        |            |                                    | Name of the namespace to create the hub instance in. If not specified `aap_ocp_install_namespace` will be used.           |
+| namespace_manifest_overrides     |            |                                    | YAML Manifest to override the generated `Namespace` resource for the hub if the `namespace` key is defined                |
+| hub_manifest_overrides           |            |                                    | YAML mapping merged into the `AutomationHub` CR (pre-2.5) or into `spec.hub` on the `AnsibleAutomationPlatform` CR (2.5+) |
+| consolelink_manifest_overrides   |            |                                    | YAML mapping merged into the generated `ConsoleLink` for the hub (pre-2.5 only; not used on the platform install path)    |
+| storage_type                     | *          | file                               | Hub storage type (file, S3 or azure)                                                                                      |
+| file_storage_storage_class       | *          |                                    | OpenShift StorageClass to use for file storage type for hub                                                               |
+| file_storage_size                | *          | 10Gi                               | Storage size for file storage type for hub                                                                                |
+| object_storage_s3_secret         | *          |                                    | Name of an OpenShift Secret used to access S3 storage for hub                                                             |
+| object_storage_azure_secret      | *          |                                    | Name of an OpenShift Secret used to access Azure storage for hub                                                          |
+| create_link                      |            | true                               | Create an OCP console application link (i.e. apply ConsoleLink CR)                                                        |
+| link_text                        |            | Automation Hub (<INSTANCE_NAME>)   | Text used for creating the OCP application link                                                                           |
+| install                          | *          | false                              | Whether or not to install the Hub platform component in AAP 2.5 or later                                                  |
 
 \* These settings are only used for installing AAP 2.5 or later.
 
 > ℹ️ **NOTE**
 >
-> The namespace, instance_name and link_text values will be ignored when using the platform installation method.
+> The namespace, instance_name and link_text values will be ignored when using the platform installation method. On AAP 2.5+, `hub_manifest_overrides` is merged into `spec.hub` on the `AnsibleAutomationPlatform` CR.
 
 ### aap_ocp_install_eda keys
 
-| Key Name                       | Required | Default Value                    | Description                                                                                                     |
-|--------------------------------|:--------:|----------------------------------|-----------------------------------------------------------------------------------------------------------------|
-| instance_name                  |   Yes    |                                  | Name of the EDA instance to create                                                                              |
-| namespace                      |          |                                  | Name of the namespace to create the EDA instance in. If not specified `aap_ocp_install_namespace` will be used. |
-| namespace_manifest_overrides   |          |                                  | YAML Manifest to override the generated `Namespace` resource for the EDA if the `namespace` key is defined      |
-| eda_manifest_overrides         |          |                                  | YAML Manifest to override the generated `EDA` resource                                                          |
-| consolelink_manifest_overrides |          |                                  | YAML Manifest to override the generated `ConsoleLink` resource                                                  |
-| create_link                    |          | true                             | Create an OCP console application link (i.e. apply ConsoleLink CR)                                              |
-| link_text                      |          | EDA Controller (<INSTANCE_NAME>) | Text used for creating the OCP application link                                                                 |
-| install                        |    *     | false                            | Whether or not to install the EDA platform component in AAP 2.5 or later                                        |
+| Key Name                         | Required   | Default Value                      | Description                                                                                                        |
+| -------------------------------- | :--------: | ---------------------------------- | -----------------------------------------------------------------------------------------------------------------  |
+| instance_name                    | Yes        |                                    | Name of the EDA instance to create                                                                                 |
+| namespace                        |            |                                    | Name of the namespace to create the EDA instance in. If not specified `aap_ocp_install_namespace` will be used.    |
+| namespace_manifest_overrides     |            |                                    | YAML Manifest to override the generated `Namespace` resource for the EDA if the `namespace` key is defined         |
+| eda_manifest_overrides           |            |                                    | YAML mapping merged into the `EDA` CR (pre-2.5) or into `spec.eda` on the `AnsibleAutomationPlatform` CR (2.5+)    |
+| consolelink_manifest_overrides   |            |                                    | YAML mapping merged into the generated `ConsoleLink` for EDA (pre-2.5 only; not used on the platform install path) |
+| create_link                      |            | true                               | Create an OCP console application link (i.e. apply ConsoleLink CR)                                                 |
+| link_text                        |            | EDA Controller (<INSTANCE_NAME>)   | Text used for creating the OCP application link                                                                    |
+| install                          | *          | false                              | Whether or not to install the EDA platform component in AAP 2.5 or later                                           |
 
 \* These settings are only used for installing AAP 2.5 or later.
 
 > ℹ️ **NOTE**
 >
-> The namespace, instance_name and link_text values will be ignored when using the platform installation method.
+> The namespace, instance_name and link_text values will be ignored when using the platform installation method. On AAP 2.5+, `eda_manifest_overrides` is merged into `spec.eda` on the `AnsibleAutomationPlatform` CR.
 
 ### aap_ocp_install_platform keys
 
-| Key Name      | Required | Default Value     | Description                                                                                                              |
-|---------------|:--------:|-------------------|--------------------------------------------------------------------------------------------------------------------------|
-| instance_name |   Yes    |                   | Name of the AAP Platform instance to create                                                                              |
-| namespace     |          |                   | Name of the namespace to create the AAP platform instance in. If not specified `aap_ocp_install_namespace` will be used. |
-| create_link   |          | true              | Create an OCP console application link (i.e. apply ConsoleLink CR)                                                       |
-| link_text     |          | (<INSTANCE_NAME>) | Text used for creating the platform OCP application link                                                                 |
+| Key Name                         | Required   | Default Value       | Description                                                                                                                |
+| -------------------------------- | :--------: | ------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| instance_name                    | Yes        |                     | Name of the AAP Platform instance to create                                                                                |
+| namespace                        |            |                     | Name of the namespace to create the AAP platform instance in. If not specified `aap_ocp_install_namespace` will be used.   |
+| namespace_manifest_overrides     |            |                     | YAML mapping merged into the generated `Namespace` resource when `namespace` is set                                        |
+| platform_manifest_overrides      |            |                     | YAML mapping deep-merged into the generated `AnsibleAutomationPlatform` CR (after rendering the template)                  |
+| consolelink_manifest_overrides   |            |                     | YAML mapping merged into the generated platform `ConsoleLink` resource                                                     |
+| create_link                      |            | true                | Create an OCP console application link (i.e. apply ConsoleLink CR)                                                         |
+| link_text                        |            | (<INSTANCE_NAME>)   | Text used for creating the platform OCP application link                                                                   |
 
 > ℹ️ **NOTE**
 >
-> These settings are only used when installing AAP 2.5 or later. namespace, instance_name and link_text values for individual components (hub, controller, eda) will be ignored when using the platform installation method.
+> These settings are only used when installing AAP 2.5 or later. Namespace, instance_name and link_text values for individual components (hub, controller, eda) are ignored when using the platform installation method; optional `controller_manifest_overrides`, `hub_manifest_overrides`, and `eda_manifest_overrides` on those component dictionaries are still merged into the unified CR (see **AAP 2.5+ manifest merge order** below).
+
+#### AAP 2.5+ manifest merge order
+
+For the `AnsibleAutomationPlatform` CR, overrides are applied in this order:
+
+1. Render the `AnsibleAutomationPlatform` manifest from the role template.
+2. Deep-merge `aap_ocp_install_platform.platform_manifest_overrides` (optional cross-cutting patch).
+3. Deep-merge component-specific mappings into `spec` subtrees when the corresponding variable dictionary is defined:
+   - `aap_ocp_install_controller.controller_manifest_overrides` into `spec.controller`
+   - `aap_ocp_install_hub.hub_manifest_overrides` into `spec.hub`
+   - `aap_ocp_install_eda.eda_manifest_overrides` into `spec.eda`
+
+Later steps win on conflicting keys within the same subtree. The platform `Namespace` (when `namespace` is set) and platform `ConsoleLink` each support their own `*_manifest_overrides` keys on `aap_ocp_install_platform` as described in the table above.
 
 ### aap_ocp_install_lightspeed keys
 
@@ -222,6 +238,6 @@ The following playbook will install AAP versions 2.5 and later:
 
 ## Author Information
 
-* Brant Evans
-* Derek Waters
-* Andrew Block
+- Brant Evans
+- Derek Waters
+- Andrew Block

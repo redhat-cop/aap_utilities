@@ -1,0 +1,5 @@
+---
+minor_changes:
+  - aap_ocp_install - add optional manifest overrides for AAP 2.5+ (platform namespace,
+    ConsoleLink, whole CR, and controller/hub/EDA spec subtrees)
+  - collection build - exclude ``.ansible`` and ``.venv`` from the built artifact (galaxy build / importer)
