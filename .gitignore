@@ -37,3 +37,5 @@ test
 
 importer_result.json
 .DS_Store
+.agents/
+.DS_Store
