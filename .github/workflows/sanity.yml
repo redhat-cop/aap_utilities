@@ -1,0 +1,14 @@
+---
+name: Ansible sanity
+
+on:
+  push:
+    branches: [devel]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  sanity:
+    uses: ansible/ansible-content-actions/.github/workflows/sanity.yaml@46de405af31ba872a770a9b75c90121493c1cbe5 # main
