@@ -81,3 +81,4 @@
   when: aap_ocp_install_eda is defined
   ansible.builtin.set_fact:
     __aap_ocp_install_platform_cr: "{{ __aap_ocp_install_platform_cr | ansible.builtin.combine({'spec': {'eda': __aap_ocp_install_platform_cr['spec']['eda'] | ansible.builtin.combine(__aap_ocp_install_eda_manifest_for_platform | default({}), recursive=true)}}, recursive=true) }}"
+...

@@ -28,6 +28,7 @@ test
 
 # Ignore unneeded Ansible related files
 /.ansible
+.ansible_tmp
 /ansible.cfg
 /ansible_collections
 
@@ -41,4 +42,3 @@ test
 importer_result.json
 .DS_Store
 .agents/
-.DS_Store
