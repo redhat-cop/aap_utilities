@@ -5,7 +5,7 @@
 #   username:
 #   password:
 #   api_key:
-#   verify_ssl:
+#   validate_certs:
 
 # Namespace to install into
 # aap_ocp_install_namespace:

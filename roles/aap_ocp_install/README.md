@@ -4,12 +4,26 @@ A role to install Ansible Automation Platform (AAP) 2.x on OpenShift using the o
 
 ## Requirements
 
-This role requires the `kubernetes` (version 12.0.0 or later) Python module.
-In addition the kubernetes.core and redhat.openshift Ansible collections are required.
+- **Ansible:** 2.15.0 or later.
+- **Python:** the `kubernetes` module (version 12.0.0 or later).
+- **Ansible collections:** `kubernetes.core` and `redhat.openshift`.
+
+## Tags
+
+This role defines the following tags:
+
+| Tag | Purpose |
+| --- | ------- |
+| `always` | OpenShift initialization and finalization (authentication, validation, namespace setup where applicable, and finalization). Runs whenever the role runs. |
+| `operator` | Install the AAP operator when `aap_ocp_install_operator` is defined. |
+| `platform` | AAP 2.5+ only: build and apply the `AnsibleAutomationPlatform` CR when `aap_ocp_install_platform` is defined and the operator channel resolves to 2.5 or later. |
+| `controller` | Pre-2.5 only: standalone Automation Controller install when `aap_ocp_install_controller` is defined and the channel is below 2.5. On 2.5+, this path is skipped; use `platform` and `aap_ocp_install_platform` plus optional controller overrides. |
+| `hub` | Pre-2.5 only: standalone Hub install. On 2.5+, skipped in favor of the platform path; see `platform` and hub overrides. |
+| `eda` | Pre-2.5 only: standalone EDA install. On 2.5+, skipped in favor of the platform path; see `platform` and EDA overrides. |
 
 ## Role Variables
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+The tables below document user-facing variables and nested keys.
 
 | Variable Name                                  | Required   | Default Value   | Description                                                                                                |
 | ---------------------------------------------- | :--------: | --------------- | ----------------------------------------------------------------------------------------------             |
@@ -24,10 +38,11 @@ A description of the settable variables for this role should go here, including 
 | aap_ocp_install_platform                       | Yes*       |                 | Dictionary containing keys defined in the `platform variables table`                                       |
 | aap_ocp_install_lightspeed                     | No         |                 | Dictionary containing keys defined in the `lightspeed variables table`                                     |
 
-\* Variable and required keys must be defined when the type of tag is specified (e.g. `--tags controller` requires the aap_ocp_install_controller variable be defined).
-If the variable is omitted the corresponding component will not be installed (e.g. if only aap_ocp_install_hub variable is defined then the operator and controller installation will be skipped)
+\* **Pre-2.5 (operator channel below 2.5):** When you limit the play with `--tags`, define the variable dictionary for each component you run (for example `--tags controller` requires `aap_ocp_install_controller`). If a component's variable is omitted, that component is not installed. If `aap_ocp_install_operator` is omitted, the operator is not installed.
 
-The aap_ocp_install_platform and aap_ocp_install_lightspeed Dictionaries are only used when installing AAP 2.5 or later.
+\* **AAP 2.5+ (operator channel 2.5 or later):** The unified install runs under the `platform` tag. The `controller`, `hub`, and `eda` tags do **not** run the standalone component installers; set `aap_ocp_install_platform` and use `aap_ocp_install_controller`, `aap_ocp_install_hub`, and `aap_ocp_install_eda` for `install` flags and manifest overrides as documented below.
+
+`aap_ocp_install_platform` and `aap_ocp_install_lightspeed` apply only when installing AAP 2.5 or later.
 
 ### aap_ocp_install_connection keys
 
@@ -52,7 +67,7 @@ The aap_ocp_install_platform and aap_ocp_install_lightspeed Dictionaries are onl
 | operatorgroup_manifest_overrides |          |               | YAML Manifest to override the generated `OperatorGroup` resource               |
 | subscription_manifest_overrides  |          |               | YAML Manifest to override the generated `Subscription` resource                |
 
-\* If the channel indicates version 2.5 or above of AAP, then the new AAP operator platform installation method will be used.
+\* If the channel indicates version 2.5 or above of AAP, then the AAP operator platform installation method will be used.
 
 ### aap_ocp_install_controller keys
 
@@ -89,7 +104,7 @@ The aap_ocp_install_platform and aap_ocp_install_lightspeed Dictionaries are onl
 | namespace_manifest_overrides     |            |                                    | YAML Manifest to override the generated `Namespace` resource for the hub if the `namespace` key is defined                |
 | hub_manifest_overrides           |            |                                    | YAML mapping merged into the `AutomationHub` CR (pre-2.5) or into `spec.hub` on the `AnsibleAutomationPlatform` CR (2.5+) |
 | consolelink_manifest_overrides   |            |                                    | YAML mapping merged into the generated `ConsoleLink` for the hub (pre-2.5 only; not used on the platform install path)    |
-| storage_type                     | *          | file                               | Hub storage type (file, S3 or azure)                                                                                      |
+| storage_type                     | *          | file                               | Hub storage type: `file`, `S3` (capital **S3**), or `azure`                                                                                      |
 | file_storage_storage_class       | *          |                                    | OpenShift StorageClass to use for file storage type for hub                                                               |
 | file_storage_size                | *          | 10Gi                               | Storage size for file storage type for hub                                                                                |
 | object_storage_s3_secret         | *          |                                    | Name of an OpenShift Secret used to access S3 storage for hub                                                             |
@@ -152,6 +167,11 @@ For the `AnsibleAutomationPlatform` CR, overrides are applied in this order:
 
 Later steps win on conflicting keys within the same subtree. The platform `Namespace` (when `namespace` is set) and platform `ConsoleLink` each support their own `*_manifest_overrides` keys on `aap_ocp_install_platform` as described in the table above.
 
+For the unified `AnsibleAutomationPlatform` CR, component settings must appear under `spec.controller`, `spec.hub`, and `spec.eda` at the same nesting level the operator expects (see `oc explain ansibleautomationplatform.spec.<component>`). You may supply overrides in either form:
+
+- **Platform shape (recommended):** keys that belong directly under `spec.<component>` (for example `postgres_configuration_secret` next to `replicas` and `disabled`).
+- **Standalone-CR shape (compatibility):** the same fields nested under a top-level `spec` key in the override mapping, as used when merging into a standalone `AutomationController` / `AutomationHub` / EDA CR. On the platform install path, that inner `spec` mapping is merged into `spec.<component>` instead of creating an invalid nested `spec.<component>.spec`.
+
 ### aap_ocp_install_lightspeed keys
 
 | Key Name | Required | Default Value | Description                                                  |
@@ -161,10 +181,6 @@ Later steps win on conflicting keys within the same subtree. The platform `Names
 > ℹ️ **NOTE**
 >
 > These settings are only used when installing AAP 2.5 or later.
-
-## Dependencies
-
-This role depends on the redhat.openshift and kubernetes.core collections.
 
 ## Example Playbook
 
@@ -194,7 +210,6 @@ The following playbook will install AAP versions 2.4 and earlier:
 
   roles:
     - infra.aap_utilities.aap_ocp_install
-...
 ```
 
 The following playbook will install AAP versions 2.5 and later:
@@ -229,7 +244,6 @@ The following playbook will install AAP versions 2.5 and later:
 
   roles:
     - infra.aap_utilities.aap_ocp_install
-...
 ```
 
 ## License
