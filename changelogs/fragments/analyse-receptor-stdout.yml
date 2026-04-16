@@ -1,3 +1,0 @@
----
-minor_changes:
-  - Add analyse_receptor_stdout.py script and documentation to identify lingering tasks and hosts

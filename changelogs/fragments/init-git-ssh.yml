@@ -1,4 +1,0 @@
-bugfixes:
-  - init bare Git repos without becoming another user to avoid non-root issues
-minor_changes:
-  - overcome Git security feature since 2.35.2 refusing to clone Git repositories from other users

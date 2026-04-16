@@ -1,8 +1,59 @@
 ==================================
-infra.aap\_Utilities Release Notes
+infra.aap\_utilities Release Notes
 ==================================
 
 .. contents:: Topics
+
+v3.0.0
+======
+
+Minor Changes
+-------------
+
+- Add analyse_receptor_stdout.py script and documentation to identify lingering tasks and hosts
+- Add consistently prefix to name of tasks in non-main tasks files as per good practices
+- Add no_log to sensitive tasks handling tokens, passwords, and certificates across aap_setup_download, aap_setup_install, aap_ocp_install, and aap_certs roles.
+- Adding a role to manage containerized services for AAP 2.5+
+- Adds task to validate connection to OpenShift before proceeding
+- CI workflows - fix issue-remove-inactive user object comparison and stray quote in issue-labeled comment.
+- CONTRIBUTING.md - fix grammar and typos.
+- Change regex_search to match test in pre-validate tasks
+- Fix ansible-core 2.19 deprecation warnings for OCP install role
+- Modify URL used to validate installation
+- Satisfy ansible-core 2.19+ strictness on types for until loop waiting on empty list
+- Standardize when and until keys in OCP install role
+- analyse_receptor_stdout.py - improve error handling with JSON parse guards, safe event_data access, explicit encoding, and proper exit codes.
+- changelogs/config.yaml - fix title capitalization to match FQCN.
+- galaxy.yml - add dev-only files to build_ignore to reduce collection artifact size.
+- overcome Git security feature since 2.35.2 refusing to clone Git repositories from other users
+
+Breaking Changes / Porting Guide
+--------------------------------
+
+- The default installation is now containerized of AAP 2.6 on RHEL 10, instead of RPM of AAP 2.5 on RHEL 8
+
+Bugfixes
+--------
+
+- Fixed readme because containerized-setup isn't a valid download type
+- README.md - fix broken Galaxy Release badge link and forum typo.
+- aap_manage_containerized_services - fix broken FQCN module names, corrupted Jinja2 expressions, invalid group names, and typos across all task files.
+- aap_manage_containerized_services - fix double underscore in include_tasks filename preventing role execution.
+- aap_ocp_install - default __aap_ocp_install_25_install to false when operator channel is not defined.
+- aap_ocp_install - fix platform link_text validation asserting the wrong variable (controller instead of platform).
+- aap_ocp_install - guard operator channel version parsing to prevent failures when aap_ocp_install_operator is undefined.
+- aap_remove - kill lingering processes owned by service users before attempting user removal, preventing ``userdel: user is currently used by process`` failures (https://github.com/redhat-cop/aap_utilities/issues/254).
+- aap_setup_download - fix installer filename filtering to precisely match the requested type (``setup`` vs ``setup-bundle``), preventing type cross-contamination and ensuring all available versions are returned (https://github.com/redhat-cop/aap_utilities/issues/328).
+- aap_setup_install - fix containerized wait tasks failing with ``CERTIFICATE_VERIFY_FAILED`` by defaulting ``validate_certs`` to ``false`` instead of ``omit``, matching the pre-check tasks (https://github.com/redhat-cop/aap_utilities/issues/319).
+- aap_setup_install - fix wrong registered variable names (__aap_setup_inst_ctl_ah, __aap_setup_inst_ctl_eda) causing undefined variable errors for hub/EDA install decisions on AAP < 2.5.
+- aap_setup_install - handle both dict and list types for ``aap_setup_prep_inv_nodes`` hostname variables, fixing ``'list object' has no attribute 'keys'`` errors when inventory nodes are provided as a list (https://github.com/redhat-cop/aap_utilities/issues/327).
+- galaxy.yml - fix double slash in issues URL.
+- git_ssh_setup - add missing become on all system-level tasks.
+- increased the limit of images from 25 to 100 on the API request to ensure that latest version will be pulled
+- init bare Git repos without becoming another user to avoid non-root issues
+- kerberos - add missing become on krb5.conf template task.
+- kerberos - fix deprecated spelling and update collection name from redhat_cop to infra.
+- markdownlint - fix rule ID typo MD0046 to MD046.
 
 v2.8.0
 ======

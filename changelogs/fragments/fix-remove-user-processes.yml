@@ -1,4 +1,0 @@
----
-bugfixes:
-  - "aap_remove - kill lingering processes owned by service users before attempting user removal, preventing ``userdel: user is currently used by process`` failures (https://github.com/redhat-cop/aap_utilities/issues/254)."
-...

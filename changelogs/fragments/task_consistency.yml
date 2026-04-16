@@ -1,5 +1,0 @@
----
-minor_changes:
-  - Fix ansible-core 2.19 deprecation warnings for OCP install role
-  - Standardize when and until keys in OCP install role
-...

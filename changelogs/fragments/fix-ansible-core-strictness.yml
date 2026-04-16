@@ -1,3 +1,0 @@
-minor_changes:
-  - Satisfy ansible-core 2.19+ strictness on types for until loop waiting on empty list
-  - Change regex_search to match test in pre-validate tasks

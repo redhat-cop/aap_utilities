@@ -1,5 +1,0 @@
----
-bugfixes:
-  - "aap_setup_download - fix installer filename filtering to precisely match the requested type (``setup`` vs ``setup-bundle``), preventing type cross-contamination and ensuring all available versions are returned (https://github.com/redhat-cop/aap_utilities/issues/328)."
-  - "increased the limit of images from 25 to 100 on the API request to ensure that latest version will be pulled"
-...
