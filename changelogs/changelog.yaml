@@ -192,3 +192,13 @@ releases:
     - validate-connection.yml
     - validate-installation.yml
     release_date: '2026-04-16'
+  3.1.0:
+    changes:
+      minor_changes:
+      - aap_ocp_install - add optional manifest overrides for AAP 2.5+ (platform namespace,
+        ConsoleLink, whole CR, and controller/hub/EDA spec subtrees)
+      - collection build - exclude ``.ansible`` and ``.venv`` from the built artifact
+        (galaxy build / importer)
+    fragments:
+    - aap-ocp-install-platform-manifest-overrides.yml
+    release_date: '2026-05-01'

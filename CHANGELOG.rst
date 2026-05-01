@@ -4,6 +4,15 @@ infra.aap\_utilities Release Notes
 
 .. contents:: Topics
 
+v3.1.0
+======
+
+Minor Changes
+-------------
+
+- aap_ocp_install - add optional manifest overrides for AAP 2.5+ (platform namespace, ConsoleLink, whole CR, and controller/hub/EDA spec subtrees)
+- collection build - exclude ``.ansible`` and ``.venv`` from the built artifact (galaxy build / importer)
+
 v3.0.0
 ======
 
