@@ -1,11 +1,11 @@
 ---
-- name: backup | Create backup directory
+- name: containerized | Create backup directory
   ansible.builtin.file:
     state: directory
     path: "{{ aap_backup_dest }}"
     mode: '0750'
 
-- name: backup | Run containerized backup playbook
+- name: containerized | Run containerized backup playbook
   ansible.builtin.command: "{{ lookup('template', 'containerized_backup_sh.j2') }}"
   args:
     chdir: "{{ aap_backup_setup_dir }}"
