@@ -85,6 +85,9 @@ collections:
 
 ## Release and Upgrade Notes
 
+For details on changes between versions, please see
+[the changelog](https://github.com/redhat-cop/aap_utilities/blob/devel/CHANGELOG.rst).
+
 Many roles and variables have been renamed to reflect the product renaming from Tower to controller/AAP.
 Verify carefully your inventory variables and playbooks.
 
@@ -110,4 +113,8 @@ More information about contributing can be found in our [Contribution Guidelines
 
 GNU General Public License v3.0 or later.
 
-See [LICENSE](LICENSE) to see the full text.
+See [LICENSE](https://github.com/redhat-cop/aap_utilities/blob/devel/LICENSE) to see the full text.
+
+## Support
+
+As Red Hat Ansible Certified Content, this collection is entitled to support through the Ansible Automation Platform (AAP) using the **Create issue** button on the top right corner. If a support case cannot be opened with Red Hat and the collection has been obtained either from Galaxy or GitHub, there may community help available on the [Ansible Forum](https://forum.ansible.com/).
