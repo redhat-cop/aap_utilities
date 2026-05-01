@@ -1,0 +1,15 @@
+---
+- name: backup | Create backup directory
+  ansible.builtin.file:
+    state: directory
+    path: "{{ aap_backup_dest }}"
+    mode: '0750'
+
+- name: backup | Run containerized backup playbook
+  ansible.builtin.command: "{{ lookup('template', 'containerized_backup_sh.j2') }}"
+  args:
+    chdir: "{{ aap_backup_setup_dir }}"
+  async: "{{ aap_backup_async }}"
+  poll: "{{ aap_backup_poll }}"
+  changed_when: false # these will always run and will always report "changed" otherwise
+...

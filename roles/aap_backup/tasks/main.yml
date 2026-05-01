@@ -8,7 +8,8 @@
 #
 
 - name: Include backup tasks
-  ansible.builtin.include_tasks: backup.yml
+  ansible.builtin.include_tasks:
+    file: "{{ (aap_backup_containerized | bool) | ternary('containerized.yml', 'rpm.yml') }}"
   tags:
     - backup
 ...

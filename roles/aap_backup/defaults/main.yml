@@ -7,4 +7,14 @@
 aap_backup_dest: /var/tmp
 aap_backup_async: 10000
 aap_backup_poll: 20
+
+# Containerized backup settings
+aap_backup_containerized: "{{ aap_setup_containerized | default(false) }}"
+aap_backup_setup_dir: "{{ aap_setup_prep_setup_dir | default('/opt/ansible-automation-platform') }}"
+aap_backup_inventory: inventory
+aap_backup_dir: "{{ aap_backup_dest }}"
+
+# Extra vars to pass to the containerized backup playbook
+aap_backup_extra_vars: {}
+aap_backup_extra_vars_files: []
 ...

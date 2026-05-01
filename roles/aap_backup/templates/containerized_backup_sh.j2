@@ -1,0 +1,6 @@
+{# template to generate the command line for the containerized backup playbook #}
+
+ansible-playbook -i "{{ aap_backup_inventory }}"  ansible.containerized_installer.backup
+{%- if aap_backup_dir is defined %} -e backup_dir={{ aap_backup_dir | quote }}{% endif %}
+{%- for varkey in aap_backup_extra_vars %} -e {{ varkey }}={{ aap_backup_extra_vars[varkey] | quote }}{% endfor %}
+{%- for varsfile in aap_backup_extra_vars_files %} -e @{{ varsfile }}{% endfor %}
