@@ -1,4 +1,9 @@
 ---
+- name: pre-validate-platform | Include individual-mode namespace checks
+  when: __aap_ocp_install_platform_component_deployment == 'individual'
+  ansible.builtin.include_tasks:
+    file: pre-validate-platform-individual.yml
+
 - name: pre-validate-platform | Ensure platform instance name variable is set (block)
   block:
     - name: pre-validate-platform | Ensure platform instance name variable is set
@@ -14,6 +19,7 @@
 
 - name: pre-validate-platform | Ensure controller admin username variable is set (block)
   when:
+    - aap_ocp_install_controller is defined
     - aap_ocp_install_controller['admin_user'] is defined
   block:
     - name: pre-validate-platform | Ensure controller admin username variable is set
@@ -59,6 +65,7 @@
 
 - name: pre-validate-platform | Ensure controller image pull policy is valid (block)
   when:
+    - aap_ocp_install_controller is defined
     - aap_ocp_install_controller['image_pull_policy'] is defined
   block:
     - name: pre-validate-platform | Ensure controller image pull policy is valid
@@ -74,6 +81,7 @@
 
 - name: pre-validate-platform | Ensure controller create preload data is valid (block)
   when:
+    - aap_ocp_install_controller is defined
     - aap_ocp_install_controller['create_preload_data'] is defined
   block:
     - name: pre-validate-platform | Ensure controller create preload data is valid
@@ -89,6 +97,7 @@
 
 - name: pre-validate-platform | Ensure controller garbage collect secrets is valid (block)
   when:
+    - aap_ocp_install_controller is defined
     - aap_ocp_install_controller['garbage_collect_secrets'] is defined
   block:
     - name: pre-validate-platform | Ensure controller garbage collect secrets is valid
@@ -104,6 +113,7 @@
 
 - name: pre-validate-platform | Ensure controller projects persistence is valid (block)
   when:
+    - aap_ocp_install_controller is defined
     - aap_ocp_install_controller['projects_persistence'] is defined
   block:
     - name: pre-validate-platform | Ensure controller projects persistence is valid
@@ -119,6 +129,7 @@
 
 - name: pre-validate-platform | Ensure controller replicas is valid (block)
   when:
+    - aap_ocp_install_controller is defined
     - aap_ocp_install_controller['replicas'] is defined
   block:
     - name: pre-validate-platform | Ensure controller replicas is valid
@@ -134,6 +145,7 @@
 
 - name: pre-validate-platform | Ensure controller projects storage size is valid (block)
   when:
+    - aap_ocp_install_controller is defined
     - aap_ocp_install_controller['projects_storage_size'] is defined
   block:
     - name: pre-validate-platform | Ensure controller projects storage size is valid
@@ -166,6 +178,7 @@
 
 - name: pre-validate-platform | Ensure hub file storage settings are valid (block)
   when:
+    - aap_ocp_install_hub is defined
     - aap_ocp_install_hub['storage_type'] is defined
     - aap_ocp_install_hub['storage_type'] == 'file'
   block:
@@ -183,6 +196,7 @@
 
 - name: pre-validate-platform | Ensure hub S3 storage settings are valid (block)
   when:
+    - aap_ocp_install_hub is defined
     - aap_ocp_install_hub['storage_type'] is defined
     - aap_ocp_install_hub['storage_type'] == 'S3'
   block:
@@ -199,6 +213,7 @@
 
 - name: pre-validate-platform | Ensure hub Azure storage settings are valid (block)
   when:
+    - aap_ocp_install_hub is defined
     - aap_ocp_install_hub['storage_type'] is defined
     - aap_ocp_install_hub['storage_type'] == 'azure'
   block:

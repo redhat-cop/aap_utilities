@@ -119,6 +119,30 @@
   ansible.builtin.set_fact:
     __aap_ocp_install_25_install: false
 
+- name: pre-validate | Set platform component deployment mode when using AAP 2.5+ platform install
+  when:
+    - aap_ocp_install_platform is defined
+    - __aap_ocp_install_25_install | bool
+  ansible.builtin.set_fact:
+    __aap_ocp_install_platform_component_deployment: "{{ aap_ocp_install_platform['component_deployment'] | default('unified') }}"
+
+- name: pre-validate | Ensure platform component_deployment is unified or individual
+  when:
+    - aap_ocp_install_platform is defined
+    - __aap_ocp_install_25_install | bool
+  block:
+    - name: pre-validate | Assert component_deployment value
+      ansible.builtin.assert:
+        that:
+          - __aap_ocp_install_platform_component_deployment in ['unified', 'individual']
+        quiet: true
+  rescue:
+    - name: pre-validate | Update validation errors fact - component_deployment
+      ansible.builtin.set_fact:
+        __aap_ocp_install_prevalidate_errors: >
+          {{ __aap_ocp_install_prevalidate_errors +
+          ["aap_ocp_install_platform['component_deployment'] must be 'unified' or 'individual'"] }}
+
 - name: pre-validate | Ensure platform variables are set
   when:
     - (( 'platform' in ansible_run_tags ) or ( 'all' in ansible_run_tags and aap_ocp_install_platform is defined ))
@@ -129,21 +153,39 @@
 - name: pre-validate | Ensure controller variables are set
   when:
     - (( 'controller' in ansible_run_tags ) or ( 'all' in ansible_run_tags and aap_ocp_install_controller is defined ))
-    - not (__aap_ocp_install_25_install | bool)
+    - (not (__aap_ocp_install_25_install | bool))
+      or (
+        (__aap_ocp_install_25_install | bool)
+        and (aap_ocp_install_platform is defined)
+        and ((__aap_ocp_install_platform_component_deployment | default('unified')) == 'individual')
+        and (aap_ocp_install_controller['install'] | default(false) | bool)
+      )
   ansible.builtin.include_tasks:
     file: pre-validate-controller.yml
 
 - name: pre-validate | Ensure hub variables are set
   when:
     - (( 'hub' in ansible_run_tags ) or ( 'all' in ansible_run_tags and aap_ocp_install_hub is defined ))
-    - not (__aap_ocp_install_25_install | bool)
+    - (not (__aap_ocp_install_25_install | bool))
+      or (
+        (__aap_ocp_install_25_install | bool)
+        and (aap_ocp_install_platform is defined)
+        and ((__aap_ocp_install_platform_component_deployment | default('unified')) == 'individual')
+        and (aap_ocp_install_hub['install'] | default(false) | bool)
+      )
   ansible.builtin.include_tasks:
     file: pre-validate-hub.yml
 
 - name: pre-validate | Ensure eda variables are set
   when:
     - (( 'eda' in ansible_run_tags ) or ( 'all' in ansible_run_tags and aap_ocp_install_eda is defined ))
-    - not (__aap_ocp_install_25_install | bool)
+    - (not (__aap_ocp_install_25_install | bool))
+      or (
+        (__aap_ocp_install_25_install | bool)
+        and (aap_ocp_install_platform is defined)
+        and ((__aap_ocp_install_platform_component_deployment | default('unified')) == 'individual')
+        and (aap_ocp_install_eda['install'] | default(false) | bool)
+      )
   ansible.builtin.include_tasks:
     file: pre-validate-eda.yml
 

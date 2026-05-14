@@ -18,6 +18,7 @@
 # aap_ocp_install_platform:
 #   instance_name:
 #   namespace:
+#   component_deployment: unified   # unified (default) | individual — see role README
 #   namespace_manifest_overrides:
 #   platform_manifest_overrides:
 #   consolelink_manifest_overrides:

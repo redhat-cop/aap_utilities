@@ -40,7 +40,7 @@
 
 - name: install-operator | Update install plan
   when:
-    - (aap_ocp_install_operator['approval'] | default('Automatic') | lower) == 'manual'
+    - (aap_ocp_install_operator['approval'] | default('automatic') | lower) == 'manual'
   kubernetes.core.k8s:
     host: "{{ __aap_ocp_install_auth_results['openshift_auth']['host'] }}"
     api_key: "{{ __aap_ocp_install_auth_results['openshift_auth']['api_key'] }}"

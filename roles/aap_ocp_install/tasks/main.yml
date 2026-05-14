@@ -30,6 +30,60 @@
       tags:
         - operator
 
+    - name: Include Ansible Automation Platform controller install tasks
+      when:
+        - aap_ocp_install_controller is defined
+        - (not (__aap_ocp_install_25_install | bool))
+          or (
+            (__aap_ocp_install_25_install | bool)
+            and (aap_ocp_install_platform is defined)
+            and ((__aap_ocp_install_platform_component_deployment | default('unified')) == 'individual')
+            and (aap_ocp_install_controller['install'] | default(false) | bool)
+          )
+      ansible.builtin.include_tasks:
+        file: install-controller.yml
+        apply:
+          tags:
+            - controller
+      tags:
+        - controller
+
+    - name: Include Ansible Automation Platform hub install tasks
+      when:
+        - aap_ocp_install_hub is defined
+        - (not (__aap_ocp_install_25_install | bool))
+          or (
+            (__aap_ocp_install_25_install | bool)
+            and (aap_ocp_install_platform is defined)
+            and ((__aap_ocp_install_platform_component_deployment | default('unified')) == 'individual')
+            and (aap_ocp_install_hub['install'] | default(false) | bool)
+          )
+      ansible.builtin.include_tasks:
+        file: install-hub.yml
+        apply:
+          tags:
+            - hub
+      tags:
+        - hub
+
+    - name: Include Ansible Automation Platform EDA install tasks
+      when:
+        - aap_ocp_install_eda is defined
+        - (not (__aap_ocp_install_25_install | bool))
+          or (
+            (__aap_ocp_install_25_install | bool)
+            and (aap_ocp_install_platform is defined)
+            and ((__aap_ocp_install_platform_component_deployment | default('unified')) == 'individual')
+            and (aap_ocp_install_eda['install'] | default(false) | bool)
+          )
+      ansible.builtin.include_tasks:
+        file: install-eda.yml
+        apply:
+          tags:
+            - eda
+      tags:
+        - eda
+
     - name: Include Ansible Automation Platform platform install tasks
       when:
         - aap_ocp_install_platform is defined
@@ -42,41 +96,14 @@
       tags:
         - platform
 
-    - name: Include Ansible Automation Platform controller install tasks
-      when:
-        - aap_ocp_install_controller is defined
-        - not __aap_ocp_install_25_install | bool
+    - name: Include Ansible Automation Platform ConsoleLink tasks
       ansible.builtin.include_tasks:
-        file: install-controller.yml
-        apply:
-          tags:
-            - controller
+        file: consolelinks.yml
       tags:
         - controller
-
-    - name: Include Ansible Automation Platform hub install tasks
-      when:
-        - aap_ocp_install_hub is defined
-        - not __aap_ocp_install_25_install | bool
-      ansible.builtin.include_tasks:
-        file: install-hub.yml
-        apply:
-          tags:
-            - hub
-      tags:
         - hub
-
-    - name: Include Ansible Automation Platform EDA install tasks
-      when:
-        - aap_ocp_install_eda is defined
-        - not __aap_ocp_install_25_install | bool
-      ansible.builtin.include_tasks:
-        file: install-eda.yml
-        apply:
-          tags:
-            - eda
-      tags:
         - eda
+        - platform
 
   always:
     - name: Include OpenShift finalization tasks

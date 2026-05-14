@@ -1,0 +1,61 @@
+---
+# Namespace alignment required by the operator when linking standalone CRs from AnsibleAutomationPlatform.
+
+- name: pre-validate-platform-individual | Resolve effective platform namespace
+  ansible.builtin.set_fact:
+    __aap_ocp_install_platform_effective_ns: "{{ aap_ocp_install_platform['namespace'] | default(aap_ocp_install_namespace) }}"
+
+- name: pre-validate-platform-individual | Ensure controller namespace matches platform namespace when installing controller (block)
+  when:
+    - aap_ocp_install_controller is defined
+    - aap_ocp_install_controller['install'] is defined
+    - aap_ocp_install_controller['install'] | bool
+  block:
+    - name: pre-validate-platform-individual | Ensure controller namespace matches platform namespace when installing controller
+      ansible.builtin.assert:
+        that:
+          - (aap_ocp_install_controller['namespace'] | default(aap_ocp_install_namespace)) == __aap_ocp_install_platform_effective_ns
+        quiet: true
+  rescue:
+    - name: pre-validate-platform-individual | Update validation errors fact - controller namespace
+      ansible.builtin.set_fact:
+        __aap_ocp_install_prevalidate_errors: >
+          {{ __aap_ocp_install_prevalidate_errors +
+          ["individual mode requires aap_ocp_install_controller namespace (or default aap_ocp_install_namespace) to match the platform namespace"] }}
+
+- name: pre-validate-platform-individual | Ensure hub namespace matches platform namespace when installing hub (block)
+  when:
+    - aap_ocp_install_hub is defined
+    - aap_ocp_install_hub['install'] is defined
+    - aap_ocp_install_hub['install'] | bool
+  block:
+    - name: pre-validate-platform-individual | Ensure hub namespace matches platform namespace when installing hub
+      ansible.builtin.assert:
+        that:
+          - (aap_ocp_install_hub['namespace'] | default(aap_ocp_install_namespace)) == __aap_ocp_install_platform_effective_ns
+        quiet: true
+  rescue:
+    - name: pre-validate-platform-individual | Update validation errors fact - hub namespace
+      ansible.builtin.set_fact:
+        __aap_ocp_install_prevalidate_errors: >
+          {{ __aap_ocp_install_prevalidate_errors +
+          ["individual mode requires aap_ocp_install_hub namespace (or default aap_ocp_install_namespace) to match the platform namespace"] }}
+
+- name: pre-validate-platform-individual | Ensure EDA namespace matches platform namespace when installing EDA (block)
+  when:
+    - aap_ocp_install_eda is defined
+    - aap_ocp_install_eda['install'] is defined
+    - aap_ocp_install_eda['install'] | bool
+  block:
+    - name: pre-validate-platform-individual | Ensure EDA namespace matches platform namespace when installing EDA
+      ansible.builtin.assert:
+        that:
+          - (aap_ocp_install_eda['namespace'] | default(aap_ocp_install_namespace)) == __aap_ocp_install_platform_effective_ns
+        quiet: true
+  rescue:
+    - name: pre-validate-platform-individual | Update validation errors fact - EDA namespace
+      ansible.builtin.set_fact:
+        __aap_ocp_install_prevalidate_errors: >
+          {{ __aap_ocp_install_prevalidate_errors +
+          ["individual mode requires aap_ocp_install_eda namespace (or default aap_ocp_install_namespace) to match the platform namespace"] }}
+...

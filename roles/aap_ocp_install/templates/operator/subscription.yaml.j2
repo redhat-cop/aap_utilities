@@ -6,7 +6,7 @@ metadata:
   namespace: {{ aap_ocp_install_namespace }}
 spec:
   channel: {{ aap_ocp_install_operator['channel'] }}
-  installPlanApproval: {{ aap_ocp_install_operator['approval'] | default('Automatic') }}
+  installPlanApproval: {{ 'Manual' if ((aap_ocp_install_operator['approval'] | default('automatic')) | lower) == 'manual' else 'Automatic' }}
   startingCSV: {{ aap_ocp_install_operator['starting_csv'] | default(omit) }}
   name: ansible-automation-platform-operator
   source: redhat-operators

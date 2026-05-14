@@ -1,7 +1,12 @@
 ---
 # Build the AnsibleAutomationPlatform CR: render platform/instance.yaml.j2, apply
 # platform_manifest_overrides, then merge per-component overrides into spec.controller,
-# spec.hub, and spec.eda.
+# spec.hub, and spec.eda for unified mode only.
+#
+# Individual mode: template emits adoption-style name/disabled only; component
+# *_manifest_overrides are applied solely on standalone CRs (install-*.yml), not merged
+# here—merging would duplicate AutomationController/AutomationHub/EDA fields onto the
+# Platform CR (e.g. task_replicas, hub storage, pulp_settings).
 #
 # Standalone component CRs use metadata + spec; for the unified platform CR, operator
 # fields live directly under spec.<component>. If *_manifest_overrides repeat the
@@ -9,7 +14,9 @@
 # sibling fields under spec.<component> (not as spec.<component>.spec).
 
 - name: build-platform-cr | Derive effective controller manifest overrides for platform CR
-  when: aap_ocp_install_controller is defined
+  when:
+    - aap_ocp_install_controller is defined
+    - (__aap_ocp_install_platform_component_deployment | default('unified')) != 'individual'
   ansible.builtin.set_fact:
     __aap_ocp_install_controller_manifest_for_platform: >-
       {{
@@ -26,7 +33,9 @@
       }}
 
 - name: build-platform-cr | Derive effective hub manifest overrides for platform CR
-  when: aap_ocp_install_hub is defined
+  when:
+    - aap_ocp_install_hub is defined
+    - (__aap_ocp_install_platform_component_deployment | default('unified')) != 'individual'
   ansible.builtin.set_fact:
     __aap_ocp_install_hub_manifest_for_platform: >-
       {{
@@ -43,7 +52,9 @@
       }}
 
 - name: build-platform-cr | Derive effective EDA manifest overrides for platform CR
-  when: aap_ocp_install_eda is defined
+  when:
+    - aap_ocp_install_eda is defined
+    - (__aap_ocp_install_platform_component_deployment | default('unified')) != 'individual'
   ansible.builtin.set_fact:
     __aap_ocp_install_eda_manifest_for_platform: >-
       {{
@@ -68,17 +79,23 @@
     __aap_ocp_install_platform_cr: "{{ __aap_ocp_install_platform_cr | ansible.builtin.combine(aap_ocp_install_platform['platform_manifest_overrides'] | default({}), recursive=true) }}"
 
 - name: build-platform-cr | Merge controller manifest overrides into spec.controller
-  when: aap_ocp_install_controller is defined
+  when:
+    - aap_ocp_install_controller is defined
+    - (__aap_ocp_install_platform_component_deployment | default('unified')) != 'individual'
   ansible.builtin.set_fact:
     __aap_ocp_install_platform_cr: "{{ __aap_ocp_install_platform_cr | ansible.builtin.combine({'spec': {'controller': __aap_ocp_install_platform_cr['spec']['controller'] | ansible.builtin.combine(__aap_ocp_install_controller_manifest_for_platform | default({}), recursive=true)}}, recursive=true) }}"
 
 - name: build-platform-cr | Merge hub manifest overrides into spec.hub
-  when: aap_ocp_install_hub is defined
+  when:
+    - aap_ocp_install_hub is defined
+    - (__aap_ocp_install_platform_component_deployment | default('unified')) != 'individual'
   ansible.builtin.set_fact:
     __aap_ocp_install_platform_cr: "{{ __aap_ocp_install_platform_cr | ansible.builtin.combine({'spec': {'hub': __aap_ocp_install_platform_cr['spec']['hub'] | ansible.builtin.combine(__aap_ocp_install_hub_manifest_for_platform | default({}), recursive=true)}}, recursive=true) }}"
 
 - name: build-platform-cr | Merge EDA manifest overrides into spec.eda
-  when: aap_ocp_install_eda is defined
+  when:
+    - aap_ocp_install_eda is defined
+    - (__aap_ocp_install_platform_component_deployment | default('unified')) != 'individual'
   ansible.builtin.set_fact:
     __aap_ocp_install_platform_cr: "{{ __aap_ocp_install_platform_cr | ansible.builtin.combine({'spec': {'eda': __aap_ocp_install_platform_cr['spec']['eda'] | ansible.builtin.combine(__aap_ocp_install_eda_manifest_for_platform | default({}), recursive=true)}}, recursive=true) }}"
 ...

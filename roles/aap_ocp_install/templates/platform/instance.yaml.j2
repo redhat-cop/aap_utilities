@@ -9,6 +9,7 @@ spec:
   image_pull_policy: IfNotPresent
 
   # Components
+{% if (__aap_ocp_install_platform_component_deployment | default('unified')) == 'unified' %}
 {% if aap_ocp_install_controller is defined and aap_ocp_install_controller['install'] is defined and aap_ocp_install_controller['install'] %}
   controller:
     disabled: false
@@ -51,6 +52,34 @@ spec:
 {% else %}
   hub:
     disabled: true
+{% endif %}
+{% else %}
+{% if aap_ocp_install_controller is defined and aap_ocp_install_controller['install'] is defined and aap_ocp_install_controller['install'] %}
+  controller:
+    name: {{ aap_ocp_install_controller['instance_name'] }}
+    disabled: false
+{% else %}
+  controller:
+    disabled: true
+{% endif %}
+
+{% if aap_ocp_install_eda is defined and aap_ocp_install_eda['install'] is defined and aap_ocp_install_eda['install'] %}
+  eda:
+    name: {{ aap_ocp_install_eda['instance_name'] }}
+    disabled: false
+{% else %}
+  eda:
+    disabled: true
+{% endif %}
+
+{% if aap_ocp_install_hub is defined and aap_ocp_install_hub['install'] is defined and aap_ocp_install_hub['install'] %}
+  hub:
+    name: {{ aap_ocp_install_hub['instance_name'] }}
+    disabled: false
+{% else %}
+  hub:
+    disabled: true
+{% endif %}
 {% endif %}
 
   lightspeed:

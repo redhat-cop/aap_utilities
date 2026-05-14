@@ -1,0 +1,61 @@
+---
+- name: consolelinks | Create automation controller console link
+  when:
+    - aap_ocp_install_controller is defined
+    - aap_ocp_install_controller['create_link'] | default(true) | bool
+    - not ((__aap_ocp_install_25_install | bool) and (aap_ocp_install_platform is defined))
+  tags:
+    - controller
+  kubernetes.core.k8s:
+    host: "{{ __aap_ocp_install_auth_results['openshift_auth']['host'] }}"
+    api_key: "{{ __aap_ocp_install_auth_results['openshift_auth']['api_key'] }}"
+    validate_certs: "{{ aap_ocp_install_connection['validate_certs'] | default(omit) }}"
+    state: present
+    resource_definition: "{{ lookup('ansible.builtin.template', 'controller/consolelink.yaml.j2') | from_yaml | ansible.builtin.combine(aap_ocp_install_controller['consolelink_manifest_overrides'] | default({}), recursive=true) }}"
+    apply: true
+
+- name: consolelinks | Create automation hub console link
+  when:
+    - aap_ocp_install_hub is defined
+    - aap_ocp_install_hub['create_link'] | default(true) | bool
+    - not ((__aap_ocp_install_25_install | bool) and (aap_ocp_install_platform is defined))
+  tags:
+    - hub
+  kubernetes.core.k8s:
+    host: "{{ __aap_ocp_install_auth_results['openshift_auth']['host'] }}"
+    api_key: "{{ __aap_ocp_install_auth_results['openshift_auth']['api_key'] }}"
+    validate_certs: "{{ aap_ocp_install_connection['validate_certs'] | default(omit) }}"
+    state: present
+    resource_definition: "{{ lookup('ansible.builtin.template', 'hub/consolelink.yaml.j2') | from_yaml | ansible.builtin.combine(aap_ocp_install_hub['consolelink_manifest_overrides'] | default({}), recursive=true) }}"
+    apply: true
+
+- name: consolelinks | Create EDA console link
+  when:
+    - aap_ocp_install_eda is defined
+    - aap_ocp_install_eda['create_link'] | default(true) | bool
+    - not ((__aap_ocp_install_25_install | bool) and (aap_ocp_install_platform is defined))
+  tags:
+    - eda
+  kubernetes.core.k8s:
+    host: "{{ __aap_ocp_install_auth_results['openshift_auth']['host'] }}"
+    api_key: "{{ __aap_ocp_install_auth_results['openshift_auth']['api_key'] }}"
+    validate_certs: "{{ aap_ocp_install_connection['validate_certs'] | default(omit) }}"
+    state: present
+    resource_definition: "{{ lookup('ansible.builtin.template', 'eda/consolelink.yaml.j2') | from_yaml | ansible.builtin.combine(aap_ocp_install_eda['consolelink_manifest_overrides'] | default({}), recursive=true) }}"
+    apply: true
+
+- name: consolelinks | Create automation platform console link
+  when:
+    - aap_ocp_install_platform is defined
+    - __aap_ocp_install_25_install | bool
+    - aap_ocp_install_platform['create_link'] | default(true) | bool
+  tags:
+    - platform
+  kubernetes.core.k8s:
+    host: "{{ __aap_ocp_install_auth_results['openshift_auth']['host'] }}"
+    api_key: "{{ __aap_ocp_install_auth_results['openshift_auth']['api_key'] }}"
+    validate_certs: "{{ aap_ocp_install_connection['validate_certs'] | default(omit) }}"
+    state: present
+    resource_definition: "{{ lookup('ansible.builtin.template', 'platform/consolelink.yaml.j2') | from_yaml | ansible.builtin.combine(aap_ocp_install_platform['consolelink_manifest_overrides'] | default({}), recursive=true) }}"
+    apply: true
+...
