@@ -202,3 +202,14 @@ releases:
     fragments:
     - aap-ocp-install-platform-manifest-overrides.yml
     release_date: '2026-05-01'
+  3.2.0:
+    changes:
+      minor_changes:
+      - Added the ability to run a backup on containerized deployment.
+      - README - Standardized collection links tables, added changelog link, converted
+        LICENSE to absolute URL, and added Support section for certification review.
+      - meta/runtime.yml - Updated minimum ansible-core version from 2.15 to 2.16.
+    fragments:
+    - certification-review-updates.yaml
+    - containerized_backup.yaml
+    release_date: '2026-05-15'

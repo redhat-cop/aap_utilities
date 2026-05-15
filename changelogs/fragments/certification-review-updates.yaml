@@ -1,3 +1,0 @@
-minor_changes:
-  - README - Standardized collection links tables, added changelog link, converted LICENSE to absolute URL, and added Support section for certification review.
-  - meta/runtime.yml - Updated minimum ansible-core version from 2.15 to 2.16.
