@@ -4,6 +4,16 @@ infra.aap\_utilities Release Notes
 
 .. contents:: Topics
 
+v3.2.0
+======
+
+Minor Changes
+-------------
+
+- Added the ability to run a backup on containerized deployment.
+- README - Standardized collection links tables, added changelog link, converted LICENSE to absolute URL, and added Support section for certification review.
+- meta/runtime.yml - Updated minimum ansible-core version from 2.15 to 2.16.
+
 v3.1.0
 ======
 
