@@ -213,3 +213,12 @@ releases:
     - certification-review-updates.yaml
     - containerized_backup.yaml
     release_date: '2026-05-15'
+  3.3.0:
+    changes:
+      minor_changes:
+      - aap_ocp_install - add ``aap_ocp_install_platform.component_deployment`` for
+        unified versus individual Ansible Automation Platform 2.5+ installs on OpenShift.
+    fragments:
+    - aap_ocp_install-component_deployment.yml
+    - release_auto-automation-hub-console-url.yml
+    release_date: '2026-06-01'

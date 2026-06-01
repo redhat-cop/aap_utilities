@@ -1,5 +1,0 @@
----
-minor_changes:
-  - >-
-    aap_ocp_install - add ``aap_ocp_install_platform.component_deployment`` for unified versus
-    individual Ansible Automation Platform 2.5+ installs on OpenShift.

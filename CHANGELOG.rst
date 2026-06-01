@@ -4,6 +4,14 @@ infra.aap\_utilities Release Notes
 
 .. contents:: Topics
 
+v3.3.0
+======
+
+Minor Changes
+-------------
+
+- aap_ocp_install - add ``aap_ocp_install_platform.component_deployment`` for unified versus individual Ansible Automation Platform 2.5+ installs on OpenShift.
+
 v3.2.0
 ======
 
