@@ -1,7 +1,7 @@
 ---
 # tasks file for aap_setup_download
 - name: Login to Red Hat APIs
-  no_log: true
+  no_log: "{{ aap_no_log | default(true) }}"
   ansible.builtin.uri:
     url: "{{ aap_setup_down_token_url }}"
     method: POST
@@ -13,7 +13,7 @@
   register: __aap_setup_down_login
 
 - name: Collecting the available installers
-  no_log: true
+  no_log: "{{ aap_no_log | default(true) }}"
   ansible.builtin.uri:
     url: "{{ aap_setup_down_images_url }}"
     method: GET
@@ -67,7 +67,7 @@
   when: not is_aap_setup_down_latest
 
 - name: Downloading the installer of type {{ aap_setup_down_type }}
-  no_log: true
+  no_log: "{{ aap_no_log | default(true) }}"
   ansible.builtin.get_url:
     url: "{{ __aap_image_to_download.downloadHref }}"
     dest: "{{ aap_setup_down_dest_dir }}/{{ __aap_image_to_download.filename }}"

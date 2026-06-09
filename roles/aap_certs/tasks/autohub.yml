@@ -2,7 +2,7 @@
 # according to https://access.redhat.com/solutions/5731261
 
 - name: autohub | Get certificate file content
-  no_log: true
+  no_log: "{{ aap_no_log | default(true) }}"
   when:
     - aap_certs_autohub_ssl_cert is defined
     - aap_certs_autohub_ssl_key is defined
@@ -11,7 +11,7 @@
     aap_certs_autohub_ssl_key_content: "{{ lookup('ansible.builtin.file', aap_certs_autohub_ssl_key) }}"
 
 - name: autohub | Update certificate file
-  no_log: true
+  no_log: "{{ aap_no_log | default(true) }}"
   become: true
   ansible.builtin.template:
     src: cert_content.j2
@@ -25,7 +25,7 @@
     file_content: "{{ aap_certs_autohub_ssl_cert_content }}"
 
 - name: autohub | Update certificate key file
-  no_log: true
+  no_log: "{{ aap_no_log | default(true) }}"
   become: true
   ansible.builtin.template:
     src: cert_content.j2

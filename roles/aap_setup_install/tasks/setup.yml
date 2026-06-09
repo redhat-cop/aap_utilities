@@ -1,6 +1,6 @@
 ---
 - name: setup | Check Automation Controller Running
-  no_log: true
+  no_log: "{{ aap_no_log | default(true) }}"
   ansible.builtin.uri:
     url: https://{{ controller_hostname }}/
     method: GET
@@ -17,7 +17,7 @@
     - not aap_setup_inst_force | bool
 
 - name: setup | Check Automation Hub Running
-  no_log: true
+  no_log: "{{ aap_no_log | default(true) }}"
   ansible.builtin.uri:
     url: https://{{ ah_hostname }}/api/galaxy/
     method: GET
@@ -34,7 +34,7 @@
     - not aap_setup_inst_force | bool
 
 - name: setup | Check EDA Controller Running
-  no_log: true
+  no_log: "{{ aap_no_log | default(true) }}"
   ansible.builtin.uri:
     url: https://{{ eda_hostname }}/
     method: GET
@@ -51,7 +51,7 @@
     - not aap_setup_inst_force | bool
 
 - name: setup | Check Gateway API Status
-  no_log: true
+  no_log: "{{ aap_no_log | default(true) }}"
   ansible.builtin.uri:
     url: https://{{ gateway_hostname }}/api/gateway/v1/status/?service_keys=true
     method: GET
