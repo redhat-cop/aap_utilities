@@ -4,6 +4,14 @@ infra.aap\_utilities Release Notes
 
 .. contents:: Topics
 
+v3.4.0
+======
+
+Minor Changes
+-------------
+
+- Introduced global variable aap_no_log to control logging of sensitive information across all roles, defaulting to true for security while allowing users to enable detailed logging for troubleshooting by setting it to false.
+
 v3.3.0
 ======
 
