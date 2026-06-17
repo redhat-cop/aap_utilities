@@ -9,4 +9,9 @@
 - name: Install AAP
   ansible.builtin.include_tasks:
     file: "{{ (aap_setup_inst_containerized | bool) | ternary('containerized.yml', 'setup.yml') }}"
+
+- name: Generate Gateway API token
+  when: aap_setup_inst_generate_token | bool
+  ansible.builtin.include_tasks:
+    file: token.yml
 ...

@@ -86,6 +86,11 @@ gateway_hostname: "{{ (aap_setup_prep_inv_nodes['automationgateway'] is mapping)
 # force the installation of AAP even if it's already running
 aap_setup_inst_force: false
 
+# Generate a Gateway API token after install
+aap_setup_inst_generate_token: false
+# Optionally write the token to a file (leave empty to skip)
+aap_setup_inst_token_output_file: ""
+
 # list of fixes to apply before starting the actual installation,
 # review before bumping up the default AAP version
 aap_setup_inst_fixes: []

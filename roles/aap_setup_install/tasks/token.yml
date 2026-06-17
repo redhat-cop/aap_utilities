@@ -1,0 +1,29 @@
+---
+- name: token | Create Gateway API token
+  no_log: "{{ aap_no_log | default(true) }}"
+  ansible.builtin.uri:
+    url: "https://{{ gateway_hostname }}/api/gateway/v1/tokens/"
+    method: POST
+    user: "{{ gateway_username | default('admin') }}"
+    password: "{{ aap_setup_prep_inv_secrets.all.automationgateway_admin_password | default(aap_setup_prep_inv_vars.all.automationgateway_admin_password) }}"
+    force_basic_auth: true
+    validate_certs: "{{ gateway_validate_certs | default(false) }}"
+    headers:
+      Content-Type: application/json
+    body_format: json
+    body: {}
+    status_code: [200, 201]
+  register: __aap_setup_inst_token_response
+
+- name: token | Display generated token
+  ansible.builtin.debug:
+    msg: "Gateway token: {{ __aap_setup_inst_token_response.json.token }}"
+
+- name: token | Write token to file
+  when: aap_setup_inst_token_output_file | length > 0
+  no_log: "{{ aap_no_log | default(true) }}"
+  ansible.builtin.copy:
+    content: "{{ __aap_setup_inst_token_response.json.token }}"
+    dest: "{{ aap_setup_inst_token_output_file }}"
+    mode: "0600"
+...
