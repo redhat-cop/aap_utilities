@@ -222,3 +222,12 @@ releases:
     - aap_ocp_install-component_deployment.yml
     - release_auto-automation-hub-console-url.yml
     release_date: '2026-06-01'
+  3.4.0:
+    changes:
+      minor_changes:
+      - Introduced global variable aap_no_log to control logging of sensitive information
+        across all roles, defaulting to true for security while allowing users to
+        enable detailed logging for troubleshooting by setting it to false.
+    fragments:
+    - parameterized_no_log.yml
+    release_date: '2026-06-15'

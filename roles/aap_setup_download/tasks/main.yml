@@ -29,7 +29,7 @@
       | sort(attribute='datePublished', reverse=True) | list }}"
   vars:
     __aap_setup_down_filename_prefix: >-
-      {{ (aap_setup_containerized | bool) | ternary('ansible-automation-platform-containerized-', 'ansible-automation-platform-') }}{{ aap_setup_down_type }}-{{ aap_setup_down_version }}
+      ansible-automation-platform-{{ (aap_setup_containerized | bool and not aap_setup_down_type.startswith('containerized')) | ternary('containerized-', '') }}{{ aap_setup_down_type }}-{{ aap_setup_down_version }}
 
 - name: Display all the filenames available for download
   ansible.builtin.debug:
