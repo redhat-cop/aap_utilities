@@ -231,3 +231,15 @@ releases:
     fragments:
     - parameterized_no_log.yml
     release_date: '2026-06-15'
+  3.5.0:
+    changes:
+      bugfixes:
+      - aap_setup_download - prevent duplicated ``containerized-`` prefix in installer
+        filename when ``aap_setup_down_type`` already includes it (https://github.com/redhat-cop/aap_utilities/issues/361).
+      minor_changes:
+      - aap_setup_install - add optional Gateway API token generation after install
+        via ``aap_setup_inst_generate_token`` (https://github.com/redhat-cop/aap_utilities/issues/305).
+    fragments:
+    - add-gateway-token-generation.yml
+    - fix-containerized-filename-prefix.yml
+    release_date: '2026-07-01'

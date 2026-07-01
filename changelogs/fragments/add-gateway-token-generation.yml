@@ -1,4 +1,0 @@
----
-minor_changes:
-  - "aap_setup_install - add optional Gateway API token generation after install via ``aap_setup_inst_generate_token`` (https://github.com/redhat-cop/aap_utilities/issues/305)."
-...

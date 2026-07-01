@@ -4,6 +4,19 @@ infra.aap\_utilities Release Notes
 
 .. contents:: Topics
 
+v3.5.0
+======
+
+Minor Changes
+-------------
+
+- aap_setup_install - add optional Gateway API token generation after install via ``aap_setup_inst_generate_token`` (https://github.com/redhat-cop/aap_utilities/issues/305).
+
+Bugfixes
+--------
+
+- aap_setup_download - prevent duplicated ``containerized-`` prefix in installer filename when ``aap_setup_down_type`` already includes it (https://github.com/redhat-cop/aap_utilities/issues/361).
+
 v3.4.0
 ======
 

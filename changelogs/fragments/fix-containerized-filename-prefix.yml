@@ -1,4 +1,0 @@
----
-bugfixes:
-  - "aap_setup_download - prevent duplicated ``containerized-`` prefix in installer filename when ``aap_setup_down_type`` already includes it (https://github.com/redhat-cop/aap_utilities/issues/361)."
-...
