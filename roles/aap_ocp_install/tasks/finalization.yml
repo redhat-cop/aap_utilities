@@ -6,6 +6,7 @@
   redhat.openshift.openshift_auth:
     host: "{{ aap_ocp_install_connection['host'] | mandatory }}"
     validate_certs: "{{ aap_ocp_install_connection['validate_certs'] | default(omit) }}"
+    ca_cert: "{{ aap_ocp_install_connection['ca_cert'] | default(omit) }}"
     state: absent
     api_key: "{{ __aap_ocp_install_auth_results['openshift_auth']['api_key'] }}"
   changed_when: false

@@ -6,6 +6,7 @@
     host: "{{ __aap_ocp_install_auth_results['openshift_auth']['host'] }}"
     api_key: "{{ __aap_ocp_install_auth_results['openshift_auth']['api_key'] }}"
     validate_certs: "{{ aap_ocp_install_connection['validate_certs'] | default(omit) }}"
+    ca_cert: "{{ aap_ocp_install_connection['ca_cert'] | default(omit) }}"
     state: present
     resource_definition: "{{ lookup('template', 'operator/operatorgroup.yaml.j2') | from_yaml | ansible.builtin.combine(aap_ocp_install_operator['operatorgroup_manifest_overrides'] | default({}), recursive=true) }}"
     apply: true
@@ -15,6 +16,7 @@
     host: "{{ __aap_ocp_install_auth_results['openshift_auth']['host'] }}"
     api_key: "{{ __aap_ocp_install_auth_results['openshift_auth']['api_key'] }}"
     validate_certs: "{{ aap_ocp_install_connection['validate_certs'] | default(omit) }}"
+    ca_cert: "{{ aap_ocp_install_connection['ca_cert'] | default(omit) }}"
     state: present
     resource_definition: "{{ lookup('template', 'operator/subscription.yaml.j2') | from_yaml | ansible.builtin.combine(aap_ocp_install_operator['subscription_manifest_overrides'] | default({}), recursive=true) }}"
     apply: true
@@ -24,6 +26,7 @@
     host: "{{ __aap_ocp_install_auth_results['openshift_auth']['host'] }}"
     api_key: "{{ __aap_ocp_install_auth_results['openshift_auth']['api_key'] }}"
     validate_certs: "{{ aap_ocp_install_connection['validate_certs'] | default(omit) }}"
+    ca_cert: "{{ aap_ocp_install_connection['ca_cert'] | default(omit) }}"
     kind: Subscription
     name: ansible-automation-platform-operator
     api_version: operators.coreos.com/v1alpha1
@@ -45,6 +48,7 @@
     host: "{{ __aap_ocp_install_auth_results['openshift_auth']['host'] }}"
     api_key: "{{ __aap_ocp_install_auth_results['openshift_auth']['api_key'] }}"
     validate_certs: "{{ aap_ocp_install_connection['validate_certs'] | default(omit) }}"
+    ca_cert: "{{ aap_ocp_install_connection['ca_cert'] | default(omit) }}"
     definition:
       kind: InstallPlan
       apiVersion: operators.coreos.com/v1alpha1
@@ -59,6 +63,7 @@
     host: "{{ __aap_ocp_install_auth_results['openshift_auth']['host'] }}"
     api_key: "{{ __aap_ocp_install_auth_results['openshift_auth']['api_key'] }}"
     validate_certs: "{{ aap_ocp_install_connection['validate_certs'] | default(omit) }}"
+    ca_cert: "{{ aap_ocp_install_connection['ca_cert'] | default(omit) }}"
     kind: Subscription
     name: ansible-automation-platform-operator
     api_version: operators.coreos.com/v1alpha1
@@ -75,6 +80,7 @@
     host: "{{ __aap_ocp_install_auth_results['openshift_auth']['host'] }}"
     api_key: "{{ __aap_ocp_install_auth_results['openshift_auth']['api_key'] }}"
     validate_certs: "{{ aap_ocp_install_connection['validate_certs'] | default(omit) }}"
+    ca_cert: "{{ aap_ocp_install_connection['ca_cert'] | default(omit) }}"
     kind: ClusterServiceVersion
     name: "{{ __aap_ocp_install_sub_approved_result.resources[0].status.currentCSV }}"
     api_version: operators.coreos.com/v1alpha1

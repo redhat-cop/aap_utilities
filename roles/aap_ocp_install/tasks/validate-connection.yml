@@ -5,6 +5,7 @@
     url: "{{  __aap_ocp_install_auth_results['openshift_auth']['host'] }}/version"
     method: GET
     validate_certs: "{{ aap_ocp_install_connection['validate_certs'] | default(omit) }}"
+    ca_path: "{{ aap_ocp_install_connection['ca_cert'] | default(omit) }}"
     headers:
       Authorization: Bearer {{ __aap_ocp_install_auth_results['openshift_auth']['api_key'] }}
 

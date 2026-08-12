@@ -6,6 +6,7 @@
     host: "{{ __aap_ocp_install_auth_results['openshift_auth']['host'] }}"
     api_key: "{{ __aap_ocp_install_auth_results['openshift_auth']['api_key'] }}"
     validate_certs: "{{ aap_ocp_install_connection['validate_certs'] | default(omit) }}"
+    ca_cert: "{{ aap_ocp_install_connection['ca_cert'] | default(omit) }}"
     state: present
     resource_definition: "{{ lookup('ansible.builtin.template', 'namespace.yaml.j2', template_vars=ns_vars) | from_yaml | ansible.builtin.combine(aap_ocp_install_platform['namespace_manifest_overrides'] | default({}), recursive=true) }}"
     apply: true
@@ -22,6 +23,7 @@
     host: "{{ __aap_ocp_install_auth_results['openshift_auth']['host'] }}"
     api_key: "{{ __aap_ocp_install_auth_results['openshift_auth']['api_key'] }}"
     validate_certs: "{{ aap_ocp_install_connection['validate_certs'] | default(omit) }}"
+    ca_cert: "{{ aap_ocp_install_connection['ca_cert'] | default(omit) }}"
     state: present
     resource_definition: "{{ __aap_ocp_install_platform_cr }}"
     apply: true
@@ -31,6 +33,7 @@
     host: "{{ __aap_ocp_install_auth_results['openshift_auth']['host'] }}"
     api_key: "{{ __aap_ocp_install_auth_results['openshift_auth']['api_key'] }}"
     validate_certs: "{{ aap_ocp_install_connection['validate_certs'] | default(omit) }}"
+    ca_cert: "{{ aap_ocp_install_connection['ca_cert'] | default(omit) }}"
     kind: Route
     name: "{{ aap_ocp_install_platform['instance_name'] | mandatory }}"
     api_version: route.openshift.io/v1
@@ -49,6 +52,7 @@
   ansible.builtin.uri:
     url: "{{ aap_ocp_install_platform_route }}"
     validate_certs: "{{ aap_ocp_install_connection['validate_certs'] | default(omit) }}"
+    ca_path: "{{ aap_ocp_install_connection['ca_cert'] | default(omit) }}"
     method: GET
     status_code:
       - 200
@@ -70,6 +74,7 @@
     host: "{{ __aap_ocp_install_auth_results['openshift_auth']['host'] }}"
     api_key: "{{ __aap_ocp_install_auth_results['openshift_auth']['api_key'] }}"
     validate_certs: "{{ aap_ocp_install_connection['validate_certs'] | default(omit) }}"
+    ca_cert: "{{ aap_ocp_install_connection['ca_cert'] | default(omit) }}"
     kind: Route
     name: "{{ aap_ocp_install_platform['instance_name'] | mandatory }}-controller"
     api_version: route.openshift.io/v1
@@ -98,6 +103,7 @@
   ansible.builtin.uri:
     url: "{{ aap_ocp_install_controller_route }}/api"
     validate_certs: "{{ aap_ocp_install_connection['validate_certs'] | default(omit) }}"
+    ca_path: "{{ aap_ocp_install_connection['ca_cert'] | default(omit) }}"
     method: GET
     status_code:
       - 200
@@ -118,6 +124,7 @@
     host: "{{ __aap_ocp_install_auth_results['openshift_auth']['host'] }}"
     api_key: "{{ __aap_ocp_install_auth_results['openshift_auth']['api_key'] }}"
     validate_certs: "{{ aap_ocp_install_connection['validate_certs'] | default(omit) }}"
+    ca_cert: "{{ aap_ocp_install_connection['ca_cert'] | default(omit) }}"
     kind: Route
     name: "{{ aap_ocp_install_platform['instance_name'] | mandatory }}-eda"
     api_version: route.openshift.io/v1
@@ -146,6 +153,7 @@
   ansible.builtin.uri:
     url: "{{ aap_ocp_install_eda_route }}/api"
     validate_certs: "{{ aap_ocp_install_connection['validate_certs'] | default(omit) }}"
+    ca_path: "{{ aap_ocp_install_connection['ca_cert'] | default(omit) }}"
     method: GET
     status_code:
       - 200
@@ -166,6 +174,7 @@
     host: "{{ __aap_ocp_install_auth_results['openshift_auth']['host'] }}"
     api_key: "{{ __aap_ocp_install_auth_results['openshift_auth']['api_key'] }}"
     validate_certs: "{{ aap_ocp_install_connection['validate_certs'] | default(omit) }}"
+    ca_cert: "{{ aap_ocp_install_connection['ca_cert'] | default(omit) }}"
     kind: Route
     name: "{{ aap_ocp_install_platform['instance_name'] | mandatory }}-hub"
     api_version: route.openshift.io/v1
@@ -194,6 +203,7 @@
   ansible.builtin.uri:
     url: "{{ aap_ocp_install_hub_route }}/api/galaxy/pulp/api/v3/"
     validate_certs: "{{ aap_ocp_install_connection['validate_certs'] | default(omit) }}"
+    ca_path: "{{ aap_ocp_install_connection['ca_cert'] | default(omit) }}"
     method: GET
     status_code:
       - 200

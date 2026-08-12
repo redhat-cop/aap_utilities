@@ -51,6 +51,7 @@ The tables below list user-facing variables and nested keys.
 | `password`       | Yes\*    |         | Password for cluster login.                                     |
 | `api_key`        | Yes\*    |         | API token (do not set `username` / `password` when using this). |
 | `validate_certs` | No       |         | Whether to verify TLS. Valid values: `true`, `false`.           |
+| `ca_cert`        | No       |         | Path to a CA certificate to verify the OpenShift API server.    |
 
 \* Either `api_key`, or both `username` and `password`, must be set.
 
