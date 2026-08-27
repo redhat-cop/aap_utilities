@@ -11,4 +11,4 @@ permissions:
 
 jobs:
   sanity:
-    uses: ansible/ansible-content-actions/.github/workflows/sanity.yaml@c81d405f1de6452c2ba7ddaca919afc65f8fe7ca # main
+    uses: ansible/ansible-content-actions/.github/workflows/sanity.yaml@d3ed2271d196e9963585a3be3fc23729b6d166c5 # main
