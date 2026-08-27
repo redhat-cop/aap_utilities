@@ -12,7 +12,7 @@ repos:
       - id: markdownlint-cli2
 
   - repo: https://github.com/djdanielsson/ansible-content-prek-actions
-    rev: v26.6.1
+    rev: v26.7.2
     hooks:
       - id: ansible-lint
       - id: changelog
