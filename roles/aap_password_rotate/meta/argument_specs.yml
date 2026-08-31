@@ -1,0 +1,149 @@
+---
+argument_specs:
+  main:
+    short_description: Rotate passwords across AAP 2.7 components
+    description:
+      - Rotates PostgreSQL database passwords and admin user passwords for
+        Ansible Automation Platform 2.7 components.
+      - Supports both podman (containerised installer) and operator
+        (Kubernetes/OpenShift) deployments.
+      - For podman deployments, leverages the containerised installer for
+        DB password rotation (recommended) or can perform manual rotation.
+      - For operator deployments, performs ALTER ROLE in PostgreSQL, patches
+        K8s Secrets, and triggers rollout restarts.
+      - Covers Automation Controller, Gateway, Event-Driven Ansible, and
+        Automation Hub.
+    options:
+      aap_password_rotate_deployment_type:
+        description: Deployment type. Auto-detected if empty.
+        type: str
+        choices:
+          - podman
+          - operator
+          - ""
+        default: ""
+      aap_password_rotate_scope:
+        description: >-
+          What to rotate. Use "db" for database passwords, "admin" for
+          admin user passwords, or both.
+        type: list
+        elements: str
+        default:
+          - db
+          - admin
+      aap_password_rotate_components:
+        description: List of components to rotate. Order matters.
+        type: list
+        elements: str
+        default:
+          - controller
+          - hub
+          - eda
+          - gateway
+      aap_password_rotate_dry_run:
+        description: Report what would change without writing.
+        type: bool
+        default: false
+      aap_password_rotate_backup_dir:
+        description: Directory on the control node for password backups.
+        type: str
+      aap_password_rotate_include_postgres_admin:
+        description: >-
+          Whether to also rotate the postgres superuser password.
+          Requires manual ALTER ROLE first on podman deployments.
+        type: bool
+        default: false
+      aap_password_rotate_controller_pg_password:
+        description: Custom DB password for Controller. Auto-generated if empty.
+        type: str
+        default: ""
+      aap_password_rotate_gateway_pg_password:
+        description: Custom DB password for Gateway. Auto-generated if empty.
+        type: str
+        default: ""
+      aap_password_rotate_eda_pg_password:
+        description: Custom DB password for EDA. Auto-generated if empty.
+        type: str
+        default: ""
+      aap_password_rotate_hub_pg_password:
+        description: Custom DB password for Hub. Auto-generated if empty.
+        type: str
+        default: ""
+      aap_password_rotate_postgres_admin_password:
+        description: Custom password for postgres superuser. Auto-generated if empty.
+        type: str
+        default: ""
+      aap_password_rotate_gateway_admin_password:
+        description: Custom admin password for Gateway. Auto-generated if empty.
+        type: str
+        default: ""
+      aap_password_rotate_controller_admin_password:
+        description: Custom admin password for Controller. Auto-generated if empty.
+        type: str
+        default: ""
+      aap_password_rotate_hub_admin_password:
+        description: Custom admin password for Hub. Auto-generated if empty.
+        type: str
+        default: ""
+      aap_password_rotate_eda_admin_password:
+        description: Custom admin password for EDA. Auto-generated if empty.
+        type: str
+        default: ""
+      aap_password_rotate_installer_inventory:
+        description: >-
+          Path to the containerised installer inventory file (podman only).
+          Required when using installer-based rotation.
+        type: str
+        default: ""
+      aap_password_rotate_installer_dir:
+        description: >-
+          Path to the containerised installer directory (podman only).
+          Required when using installer-based rotation.
+        type: str
+        default: ""
+      aap_password_rotate_podman_use_installer:
+        description: >-
+          Whether to use the containerised installer for DB password
+          rotation on podman. Recommended. If false, performs manual
+          ALTER ROLE + config update + restart.
+        type: bool
+        default: true
+      aap_password_rotate_namespace:
+        description: Kubernetes namespace (operator deployments).
+        type: str
+        default: aap
+      aap_password_rotate_cr_name:
+        description: AnsibleAutomationPlatform CR name (operator deployments).
+        type: str
+        default: aap
+      aap_password_rotate_external_db:
+        description: >-
+          Whether the database is external (not managed by the
+          installer/operator). When true, the role generates ALTER ROLE
+          SQL, writes it to a helper file, and pauses for the user to
+          run the SQL on their external database manually.
+        type: bool
+        default: false
+      aap_password_rotate_external_db_no_pause:
+        description: >-
+          Skip the interactive pause when external_db is true. For
+          non-interactive or CI usage where ALTER ROLE has already been
+          applied before invoking the role.
+        type: bool
+        default: false
+      aap_password_rotate_external_db_tasks:
+        description: >-
+          Path to a custom Ansible tasks file for external DB password
+          changes. When set (and external_db is true), the role includes
+          this file instead of pausing. The tasks receive
+          aap_password_rotate_components, __pw_db_users,
+          __pw_db_passwords, and __pw_postgres_admin_password as
+          variables and should apply ALTER ROLE or equivalent.
+        type: str
+        default: ""
+      aap_password_rotate_kubectl_binary:
+        description: >-
+          Path to a kubectl-compatible CLI binary. Auto-detected if empty.
+        type: str
+        default: ""
+...

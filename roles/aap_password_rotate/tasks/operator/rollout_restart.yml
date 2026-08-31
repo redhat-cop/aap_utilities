@@ -1,0 +1,32 @@
+---
+# Rollout restart all deployments for a single component.
+# Called in a loop from rotate_db.yml and rotate_admin.yml.
+
+- name: "Rollout restart deployments - {{ __pw_component }}"
+  ansible.builtin.command:
+    cmd: >-
+      {{ aap_password_rotate_kubectl_binary }} -n {{ aap_password_rotate_namespace }}
+      rollout restart deployment/{{ item }}
+  loop: "{{ __aap_password_rotate_k8s_deployments[__pw_component] }}"
+  changed_when: true
+  failed_when: false
+
+- name: "Wait for rollout - {{ __pw_component }}"
+  ansible.builtin.command:
+    cmd: >-
+      {{ aap_password_rotate_kubectl_binary }} -n {{ aap_password_rotate_namespace }}
+      rollout status deployment/{{ item }}
+      --timeout={{ aap_password_rotate_rollout_timeout }}s
+  loop: "{{ __aap_password_rotate_k8s_deployments[__pw_component] }}"
+  changed_when: false
+  register: __pw_rollout_status
+  failed_when: false
+
+- name: "Check rollout result - {{ __pw_component }}"
+  ansible.builtin.debug:
+    msg: >-
+      {{ item.item }}: {{ 'OK' if item.rc == 0 else 'TIMEOUT/FAIL (rc=' ~ item.rc ~ ')' }}
+  loop: "{{ __pw_rollout_status.results }}"
+  loop_control:
+    label: "{{ item.item }}"
+...

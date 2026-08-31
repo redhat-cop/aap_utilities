@@ -1,0 +1,26 @@
+---
+# Rotate admin user passwords on operator deployments.
+# Uses kubectl exec to run management commands in component pods,
+# then patches the K8s admin-password secrets.
+
+- name: Rotate admin passwords for each component
+  ansible.builtin.include_tasks: operator/change_admin_password.yml
+  loop: "{{ aap_password_rotate_components }}"
+  loop_control:
+    loop_var: __pw_component
+
+# Patch K8s admin-password secrets to match the new passwords.
+# These secrets are informational (not used for auth) but should
+# be kept in sync for DR and operational purposes (see KCS 7144197).
+- name: Patch admin-password secrets
+  ansible.builtin.command:
+    cmd: >-
+      {{ aap_password_rotate_kubectl_binary }} -n {{ aap_password_rotate_namespace }}
+      patch secret {{ __aap_password_rotate_admin_config[item].k8s_secret }}
+      --type merge
+      -p '{"data":{"{{ __aap_password_rotate_admin_config[item].k8s_secret_field }}":"{{ __pw_admin_passwords[item] | b64encode }}"}}'
+  loop: "{{ aap_password_rotate_components }}"
+  no_log: true
+  changed_when: true
+  failed_when: false
+...

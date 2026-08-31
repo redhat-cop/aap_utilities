@@ -1,0 +1,152 @@
+---
+- name: Validate scope
+  ansible.builtin.assert:
+    that:
+      - aap_password_rotate_scope | length > 0
+      - aap_password_rotate_scope | difference(['db', 'admin']) | length == 0
+    fail_msg: "aap_password_rotate_scope must contain 'db', 'admin', or both. Got: {{ aap_password_rotate_scope }}"
+
+- name: Validate components
+  ansible.builtin.assert:
+    that:
+      - aap_password_rotate_components | length > 0
+      - aap_password_rotate_components | difference(['controller', 'hub', 'eda', 'gateway']) | length == 0
+    fail_msg: "Invalid components: {{ aap_password_rotate_components }}"
+
+# ── Deployment type detection ────────────────────────────────────────
+- name: Auto-detect deployment type (podman)
+  ansible.builtin.command:
+    cmd: podman ps --format "{{ '{{' }}.Names{{ '}}' }}" --filter name=automation-
+  register: __pw_podman_check
+  changed_when: false
+  failed_when: false
+  when: aap_password_rotate_deployment_type == ""
+
+- name: Auto-detect deployment type (operator)
+  ansible.builtin.command:
+    cmd: "{{ aap_password_rotate_kubectl_binary | default('kubectl', true) }} get aap --all-namespaces --no-headers"
+  register: __pw_k8s_check
+  changed_when: false
+  failed_when: false
+  when:
+    - aap_password_rotate_deployment_type == ""
+    - __pw_podman_check.rc | default(1) != 0 or __pw_podman_check.stdout | default('') | length == 0
+
+- name: Set deployment type
+  ansible.builtin.set_fact:
+    aap_password_rotate_deployment_type: >-
+      {{ 'podman' if (__pw_podman_check.rc | default(1) == 0 and __pw_podman_check.stdout | default('') | length > 0)
+         else ('operator' if (__pw_k8s_check.rc | default(1) == 0 and __pw_k8s_check.stdout | default('') | length > 0)
+         else '') }}
+  when: aap_password_rotate_deployment_type == ""
+
+- name: Fail if deployment type not detected
+  ansible.builtin.assert:
+    that: aap_password_rotate_deployment_type in ['podman', 'operator']
+    fail_msg: >-
+      Could not auto-detect deployment type. Set aap_password_rotate_deployment_type
+      to 'podman' or 'operator'.
+
+- name: Display detected deployment type
+  ansible.builtin.debug:
+    msg: "Deployment type: {{ aap_password_rotate_deployment_type }}"
+
+# ── kubectl/oc detection (operator) ─────────────────────────────────
+- name: Detect kubectl binary
+  when:
+    - aap_password_rotate_deployment_type == 'operator'
+    - aap_password_rotate_kubectl_binary == ""
+  block:
+    - name: Check for oc
+      ansible.builtin.command:
+        cmd: which oc
+      register: __pw_oc_check
+      changed_when: false
+      failed_when: false
+
+    - name: Check for kubectl
+      ansible.builtin.command:
+        cmd: which kubectl
+      register: __pw_kubectl_check
+      changed_when: false
+      failed_when: false
+      when: __pw_oc_check.rc != 0
+
+    - name: Set kubectl binary
+      ansible.builtin.set_fact:
+        aap_password_rotate_kubectl_binary: "{{ __pw_oc_check.stdout if __pw_oc_check.rc == 0 else __pw_kubectl_check.stdout }}"
+
+    - name: Fail if no kubectl found
+      ansible.builtin.assert:
+        that: aap_password_rotate_kubectl_binary | length > 0
+        fail_msg: "Neither oc nor kubectl found. Install one or set aap_password_rotate_kubectl_binary."
+
+# ── Podman-specific preflight ───────────────────────────────────────
+- name: Podman preflight
+  when:
+    - aap_password_rotate_deployment_type == 'podman'
+    - "'db' in aap_password_rotate_scope"
+    - aap_password_rotate_podman_use_installer | bool
+  block:
+    - name: Auto-detect installer directory
+      when: aap_password_rotate_installer_dir == ""
+      block:
+        - name: Find installer directory
+          ansible.builtin.shell:
+            cmd: "set -o pipefail && ls -d /tmp/ansible-automation-platform-containerized-setup-*/ /opt/aap-installer/ /home/*/aap-installer/ 2>/dev/null | head -1 | tr -d '\\n'"
+            executable: /bin/bash
+          register: __pw_installer_dir
+          changed_when: false
+          failed_when: false
+
+        - name: Set installer directory
+          ansible.builtin.set_fact:
+            aap_password_rotate_installer_dir: "{{ __pw_installer_dir.stdout }}"
+          when: __pw_installer_dir.stdout | length > 0
+
+    - name: Fail if installer directory not found
+      ansible.builtin.assert:
+        that: aap_password_rotate_installer_dir | length > 0
+        fail_msg: >-
+          Installer directory not found. Set aap_password_rotate_installer_dir
+          to the path of the AAP containerised installer.
+
+    - name: Auto-detect inventory path
+      ansible.builtin.set_fact:
+        aap_password_rotate_installer_inventory: "{{ aap_password_rotate_installer_dir }}/inventory"
+      when: aap_password_rotate_installer_inventory == ""
+
+    - name: Verify inventory exists
+      ansible.builtin.stat:
+        path: "{{ aap_password_rotate_installer_inventory }}"
+      register: __pw_inv_stat
+
+    - name: Fail if inventory not found
+      ansible.builtin.assert:
+        that: __pw_inv_stat.stat.exists
+        fail_msg: "Inventory not found at {{ aap_password_rotate_installer_inventory }}"
+
+# ── Verify PostgreSQL is accessible ─────────────────────────────────
+# Only check the PG container when doing manual (non-installer) rotation
+# with an internal DB. When using the installer or external DB, PG is
+# validated by the installer itself or handled by the user/hook.
+- name: Verify PostgreSQL is running (podman container)
+  ansible.builtin.command:
+    cmd: "podman exec {{ aap_password_rotate_pg_container }} pg_isready"
+  register: __pw_pg_ready
+  changed_when: false
+  failed_when: __pw_pg_ready.rc != 0
+  when:
+    - aap_password_rotate_deployment_type == 'podman'
+    - "'db' in aap_password_rotate_scope"
+    - not aap_password_rotate_external_db
+    - not (aap_password_rotate_podman_use_installer | bool)
+
+- name: Preflight complete
+  ansible.builtin.debug:
+    msg: >-
+      Preflight OK.
+      Type: {{ aap_password_rotate_deployment_type }}.
+      Scope: {{ aap_password_rotate_scope | join(', ') }}.
+      Components: {{ aap_password_rotate_components | join(', ') }}.
+...

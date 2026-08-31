@@ -1,0 +1,24 @@
+---
+# ALTER ROLE for the postgres superuser on operator deployments (internal DB).
+
+- name: ALTER ROLE postgres via PG pod
+  ansible.builtin.command:
+    cmd: >-
+      {{ aap_password_rotate_kubectl_binary }} -n {{ aap_password_rotate_namespace }}
+      exec {{ __pw_pg_exec_pod }} --
+      psql -U postgres -c
+      "ALTER ROLE postgres WITH PASSWORD '{{ __pw_postgres_admin_password }}';"
+  no_log: true
+  changed_when: true
+
+- name: Verify new postgres password
+  ansible.builtin.command:
+    cmd: >-
+      {{ aap_password_rotate_kubectl_binary }} -n {{ aap_password_rotate_namespace }}
+      exec {{ __pw_pg_exec_pod }} --
+      psql -h localhost -U postgres -c "SELECT 1;"
+  environment:
+    PGPASSWORD: "{{ __pw_postgres_admin_password }}"
+  no_log: true
+  changed_when: false
+...

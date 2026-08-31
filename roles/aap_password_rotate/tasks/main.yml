@@ -1,0 +1,97 @@
+---
+# AAP Password Rotation Orchestrator
+#
+# Prerequisites:
+#   - Database backup completed BEFORE running this role
+#   - For podman: SSH access to the AAP host with podman permissions
+#     and access to the containerised installer directory/inventory
+#   - For operator: kubectl/oc access to the Kubernetes cluster with
+#     permissions to read/write Secrets, exec into pods, and rollout
+#     restart Deployments
+
+- name: Preflight checks
+  ansible.builtin.include_tasks: preflight.yml
+
+- name: Generate new passwords
+  ansible.builtin.include_tasks: generate_passwords.yml
+
+- name: Back up current passwords
+  ansible.builtin.include_tasks: backup_passwords.yml
+  when: not aap_password_rotate_dry_run
+
+# ── Database password rotation ────────────────────────────────────────
+- name: Rotate database passwords (podman via installer)
+  ansible.builtin.include_tasks: podman/rotate_db.yml
+  when:
+    - "'db' in aap_password_rotate_scope"
+    - aap_password_rotate_deployment_type == 'podman'
+    - aap_password_rotate_podman_use_installer | bool
+    - not aap_password_rotate_external_db
+    - not aap_password_rotate_dry_run
+
+- name: Rotate database passwords (podman manual / external DB)
+  ansible.builtin.include_tasks: podman/rotate_db_manual.yml
+  when:
+    - "'db' in aap_password_rotate_scope"
+    - aap_password_rotate_deployment_type == 'podman'
+    - (not (aap_password_rotate_podman_use_installer | bool)) or aap_password_rotate_external_db
+    - not aap_password_rotate_dry_run
+
+- name: Rotate database passwords (operator)
+  ansible.builtin.include_tasks: operator/rotate_db.yml
+  when:
+    - "'db' in aap_password_rotate_scope"
+    - aap_password_rotate_deployment_type == 'operator'
+    - not aap_password_rotate_dry_run
+
+# ── Admin password rotation ──────────────────────────────────────────
+- name: Rotate admin passwords (podman)
+  ansible.builtin.include_tasks: podman/rotate_admin.yml
+  when:
+    - "'admin' in aap_password_rotate_scope"
+    - aap_password_rotate_deployment_type == 'podman'
+    - not aap_password_rotate_dry_run
+
+- name: Rotate admin passwords (operator)
+  ansible.builtin.include_tasks: operator/rotate_admin.yml
+  when:
+    - "'admin' in aap_password_rotate_scope"
+    - aap_password_rotate_deployment_type == 'operator'
+    - not aap_password_rotate_dry_run
+
+# ── Verify and report ────────────────────────────────────────────────
+- name: Verify platform health
+  ansible.builtin.include_tasks: verify.yml
+  when: not aap_password_rotate_dry_run
+
+- name: Display dry run summary
+  ansible.builtin.debug:
+    msg: |
+      ╔══════════════════════════════════════════════════════════════════╗
+      ║  DRY RUN: Password Rotation Plan                               ║
+      ╠══════════════════════════════════════════════════════════════════╣
+      ║  Deployment type: {{ aap_password_rotate_deployment_type }}
+      ║  Scope: {{ aap_password_rotate_scope | join(', ') }}
+      ║  Components: {{ aap_password_rotate_components | join(', ') }}
+      ║  Include postgres admin: {{ aap_password_rotate_include_postgres_admin }}
+      ║  External DB: {{ aap_password_rotate_external_db }}
+      {% if aap_password_rotate_deployment_type == 'podman' %}
+      ║  Use installer: {{ aap_password_rotate_podman_use_installer }}
+      ║  Installer dir: {{ aap_password_rotate_installer_dir | default('not set') }}
+      ║  Inventory: {{ aap_password_rotate_installer_inventory | default('not set') }}
+      {% endif %}
+      {% if aap_password_rotate_deployment_type == 'operator' %}
+      ║  Namespace: {{ aap_password_rotate_namespace }}
+      ║  CR name: {{ aap_password_rotate_cr_name }}
+      {% endif %}
+      ╚══════════════════════════════════════════════════════════════════╝
+  when: aap_password_rotate_dry_run
+
+- name: Rotation complete
+  ansible.builtin.debug:
+    msg: >-
+      Password rotation {{ 'DRY RUN ' if aap_password_rotate_dry_run else '' }}complete.
+      Scope: {{ aap_password_rotate_scope | join(', ') }}.
+      Components: {{ aap_password_rotate_components | join(', ') }}.
+      Backup saved to: {{ aap_password_rotate_backup_dir }}/aap_passwords.bak
+...

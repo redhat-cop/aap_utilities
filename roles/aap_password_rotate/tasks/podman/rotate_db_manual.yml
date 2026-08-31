@@ -1,0 +1,63 @@
+---
+# Manual podman DB password rotation (without re-running the installer).
+# For each component: ALTER ROLE, update podman secret, update config
+# file inside containers, restart containers.
+#
+# Use this path when re-running the installer is not desirable
+# (e.g., external DB where the installer cannot reach PostgreSQL).
+
+# ── Build DB user map (podman uses hardcoded names) ───────────────────
+- name: Build DB user map from config
+  ansible.builtin.set_fact:
+    __pw_db_users: >-
+      {{ __pw_db_users | default({}) | combine({
+           item: __aap_password_rotate_db_config[item].db_user_podman
+         }) }}
+  loop: "{{ aap_password_rotate_components }}"
+
+# ── Internal DB: ALTER ROLE automatically ─────────────────────────────
+- name: ALTER ROLE for component DB users (internal DB)
+  ansible.builtin.include_tasks: podman/alter_role.yml
+  loop: "{{ aap_password_rotate_components }}"
+  loop_control:
+    loop_var: __pw_component
+  when: not aap_password_rotate_external_db
+
+- name: ALTER postgres superuser (internal DB)
+  ansible.builtin.include_tasks: podman/alter_role_postgres.yml
+  when:
+    - not aap_password_rotate_external_db
+    - aap_password_rotate_include_postgres_admin | bool
+
+# ── External DB: pause for manual ALTER ROLE ──────────────────────────
+- name: External DB manual ALTER ROLE
+  ansible.builtin.include_tasks: external_db_pause.yml
+  when: aap_password_rotate_external_db
+
+# ── Update podman secrets and config files ────────────────────────────
+- name: Update podman secrets and restart
+  ansible.builtin.include_tasks: podman/update_secret_and_restart.yml
+  loop: "{{ aap_password_rotate_components }}"
+  loop_control:
+    loop_var: __pw_component
+
+# ── Update inventory file ─────────────────────────────────────────────
+- name: Update component DB passwords in inventory
+  ansible.builtin.lineinfile:
+    path: "{{ aap_password_rotate_installer_inventory }}"
+    regexp: "^{{ __aap_password_rotate_db_config[item].inventory_var }}="
+    line: "{{ __aap_password_rotate_db_config[item].inventory_var }}={{ __pw_db_passwords[item] }}"
+  loop: "{{ aap_password_rotate_components }}"
+  no_log: true
+  when: aap_password_rotate_installer_inventory | length > 0
+
+- name: Update postgresql_admin_password in inventory
+  ansible.builtin.lineinfile:
+    path: "{{ aap_password_rotate_installer_inventory }}"
+    regexp: "^postgresql_admin_password="
+    line: "postgresql_admin_password={{ __pw_postgres_admin_password }}"
+  when:
+    - aap_password_rotate_include_postgres_admin | bool
+    - aap_password_rotate_installer_inventory | length > 0
+  no_log: true
+...

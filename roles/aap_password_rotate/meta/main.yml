@@ -1,0 +1,23 @@
+---
+galaxy_info:
+  author: Alexey Masolov
+  description: Rotate PostgreSQL database and admin user passwords across AAP 2.7 components
+  company: Red Hat
+
+  license: GPL-3.0-or-later
+
+  min_ansible_version: "2.15"
+
+  platforms:
+    - name: EL
+      versions:
+        - "9"
+
+  galaxy_tags:
+    - aap
+    - security
+    - password
+    - rotation
+
+dependencies: []
+...

@@ -1,0 +1,93 @@
+---
+# Operator DB password rotation.
+#
+# For each component:
+#   1. Read current PG config from the K8s postgres-configuration secret
+#      (including the actual username, which varies by deployment)
+#   2. ALTER ROLE in PostgreSQL:
+#      - Internal DB: exec into the PG pod automatically
+#      - External DB: pause and let the user run ALTER ROLE manually
+#   3. Patch the K8s postgres-configuration secret with the new password
+#   4. Rollout restart all deployments for that component
+
+# ── Read current PG connection details ──────────────────────────────
+- name: Read PostgreSQL configuration secrets
+  kubernetes.core.k8s_info:
+    api_version: v1
+    kind: Secret
+    name: "{{ __aap_password_rotate_db_config[item].k8s_secret }}"
+    namespace: "{{ aap_password_rotate_namespace }}"
+  loop: "{{ aap_password_rotate_components }}"
+  register: __pw_pg_secrets
+  no_log: true
+
+- name: Build DB user map from secrets
+  ansible.builtin.set_fact:
+    __pw_db_users: >-
+      {{ __pw_db_users | default({}) | combine({
+           item.item: (item.resources[0].data[__aap_password_rotate_db_config[item.item].k8s_username_field] | b64decode)
+         }) }}
+  loop: "{{ __pw_pg_secrets.results }}"
+  loop_control:
+    label: "{{ item.item }}"
+  no_log: true
+
+- name: Display detected DB users
+  ansible.builtin.debug:
+    msg: "DB users: {{ __pw_db_users }}"
+
+# ── Internal DB: ALTER ROLE automatically ────────────────────────────
+- name: Find postgres pod (internal DB)
+  ansible.builtin.command:
+    cmd: >-
+      {{ aap_password_rotate_kubectl_binary }} -n {{ aap_password_rotate_namespace }}
+      get pods -l app.kubernetes.io/component=database
+      --field-selector=status.phase=Running
+      -o jsonpath={.items[0].metadata.name}
+  register: __pw_pg_pod
+  changed_when: false
+  failed_when: false
+  when: not aap_password_rotate_external_db
+
+- name: Set PG exec target
+  ansible.builtin.set_fact:
+    __pw_pg_exec_pod: "{{ __pw_pg_pod.stdout | default('') }}"
+  when: not aap_password_rotate_external_db
+
+- name: ALTER ROLE for component DB users (internal DB)
+  ansible.builtin.include_tasks: operator/alter_role.yml
+  loop: "{{ aap_password_rotate_components }}"
+  loop_control:
+    loop_var: __pw_component
+  when: not aap_password_rotate_external_db
+
+- name: ALTER postgres superuser (internal DB)
+  ansible.builtin.include_tasks: operator/alter_role_postgres.yml
+  when:
+    - not aap_password_rotate_external_db
+    - aap_password_rotate_include_postgres_admin | bool
+
+# ── External DB: pause for manual ALTER ROLE ─────────────────────────
+- name: External DB manual ALTER ROLE
+  ansible.builtin.include_tasks: external_db_pause.yml
+  when: aap_password_rotate_external_db
+
+# ── Patch K8s secrets ───────────────────────────────────────────────
+- name: Patch postgres-configuration secrets
+  ansible.builtin.command:
+    cmd: >-
+      {{ aap_password_rotate_kubectl_binary }} -n {{ aap_password_rotate_namespace }}
+      patch secret {{ __aap_password_rotate_db_config[item].k8s_secret }}
+      --type merge
+      -p '{"data":{"{{ __aap_password_rotate_db_config[item].k8s_secret_field }}":"{{ __pw_db_passwords[item] | b64encode }}"}}'
+  loop: "{{ aap_password_rotate_components }}"
+  no_log: true
+  changed_when: true
+
+# ── Rollout restart deployments ─────────────────────────────────────
+- name: Rollout restart component deployments
+  ansible.builtin.include_tasks: operator/rollout_restart.yml
+  loop: "{{ aap_password_rotate_components }}"
+  loop_control:
+    loop_var: __pw_component
+...

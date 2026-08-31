@@ -1,0 +1,21 @@
+---
+# Rotate admin user passwords on podman deployments.
+# Each component has its own management command for changing the admin password.
+# Gateway is the primary auth source in AAP 2.5+; component admin passwords
+# are used for internal service communication.
+
+- name: Rotate admin passwords
+  ansible.builtin.include_tasks: podman/change_admin_password.yml
+  loop: "{{ aap_password_rotate_components }}"
+  loop_control:
+    loop_var: __pw_component
+
+- name: Update admin passwords in inventory
+  ansible.builtin.lineinfile:
+    path: "{{ aap_password_rotate_installer_inventory }}"
+    regexp: "^{{ __aap_password_rotate_admin_config[item].inventory_var }}="
+    line: "{{ __aap_password_rotate_admin_config[item].inventory_var }}={{ __pw_admin_passwords[item] }}"
+  loop: "{{ aap_password_rotate_components }}"
+  no_log: true
+  when: aap_password_rotate_installer_inventory | length > 0
+...

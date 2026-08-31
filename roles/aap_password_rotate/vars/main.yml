@@ -1,0 +1,171 @@
+---
+# Per-component configuration map for password rotation.
+# Maps component names to their DB users, config paths, secrets, and
+# management commands for both podman and operator deployments.
+
+__aap_password_rotate_db_config:
+  controller:
+    db_user_podman: "awx"
+    db_name_podman: "awx"
+    inventory_var: "controller_pg_password"
+    podman_container: "{{ aap_password_rotate_controller_container }}"
+    config_file: "/etc/tower/conf.d/postgres.py"
+    config_format: "python"
+    k8s_secret: "{{ aap_password_rotate_cr_name }}-controller-postgres-configuration"
+    k8s_secret_field: "password"
+    k8s_username_field: "username"
+    k8s_database_field: "database"
+    k8s_deployment_label: "app.kubernetes.io/component=automationcontroller"
+
+  gateway:
+    db_user_podman: "gateway"
+    db_name_podman: "gateway"
+    inventory_var: "gateway_pg_password"
+    podman_container: "{{ aap_password_rotate_gateway_container }}"
+    config_file: "/etc/ansible-automation-platform/gateway/settings.py"
+    config_format: "python"
+    k8s_secret: "{{ aap_password_rotate_cr_name }}-gateway-postgres-configuration"
+    k8s_secret_field: "password"
+    k8s_username_field: "username"
+    k8s_database_field: "database"
+    k8s_deployment_label: "app.kubernetes.io/component=aap-gateway"
+
+  eda:
+    db_user_podman: "eda"
+    db_name_podman: "eda"
+    inventory_var: "eda_pg_password"
+    podman_container: "{{ aap_password_rotate_eda_container }}"
+    config_file: "/etc/ansible-automation-platform/eda/environment"
+    config_format: "env"
+    k8s_secret: "{{ aap_password_rotate_cr_name }}-eda-postgres-configuration"
+    k8s_secret_field: "password"
+    k8s_username_field: "username"
+    k8s_database_field: "database"
+    k8s_deployment_label: "app.kubernetes.io/component=eda-api"
+
+  hub:
+    db_user_podman: "pulp"
+    db_name_podman: "pulp"
+    inventory_var: "hub_pg_password"
+    podman_container: "{{ aap_password_rotate_hub_container }}"
+    config_file: "/etc/pulp/settings.py"
+    config_format: "python"
+    k8s_secret: "{{ aap_password_rotate_cr_name }}-hub-postgres-configuration"
+    k8s_secret_field: "password"
+    k8s_username_field: "username"
+    k8s_database_field: "database"
+    k8s_deployment_label: "app.kubernetes.io/component=api,app.kubernetes.io/part-of=automationhub"
+
+# Admin password management commands per component.
+__aap_password_rotate_admin_config:
+  gateway:
+    manage_cmd: "aap-gateway-manage"
+    change_cmd: "changepassword"
+    change_args: "admin"
+    podman_container: "{{ aap_password_rotate_gateway_container }}"
+    k8s_secret: "{{ aap_password_rotate_cr_name }}-admin-password"
+    k8s_secret_field: "password"
+    k8s_exec_deployment: "{{ aap_password_rotate_cr_name }}-gateway"
+    k8s_exec_container: "api"
+    inventory_var: "gateway_admin_password"
+    password_env_var: "GATEWAY_ADMIN_PASSWORD"
+
+  controller:
+    manage_cmd: "awx-manage"
+    change_cmd: "changepassword"
+    change_args: "admin"
+    podman_container: "{{ aap_password_rotate_controller_container }}"
+    k8s_secret: "{{ aap_password_rotate_cr_name }}-controller-admin-password"
+    k8s_secret_field: "password"
+    k8s_exec_deployment: "{{ aap_password_rotate_cr_name }}-controller-task"
+    k8s_exec_container: "{{ aap_password_rotate_cr_name }}-controller-task"
+    inventory_var: "controller_admin_password"
+    password_env_var: "DJANGO_SUPERUSER_PASSWORD"
+
+  hub:
+    manage_cmd: "pulpcore-manager"
+    change_cmd: "reset-admin-password"
+    change_args: ""
+    podman_container: "{{ aap_password_rotate_hub_container }}"
+    k8s_secret: "{{ aap_password_rotate_cr_name }}-hub-admin-password"
+    k8s_secret_field: "password"
+    k8s_exec_deployment: "{{ aap_password_rotate_cr_name }}-hub-api"
+    k8s_exec_container: "api"
+    inventory_var: "hub_admin_password"
+    password_env_var: "PULP_DEFAULT_ADMIN_PASSWORD"
+
+  eda:
+    manage_cmd: "aap-eda-manage"
+    change_cmd: "update_password"
+    change_args: "--username admin --password"
+    podman_container: "{{ aap_password_rotate_eda_container }}"
+    k8s_secret: "{{ aap_password_rotate_cr_name }}-eda-admin-password"
+    k8s_secret_field: "password"
+    k8s_exec_deployment: "{{ aap_password_rotate_cr_name }}-eda-api"
+    k8s_exec_container: "eda-api"
+    inventory_var: "eda_admin_password"
+    password_env_var: "EDA_ADMIN_PASSWORD"
+
+# PostgreSQL container name (podman) or pod label (operator)
+__aap_password_rotate_pg_container: "{{ aap_password_rotate_pg_container }}"
+
+# All podman containers per component that need restarting after DB password changes
+# (only used when aap_password_rotate_podman_use_installer is false)
+__aap_password_rotate_podman_containers:
+  controller:
+    - "automation-controller-task"
+    - "automation-controller-web"
+  gateway:
+    - "automation-gateway"
+  eda:
+    - "automation-eda-api"
+    - "automation-eda-daphne"
+    - "automation-eda-web"
+    - "automation-eda-worker-1"
+    - "automation-eda-worker-2"
+    - "automation-eda-activation-worker-1"
+    - "automation-eda-activation-worker-2"
+  hub:
+    - "automation-hub-api"
+    - "automation-hub-content"
+    - "automation-hub-web"
+    - "automation-hub-worker-1"
+    - "automation-hub-worker-2"
+
+# Kubernetes deployments per component that need rollout restart
+__aap_password_rotate_k8s_deployments:
+  controller:
+    - "{{ aap_password_rotate_cr_name }}-controller-task"
+    - "{{ aap_password_rotate_cr_name }}-controller-web"
+  gateway:
+    - "{{ aap_password_rotate_cr_name }}-gateway"
+  eda:
+    - "{{ aap_password_rotate_cr_name }}-eda-api"
+    - "{{ aap_password_rotate_cr_name }}-eda-activation-worker"
+    - "{{ aap_password_rotate_cr_name }}-eda-default-worker"
+    - "{{ aap_password_rotate_cr_name }}-eda-event-stream"
+  hub:
+    - "{{ aap_password_rotate_cr_name }}-hub-api"
+    - "{{ aap_password_rotate_cr_name }}-hub-content"
+    - "{{ aap_password_rotate_cr_name }}-hub-worker"
+    - "{{ aap_password_rotate_cr_name }}-hub-web"
+
+# Kubernetes exec targets per component
+__aap_password_rotate_k8s_exec:
+  controller:
+    deployment: "{{ aap_password_rotate_cr_name }}-controller-task"
+    label_component: "automationcontroller"
+    container: "{{ aap_password_rotate_cr_name }}-controller-task"
+  gateway:
+    deployment: "{{ aap_password_rotate_cr_name }}-gateway"
+    label_component: "aap-gateway"
+    container: "api"
+  eda:
+    deployment: "{{ aap_password_rotate_cr_name }}-eda-api"
+    label_component: "eda-api"
+    container: "eda-api"
+  hub:
+    deployment: "{{ aap_password_rotate_cr_name }}-hub-api"
+    label_component: "api,app.kubernetes.io/part-of=automationhub"
+    container: "api"
+...

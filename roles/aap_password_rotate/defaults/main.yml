@@ -1,0 +1,98 @@
+---
+# Deployment type: "podman" or "operator" (auto-detected if omitted)
+aap_password_rotate_deployment_type: ""
+
+# What to rotate: "db", "admin", or both
+aap_password_rotate_scope:
+  - db
+  - admin
+
+# Components to rotate (order: Gateway last for session continuity)
+aap_password_rotate_components:
+  - controller
+  - hub
+  - eda
+  - gateway
+
+# Dry run: report what would change without writing
+aap_password_rotate_dry_run: false
+
+# Backup directory for current passwords (on the control node)
+aap_password_rotate_backup_dir: "{{ playbook_dir }}/password_backups/{{ ansible_date_time.date | default(lookup('pipe', 'date +%Y-%m-%d')) }}"
+
+# Custom passwords (empty = auto-generate a 24-char random password)
+aap_password_rotate_controller_pg_password: ""
+aap_password_rotate_gateway_pg_password: ""
+aap_password_rotate_eda_pg_password: ""
+aap_password_rotate_hub_pg_password: ""
+aap_password_rotate_postgres_admin_password: ""
+
+# Whether to rotate the postgresql_admin_password (postgres superuser)
+aap_password_rotate_include_postgres_admin: false
+
+# Admin user passwords (empty = auto-generate)
+aap_password_rotate_gateway_admin_password: ""
+aap_password_rotate_controller_admin_password: ""
+aap_password_rotate_hub_admin_password: ""
+aap_password_rotate_eda_admin_password: ""
+
+# Password generation settings
+aap_password_rotate_password_length: 24
+aap_password_rotate_password_chars: "ascii_letters,digits"
+
+# ── Podman-specific ────────────────────────────────────────────────────
+# Path to the containerised installer inventory file
+aap_password_rotate_installer_inventory: ""
+
+# Path to the containerised installer directory (contains ansible.containerized_installer)
+aap_password_rotate_installer_dir: ""
+
+# Whether to re-run the installer for DB password rotation (recommended).
+# If false, the role does manual ALTER ROLE + podman secret update + restart.
+aap_password_rotate_podman_use_installer: true
+
+# Container names (defaults match AAP 2.7 containerised installer)
+aap_password_rotate_controller_container: "automation-controller-task"
+aap_password_rotate_gateway_container: "automation-gateway"
+aap_password_rotate_eda_container: "automation-eda-api"
+aap_password_rotate_hub_container: "automation-hub-api"
+aap_password_rotate_pg_container: "postgresql"
+
+# Podman systemd service scope
+aap_password_rotate_systemd_scope: "user"
+
+# ── Operator-specific ──────────────────────────────────────────────────
+aap_password_rotate_namespace: "aap"
+aap_password_rotate_cr_name: "aap"
+aap_password_rotate_rollout_timeout: 300
+
+# Path to the kubectl-compatible CLI binary (auto-detected if empty)
+aap_password_rotate_kubectl_binary: ""
+
+# ── External database ─────────────────────────────────────────────────
+# Set to true when the database is external (not managed by the installer/operator).
+# When true, the role generates ALTER ROLE SQL, writes it to a helper file,
+# and pauses for the user to run the SQL on their external database manually.
+# After the user confirms, the role proceeds to update application secrets
+# and restart services.
+aap_password_rotate_external_db: false
+
+# Skip the interactive pause (for non-interactive/CI usage).
+# When true (and external_db is true), the role assumes ALTER ROLE has already
+# been applied and proceeds directly to patching secrets and restarting.
+aap_password_rotate_external_db_no_pause: false
+
+# Path to a custom tasks file for external DB password changes.
+# When set (and external_db is true), the role includes this file
+# instead of pausing. The tasks receive password variables and are
+# expected to apply ALTER ROLE or equivalent on the external DB.
+# If empty, the role falls back to the pause-and-show-SQL flow.
+#
+# Available variables inside the hook:
+#   aap_password_rotate_components  - list of components being rotated
+#   __pw_db_users                   - dict: component -> DB username
+#   __pw_db_passwords               - dict: component -> new password
+#   __pw_postgres_admin_password    - new postgres superuser password
+#                                     (only when include_postgres_admin is true)
+aap_password_rotate_external_db_tasks: ""
+...

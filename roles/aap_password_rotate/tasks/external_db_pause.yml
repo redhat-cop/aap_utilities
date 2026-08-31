@@ -1,0 +1,70 @@
+---
+# External DB password change handler.
+# Included by operator/rotate_db.yml and podman/rotate_db_manual.yml
+# when aap_password_rotate_external_db is true.
+#
+# Three modes (checked in order):
+#   1. Hook tasks file provided -> include it (user handles ALTER ROLE)
+#   2. no_pause is true         -> skip (user already ran ALTER ROLE)
+#   3. Default                  -> display SQL, write helper file, pause
+
+# ── Mode 1: User-provided hook tasks ─────────────────────────────────
+- name: Run external DB hook tasks
+  ansible.builtin.include_tasks: "{{ aap_password_rotate_external_db_tasks }}"
+  when: aap_password_rotate_external_db_tasks | length > 0
+
+# ── Mode 2 & 3: Generate SQL helper (always useful as a reference) ────
+- name: Write ALTER ROLE helper script
+  ansible.builtin.copy:
+    content: |
+      -- ALTER ROLE statements for AAP password rotation
+      -- Generated: {{ ansible_date_time.iso8601 | default(lookup('pipe', 'date -u +%Y-%m-%dT%H:%M:%SZ')) }}
+      -- Run these on your external PostgreSQL database.
+
+      {% for comp in aap_password_rotate_components %}
+      ALTER ROLE {{ __pw_db_users[comp] }} WITH PASSWORD '{{ __pw_db_passwords[comp] }}';
+      {% endfor %}
+      {% if aap_password_rotate_include_postgres_admin | bool %}
+
+      -- Postgres superuser
+      ALTER ROLE postgres WITH PASSWORD '{{ __pw_postgres_admin_password }}';
+      {% endif %}
+    dest: "{{ aap_password_rotate_backup_dir }}/alter_role.sql"
+    mode: "0600"
+  no_log: true
+  when: aap_password_rotate_external_db_tasks | length == 0
+
+# ── Mode 3: Interactive pause ─────────────────────────────────────────
+- name: Display instructions
+  ansible.builtin.debug:
+    msg: |
+      ════════════════════════════════════════════════════════════════════════
+        EXTERNAL DATABASE: Manual password change required
+
+        Run the SQL statements from this file on your external PostgreSQL:
+        {{ aap_password_rotate_backup_dir }}/alter_role.sql
+
+        Components to update:
+      {% for comp in aap_password_rotate_components %}
+          - {{ comp }} (user: {{ __pw_db_users[comp] }})
+      {% endfor %}
+      {% if aap_password_rotate_include_postgres_admin | bool %}
+          - postgres (superuser)
+      {% endif %}
+
+        After running the SQL, press ENTER to continue.
+        The role will then update application secrets and restart services.
+      ════════════════════════════════════════════════════════════════════════
+  when:
+    - aap_password_rotate_external_db_tasks | length == 0
+    - not (aap_password_rotate_external_db_no_pause | default(false) | bool)
+
+- name: Wait for user to complete ALTER ROLE on external database
+  ansible.builtin.pause:
+    prompt: >-
+      ALTER ROLE SQL saved to {{ aap_password_rotate_backup_dir }}/alter_role.sql.
+      Run it on your external database, then press ENTER to continue
+  when:
+    - aap_password_rotate_external_db_tasks | length == 0
+    - not (aap_password_rotate_external_db_no_pause | default(false) | bool)
+...

@@ -1,0 +1,15 @@
+---
+# ALTER ROLE for a single component's DB user on operator deployments (internal DB).
+# Uses the username read from the K8s postgres-configuration secret
+# (stored in __pw_db_users map), not a hardcoded value.
+
+- name: "ALTER ROLE via PG pod - {{ __pw_component }}"
+  ansible.builtin.command:
+    cmd: >-
+      {{ aap_password_rotate_kubectl_binary }} -n {{ aap_password_rotate_namespace }}
+      exec {{ __pw_pg_exec_pod }} --
+      psql -U postgres -c
+      "ALTER ROLE {{ __pw_db_users[__pw_component] }} WITH PASSWORD '{{ __pw_db_passwords[__pw_component] }}';"
+  no_log: true
+  changed_when: true
+...

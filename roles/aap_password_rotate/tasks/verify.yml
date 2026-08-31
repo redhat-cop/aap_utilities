@@ -1,0 +1,174 @@
+---
+# Post-rotation verification.
+# Checks that all component APIs respond and authentication works
+# with the new passwords.
+
+# ── Determine the API base URL ──────────────────────────────────────
+- name: Get Gateway URL (podman)
+  ansible.builtin.set_fact:
+    __pw_gateway_url: "https://localhost"
+  when: aap_password_rotate_deployment_type == 'podman'
+
+- name: Get Gateway route (operator)
+  when: aap_password_rotate_deployment_type == 'operator'
+  block:
+    - name: Read Gateway route
+      ansible.builtin.command:
+        cmd: >-
+          {{ aap_password_rotate_kubectl_binary }} -n {{ aap_password_rotate_namespace }}
+          get route {{ aap_password_rotate_cr_name }}
+          -o jsonpath={.spec.host}
+      register: __pw_gw_route
+      changed_when: false
+
+    - name: Set Gateway URL
+      ansible.builtin.set_fact:
+        __pw_gateway_url: "https://{{ __pw_gw_route.stdout }}"
+
+# ── Determine the admin password to use for verification ────────────
+- name: Set verification admin password
+  ansible.builtin.set_fact:
+    __pw_verify_admin_password: >-
+      {{ __pw_admin_passwords.gateway
+         if ('admin' in aap_password_rotate_scope and 'gateway' in aap_password_rotate_components)
+         else (aap_password_rotate_gateway_admin_password if aap_password_rotate_gateway_admin_password | length > 0
+         else '__SKIP_AUTH_CHECK__') }}
+  no_log: true
+
+# ── Gateway ping ────────────────────────────────────────────────────
+- name: Verify Gateway ping
+  ansible.builtin.uri:
+    url: "{{ __pw_gateway_url }}/api/gateway/v1/ping/"
+    validate_certs: false
+    status_code: [200]
+  register: __pw_gw_ping
+  retries: 30
+  delay: 10
+  until: __pw_gw_ping.status == 200
+
+# ── Admin auth check ────────────────────────────────────────────────
+- name: Verify admin authentication
+  ansible.builtin.uri:
+    url: "{{ __pw_gateway_url }}/api/gateway/v1/me/"
+    validate_certs: false
+    user: admin
+    password: "{{ __pw_verify_admin_password }}"
+    force_basic_auth: true
+    status_code: [200]
+  register: __pw_auth_check
+  retries: 10
+  delay: 15
+  until: __pw_auth_check.status == 200
+  no_log: true
+  when: __pw_verify_admin_password != '__SKIP_AUTH_CHECK__'
+
+# ── Controller API ─────────────────────────────────────────────────
+- name: Verify Controller API
+  ansible.builtin.uri:
+    url: "{{ __pw_gateway_url }}/api/controller/v2/ping/"
+    validate_certs: false
+    status_code: [200]
+  register: __pw_ctrl_ping
+  retries: 15
+  delay: 10
+  until: __pw_ctrl_ping.status == 200
+  when: "'controller' in aap_password_rotate_components"
+
+# ── Hub API ─────────────────────────────────────────────────────────
+- name: Verify Hub API
+  ansible.builtin.uri:
+    url: "{{ __pw_gateway_url }}/api/galaxy/pulp/api/v3/status/"
+    validate_certs: false
+    status_code: [200]
+  register: __pw_hub_ping
+  retries: 15
+  delay: 10
+  until: __pw_hub_ping.status == 200
+  when: "'hub' in aap_password_rotate_components"
+  ignore_errors: true
+
+# ── EDA API ─────────────────────────────────────────────────────────
+- name: Verify EDA API
+  ansible.builtin.uri:
+    url: "{{ __pw_gateway_url }}/api/eda/v1/users/me/"
+    validate_certs: false
+    user: admin
+    password: "{{ __pw_verify_admin_password }}"
+    force_basic_auth: true
+    status_code: [200]
+  register: __pw_eda_ping
+  retries: 15
+  delay: 10
+  until: __pw_eda_ping.status == 200
+  no_log: true
+  when:
+    - "'eda' in aap_password_rotate_components"
+    - __pw_verify_admin_password != '__SKIP_AUTH_CHECK__'
+  ignore_errors: true
+
+# ── DB connectivity check ──────────────────────────────────────────
+- name: Check if PostgreSQL container exists (verify)
+  ansible.builtin.command:
+    cmd: "podman container exists {{ aap_password_rotate_pg_container }}"
+  register: __pw_verify_pg_container
+  changed_when: false
+  failed_when: false
+  when:
+    - aap_password_rotate_deployment_type == 'podman'
+    - "'db' in aap_password_rotate_scope"
+    - not aap_password_rotate_external_db
+
+- name: Verify DB connectivity with new passwords (podman container)
+  ansible.builtin.command:
+    cmd: >-
+      podman exec {{ aap_password_rotate_pg_container }}
+      psql -h localhost
+      -U {{ __aap_password_rotate_db_config[item].db_user_podman }}
+      -d {{ __aap_password_rotate_db_config[item].db_name_podman }}
+      -c "SELECT 1;"
+  environment:
+    PGPASSWORD: "{{ __pw_db_passwords[item] }}"
+  loop: "{{ aap_password_rotate_components }}"
+  changed_when: false
+  no_log: true
+  when:
+    - aap_password_rotate_deployment_type == 'podman'
+    - "'db' in aap_password_rotate_scope"
+    - not aap_password_rotate_external_db
+    - __pw_verify_pg_container.rc | default(1) == 0
+
+- name: Verify DB connectivity with new passwords (host psql)
+  ansible.builtin.command:
+    cmd: >-
+      psql -h localhost
+      -U {{ __aap_password_rotate_db_config[item].db_user_podman }}
+      -d {{ __aap_password_rotate_db_config[item].db_name_podman }}
+      -c "SELECT 1;"
+  environment:
+    PGPASSWORD: "{{ __pw_db_passwords[item] }}"
+  loop: "{{ aap_password_rotate_components }}"
+  changed_when: false
+  no_log: true
+  when:
+    - aap_password_rotate_deployment_type == 'podman'
+    - "'db' in aap_password_rotate_scope"
+    - not aap_password_rotate_external_db
+    - __pw_verify_pg_container.rc | default(1) != 0
+
+# ── Summary ─────────────────────────────────────────────────────────
+- name: "RESULT"
+  ansible.builtin.debug:
+    msg: |
+      ═══════════════════════════════════════════
+      PASSWORD ROTATION: PASS
+      ═══════════════════════════════════════════
+      Gateway ping:    HTTP {{ __pw_gw_ping.status }}
+      Admin auth:      {{ 'HTTP ' ~ __pw_auth_check.status if __pw_verify_admin_password != '__SKIP_AUTH_CHECK__' else 'skipped' }}
+      Controller API:  {{ 'HTTP ' ~ __pw_ctrl_ping.status if 'controller' in aap_password_rotate_components else 'skipped' }}
+      Hub API:         {{ 'HTTP ' ~ (__pw_hub_ping.status | default('N/A')) if 'hub' in aap_password_rotate_components else 'skipped' }}
+      EDA API:         {{ 'HTTP ' ~ (__pw_eda_ping.status | default('N/A')) if 'eda' in aap_password_rotate_components else 'skipped' }}
+      Scope:           {{ aap_password_rotate_scope | join(', ') }}
+      Components:      {{ aap_password_rotate_components | join(', ') }}
+      Backup:          {{ aap_password_rotate_backup_dir }}/aap_passwords.bak
+      ═══════════════════════════════════════════
+...

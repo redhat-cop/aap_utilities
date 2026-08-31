@@ -1,0 +1,111 @@
+---
+# Podman DB password rotation via the containerised installer.
+#
+# Per KCS 7145426, the installer handles:
+#   1. ALTER ROLE for component users (awx, pulp, eda, gateway)
+#   2. Updating podman secrets
+#   3. Restarting containers
+#
+# The postgres superuser requires manual ALTER ROLE first because the
+# installer needs the current password to connect.
+
+- name: Read current inventory
+  ansible.builtin.slurp:
+    src: "{{ aap_password_rotate_installer_inventory }}"
+  register: __pw_inventory_raw
+  no_log: true
+
+- name: Backup current inventory
+  ansible.builtin.copy:
+    src: "{{ aap_password_rotate_installer_inventory }}"
+    dest: "{{ aap_password_rotate_backup_dir }}/inventory.backup"
+    mode: "0600"
+    remote_src: true
+
+# ── ALTER ROLE postgres (if included) ────────────────────────────────
+# Must happen BEFORE the installer re-run because the installer uses
+# the postgres password to connect and change component passwords.
+- name: ALTER postgres superuser password
+  when: aap_password_rotate_include_postgres_admin | bool
+  block:
+    - name: Check if PostgreSQL runs in a container
+      ansible.builtin.command:
+        cmd: "podman container exists {{ aap_password_rotate_pg_container }}"
+      register: __pw_pg_container_exists
+      changed_when: false
+      failed_when: false
+
+    - name: ALTER ROLE postgres via container
+      ansible.builtin.command:
+        cmd: >-
+          podman exec {{ aap_password_rotate_pg_container }}
+          psql -U postgres -c "ALTER ROLE postgres WITH PASSWORD '{{ __pw_postgres_admin_password }}';"
+      no_log: true
+      changed_when: true
+      when: __pw_pg_container_exists.rc == 0
+
+    - name: ALTER ROLE postgres via host psql (external/systemd PG)
+      ansible.builtin.command:
+        cmd: >-
+          sudo -u postgres psql -c "ALTER ROLE postgres WITH PASSWORD '{{ __pw_postgres_admin_password }}';"
+      no_log: true
+      changed_when: true
+      when: __pw_pg_container_exists.rc != 0
+
+    - name: Verify new postgres password works (container)
+      ansible.builtin.command:
+        cmd: >-
+          podman exec {{ aap_password_rotate_pg_container }}
+          psql -h localhost -U postgres -c "SELECT 1;"
+      environment:
+        PGPASSWORD: "{{ __pw_postgres_admin_password }}"
+      no_log: true
+      changed_when: false
+      when: __pw_pg_container_exists.rc == 0
+
+    - name: Verify new postgres password works (host)
+      ansible.builtin.command:
+        cmd: "psql -h localhost -U postgres -c 'SELECT 1;'"
+      environment:
+        PGPASSWORD: "{{ __pw_postgres_admin_password }}"
+      no_log: true
+      changed_when: false
+      when: __pw_pg_container_exists.rc != 0
+
+# ── Update inventory with new passwords ──────────────────────────────
+- name: Update component DB passwords in inventory
+  ansible.builtin.lineinfile:
+    path: "{{ aap_password_rotate_installer_inventory }}"
+    regexp: "^{{ __aap_password_rotate_db_config[item].inventory_var }}="
+    line: "{{ __aap_password_rotate_db_config[item].inventory_var }}={{ __pw_db_passwords[item] }}"
+  loop: "{{ aap_password_rotate_components }}"
+  no_log: true
+
+- name: Update postgresql_admin_password in inventory
+  ansible.builtin.lineinfile:
+    path: "{{ aap_password_rotate_installer_inventory }}"
+    regexp: "^postgresql_admin_password="
+    line: "postgresql_admin_password={{ __pw_postgres_admin_password }}"
+  when: aap_password_rotate_include_postgres_admin | bool
+  no_log: true
+
+# ── Re-run the installer ────────────────────────────────────────────
+- name: Re-run containerised installer
+  ansible.builtin.command:
+    cmd: "ansible-playbook -i {{ aap_password_rotate_installer_inventory }} ansible.containerized_installer.install"
+    chdir: "{{ aap_password_rotate_installer_dir }}"
+  register: __pw_installer_result
+  changed_when: true
+
+- name: Display installer result summary
+  ansible.builtin.debug:
+    msg: "{{ __pw_installer_result.stdout_lines[-5:] }}"
+
+- name: Verify installer succeeded
+  ansible.builtin.assert:
+    that: __pw_installer_result.rc == 0
+    fail_msg: >-
+      Installer re-run failed with rc={{ __pw_installer_result.rc }}.
+      Check the installer output for details.
+    success_msg: "Installer re-run completed successfully"
+...

@@ -1,0 +1,21 @@
+---
+# ALTER ROLE for the postgres superuser on podman deployments (internal DB).
+
+- name: ALTER ROLE postgres
+  ansible.builtin.command:
+    cmd: >-
+      podman exec {{ aap_password_rotate_pg_container }}
+      psql -U postgres -c "ALTER ROLE postgres WITH PASSWORD '{{ __pw_postgres_admin_password }}';"
+  no_log: true
+  changed_when: true
+
+- name: Verify new postgres password works
+  ansible.builtin.command:
+    cmd: >-
+      podman exec {{ aap_password_rotate_pg_container }}
+      psql -h localhost -U postgres -c "SELECT 1;"
+  environment:
+    PGPASSWORD: "{{ __pw_postgres_admin_password }}"
+  no_log: true
+  changed_when: false
+...
