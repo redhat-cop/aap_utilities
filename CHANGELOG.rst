@@ -4,6 +4,25 @@ infra.aap\_utilities Release Notes
 
 .. contents:: Topics
 
+v4.0.0
+======
+
+Major Changes
+-------------
+
+- aap_password_rotate - new role to rotate PostgreSQL database passwords and admin user passwords across all AAP 2.7 components (controller, gateway, hub, EDA). Supports Podman (via installer re-run) and Operator (via K8s secret patching) deployment types, with optional external database handling through a user-provided hook tasks file.
+- aap_secret_rotate - new role to rotate SECRET_KEY (database encryption keys) for all AAP 2.7 components (controller, gateway, hub, EDA). Supports Podman and Operator deployment types, with pre/post-flight encrypted field verification, Hub multi-key zero-downtime rotation, and ESO/ArgoCD-aware GitOps pausing.
+
+Minor Changes
+-------------
+
+- aap_ocp_install - add support for supplying path to CA certificate
+
+Bugfixes
+--------
+
+- aap_ocp_install - add support for AAP 2.7 gateway route consolidation where all component routes are served behind a single platform gateway route instead of per-component OpenShift routes (https://github.com/redhat-cop/aap_utilities/issues/379).
+
 v3.5.0
 ======
 

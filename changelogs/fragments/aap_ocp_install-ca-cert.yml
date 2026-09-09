@@ -1,4 +1,0 @@
----
-minor_changes:
-  - >-
-    aap_ocp_install - add support for supplying path to CA certificate
