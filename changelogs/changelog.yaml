@@ -243,3 +243,27 @@ releases:
     - add-gateway-token-generation.yml
     - fix-containerized-filename-prefix.yml
     release_date: '2026-07-01'
+  4.0.0:
+    changes:
+      bugfixes:
+      - aap_ocp_install - add support for AAP 2.7 gateway route consolidation where
+        all component routes are served behind a single platform gateway route instead
+        of per-component OpenShift routes (https://github.com/redhat-cop/aap_utilities/issues/379).
+      major_changes:
+      - aap_password_rotate - new role to rotate PostgreSQL database passwords and
+        admin user passwords across all AAP 2.7 components (controller, gateway, hub,
+        EDA). Supports Podman (via installer re-run) and Operator (via K8s secret
+        patching) deployment types, with optional external database handling through
+        a user-provided hook tasks file.
+      - aap_secret_rotate - new role to rotate SECRET_KEY (database encryption keys)
+        for all AAP 2.7 components (controller, gateway, hub, EDA). Supports Podman
+        and Operator deployment types, with pre/post-flight encrypted field verification,
+        Hub multi-key zero-downtime rotation, and ESO/ArgoCD-aware GitOps pausing.
+      minor_changes:
+      - aap_ocp_install - add support for supplying path to CA certificate
+    fragments:
+    - aap_ocp_install-ca-cert.yml
+    - aap_ocp_install-gateway-route.yml
+    - aap_password_rotate-new-role.yml
+    - aap_secret_rotate-new-role.yml
+    release_date: '2026-09-09'

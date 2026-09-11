@@ -1,5 +1,13 @@
 objects:
-  role: {}
+  role:
+    aap_password_rotate:
+      description: Rotate passwords across AAP 2.7 components
+      name: aap_password_rotate
+      version_added: null
+    aap_secret_rotate:
+      description: Rotate SECRET_KEY across AAP 2.7 components
+      name: aap_secret_rotate
+      version_added: null
 plugins:
   become: {}
   cache: {}
@@ -16,4 +24,4 @@ plugins:
   strategy: {}
   test: {}
   vars: {}
-version: 3.5.0
+version: 4.0.0

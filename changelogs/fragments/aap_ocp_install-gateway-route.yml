@@ -1,7 +1,0 @@
----
-bugfixes:
-  - >-
-    aap_ocp_install - add support for AAP 2.7 gateway route consolidation
-    where all component routes are served behind a single platform gateway
-    route instead of per-component OpenShift routes
-    (https://github.com/redhat-cop/aap_utilities/issues/379).
