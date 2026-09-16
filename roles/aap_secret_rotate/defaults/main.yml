@@ -43,9 +43,15 @@ aap_secret_rotate_kubectl_binary: ""
 # Secrets so that ESO does not overwrite the rotated values.
 aap_secret_rotate_eso_managed: ""
 
+# ESO controller namespace (auto-detected if empty; tries external-secrets
+# then openshift-external-secrets for Red Hat operator installations).
+aap_secret_rotate_eso_namespace: ""
+
 # Whether to resume ESO sync after rotation completes.
-# If false, ExternalSecrets stay paused until the operator updates
-# the external secret store (Vault, AWS SM, etc.) and resumes manually.
+# If false, the ESO controller stays scaled down until the operator
+# updates the external secret store (Vault, AWS SM, etc.) and scales
+# it back up manually. The external store MUST be updated before
+# ESO is resumed to prevent the old keys from being written back.
 aap_secret_rotate_eso_resume_after: false
 
 # ── ArgoCD / GitOps ──────────────────────────────────────────────────

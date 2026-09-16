@@ -1,29 +1,50 @@
 ---
-# Resumes ExternalSecret reconciliation by removing the pause annotation.
+# Resumes External Secrets Operator reconciliation by scaling the ESO
+# controller back to its original replica count.
 # Only called when aap_secret_rotate_eso_resume_after is true.
 
-- name: Resume ExternalSecret reconciliation
-  kubernetes.core.k8s:
-    state: patched
-    api_version: external-secrets.io/v1beta1
-    kind: ExternalSecret
-    name: "{{ item.metadata.name }}"
-    namespace: "{{ aap_secret_rotate_namespace }}"
-    definition:
-      metadata:
-        annotations:
-          reconcile.external-secrets.io/disabled: "false"
-  loop: "{{ __aap_secret_rotate_eso_to_pause | default([]) }}"
+- name: Scale up ESO controller deployments
+  ansible.builtin.command:
+    argv:
+      - "{{ aap_secret_rotate_kubectl_binary }}"
+      - -n
+      - "{{ __aap_secret_rotate_eso_ns | trim }}"
+      - scale
+      - "deploy/{{ item.key }}"
+      - "--replicas={{ item.value }}"
+  loop: "{{ (__aap_secret_rotate_eso_original_replicas | default({})) | dict2items }}"
   loop_control:
-    label: "{{ item.metadata.name }}"
+    label: "{{ item.key }}"
+  changed_when: true
   when:
     - not aap_secret_rotate_dry_run
-    - __aap_secret_rotate_eso_to_pause | default([]) | length > 0
+    - __aap_secret_rotate_eso_original_replicas | default({}) | length > 0
 
-- name: Display resumed ExternalSecrets
+- name: Wait for ESO controller pods to be ready
+  ansible.builtin.command:
+    argv:
+      - "{{ aap_secret_rotate_kubectl_binary }}"
+      - -n
+      - "{{ __aap_secret_rotate_eso_ns | trim }}"
+      - rollout
+      - status
+      - "deploy/{{ item.key }}"
+      - --timeout=120s
+  loop: "{{ (__aap_secret_rotate_eso_original_replicas | default({})) | dict2items }}"
+  loop_control:
+    label: "{{ item.key }}"
+  changed_when: false
+  when:
+    - not aap_secret_rotate_dry_run
+    - __aap_secret_rotate_eso_original_replicas | default({}) | length > 0
+
+- name: Display resumed ESO
   ansible.builtin.debug:
     msg: >-
-      Resumed ESO reconciliation for:
-      {{ __aap_secret_rotate_eso_to_pause | default([]) | map(attribute='metadata.name') | list | join(', ') }}
-  when: __aap_secret_rotate_eso_to_pause | default([]) | length > 0
+      Restored ESO controller ({{ __aap_secret_rotate_eso_ns | trim }}) to original replicas:
+      {{ __aap_secret_rotate_eso_original_replicas | default({}) }}.
+      Note: ESO will reconcile secrets from the external store on next refresh.
+      Ensure the external store has been updated with the new key values
+      BEFORE ESO reconciles, otherwise the rotated keys will be overwritten.
+  when: __aap_secret_rotate_eso_original_replicas | default({}) | length > 0
 ...
