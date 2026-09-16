@@ -3,9 +3,9 @@
 #
 # Key modes:
 #   Custom key provided (aap_secret_rotate_eda_key is set):
-#     Uses --use-custom-key with EDA_SECRET_KEY env var. The command
-#     reads the OLD key from settings (mounted file) and the NEW key
-#     from the env var.
+#     Uses --use-custom-key with the rotation env var. On operator,
+#     EDA_DB_ROTATION_KEY is used (avoids Dynaconf conflict). On
+#     podman, a Python wrapper sets EDA_SECRET_KEY after Dynaconf loads.
 #
 #     On podman, Dynaconf intercepts EDA_SECRET_KEY and overrides
 #     settings.SECRET_KEY, so we pass the new key via a scratch env
@@ -101,7 +101,7 @@
     _component: "eda"
     _component_config: "{{ __aap_secret_rotate_components.eda }}"
     _exec_env:
-      EDA_SECRET_KEY: "{{ __aap_secret_rotate_new_keys.eda }}"
+      EDA_DB_ROTATION_KEY: "{{ __aap_secret_rotate_new_keys.eda }}"
     _exec_cmd: >-
       aap-eda-manage rotate_db_encryption_key --use-custom-key
       {{ '--dry-run' if aap_secret_rotate_dry_run else '' }}
