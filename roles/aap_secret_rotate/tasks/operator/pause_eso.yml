@@ -22,12 +22,12 @@
          | selectattr('spec.target.name', 'defined')
          | list }}
 
-- name: Find ESO controller deployments
+- name: Find ESO controller deployments in external-secrets namespace
   ansible.builtin.command:
     argv:
       - "{{ aap_secret_rotate_kubectl_binary }}"
       - -n
-      - "{{ aap_secret_rotate_eso_namespace | default('external-secrets') }}"
+      - "{{ aap_secret_rotate_eso_namespace | default('external-secrets', true) }}"
       - get
       - deploy
       - -l
@@ -38,7 +38,24 @@
   changed_when: false
   failed_when: false
 
-- name: Try alternative ESO namespace for Red Hat operator
+- name: Try openshift-external-secrets namespace (Red Hat operator)
+  ansible.builtin.command:
+    argv:
+      - "{{ aap_secret_rotate_kubectl_binary }}"
+      - -n
+      - openshift-external-secrets
+      - get
+      - deploy
+      - -l
+      - app.kubernetes.io/instance=external-secrets
+      - -o
+      - jsonpath={range .items[*]}{.metadata.name}={.spec.replicas}{"\n"}{end}
+  register: __aap_secret_rotate_eso_deploy_check_rh
+  changed_when: false
+  failed_when: false
+  when: __aap_secret_rotate_eso_deploy_check.stdout | default('') | length == 0
+
+- name: Try openshift-external-secrets namespace without label filter
   ansible.builtin.command:
     argv:
       - "{{ aap_secret_rotate_kubectl_binary }}"
@@ -48,21 +65,25 @@
       - deploy
       - -o
       - jsonpath={range .items[*]}{.metadata.name}={.spec.replicas}{"\n"}{end}
-  register: __aap_secret_rotate_eso_deploy_check_rh
+  register: __aap_secret_rotate_eso_deploy_check_rh_nolabel
   changed_when: false
   failed_when: false
-  when: __aap_secret_rotate_eso_deploy_check.stdout | default('') | length == 0
+  when:
+    - __aap_secret_rotate_eso_deploy_check.stdout | default('') | length == 0
+    - __aap_secret_rotate_eso_deploy_check_rh.stdout | default('') | length == 0
 
 - name: Determine ESO namespace and deployments
   ansible.builtin.set_fact:
     __aap_secret_rotate_eso_ns: >-
-      {{ (aap_secret_rotate_eso_namespace | default('external-secrets'))
+      {{ (aap_secret_rotate_eso_namespace | default('external-secrets', true))
          if (__aap_secret_rotate_eso_deploy_check.stdout | default('') | length > 0)
          else 'openshift-external-secrets' }}
     __aap_secret_rotate_eso_deployments: >-
       {{ (__aap_secret_rotate_eso_deploy_check.stdout
           if (__aap_secret_rotate_eso_deploy_check.stdout | default('') | length > 0)
-          else __aap_secret_rotate_eso_deploy_check_rh.stdout | default(''))
+          else (__aap_secret_rotate_eso_deploy_check_rh.stdout | default('')
+                if (__aap_secret_rotate_eso_deploy_check_rh.stdout | default('') | length > 0)
+                else __aap_secret_rotate_eso_deploy_check_rh_nolabel.stdout | default('')))
          | trim }}
 
 - name: Save original ESO controller replica counts

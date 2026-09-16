@@ -1,0 +1,86 @@
+---
+# Scales down AAP component operator controllers to prevent them from
+# reverting secret changes during rotation.
+#
+# The AAP component operators (controller, hub, eda, gateway) watch their
+# respective K8s Secrets and reconcile them back to the original value
+# when changes are detected. This interferes with the rotation workflow
+# which patches secrets with new key values.
+
+- name: Identify component operator deployments
+  ansible.builtin.command:
+    argv:
+      - "{{ aap_secret_rotate_kubectl_binary }}"
+      - -n
+      - "{{ aap_secret_rotate_namespace }}"
+      - get
+      - deploy
+      - -o
+      - jsonpath={range .items[*]}{.metadata.name}={.spec.replicas}{"\n"}{end}
+  register: __aap_secret_rotate_all_deploys
+  changed_when: false
+
+- name: Build operator deployment list
+  ansible.builtin.set_fact:
+    __aap_secret_rotate_operator_deploys: >-
+      {{ __aap_secret_rotate_operator_deploys | default({}) | combine({
+        item.split('=')[0]: item.split('=')[1] | int
+      }) }}
+  loop: >-
+    {{ __aap_secret_rotate_all_deploys.stdout_lines | default([])
+       | select('search', 'operator.*manager')
+       | list }}
+  loop_control:
+    label: "{{ item }}"
+  when: "'=' in item"
+
+- name: Display operators to scale down
+  ansible.builtin.debug:
+    msg: >-
+      Will scale down {{ __aap_secret_rotate_operator_deploys | default({}) | length }}
+      operator deployment(s): {{ (__aap_secret_rotate_operator_deploys | default({})).keys() | list | join(', ') }}
+
+- name: Scale down operator deployments
+  ansible.builtin.command:
+    argv:
+      - "{{ aap_secret_rotate_kubectl_binary }}"
+      - -n
+      - "{{ aap_secret_rotate_namespace }}"
+      - scale
+      - "deploy/{{ item.key }}"
+      - "--replicas=0"
+  loop: "{{ (__aap_secret_rotate_operator_deploys | default({})) | dict2items }}"
+  loop_control:
+    label: "{{ item.key }}"
+  changed_when: true
+  when:
+    - not aap_secret_rotate_dry_run
+    - __aap_secret_rotate_operator_deploys | default({}) | length > 0
+
+- name: Wait for operator pods to terminate
+  ansible.builtin.command:
+    argv:
+      - "{{ aap_secret_rotate_kubectl_binary }}"
+      - -n
+      - "{{ aap_secret_rotate_namespace }}"
+      - rollout
+      - status
+      - "deploy/{{ item.key }}"
+      - --timeout=120s
+  loop: "{{ (__aap_secret_rotate_operator_deploys | default({})) | dict2items }}"
+  loop_control:
+    label: "{{ item.key }}"
+  changed_when: false
+  when:
+    - not aap_secret_rotate_dry_run
+    - __aap_secret_rotate_operator_deploys | default({}) | length > 0
+
+- name: Dry run - would scale down operators
+  ansible.builtin.debug:
+    msg: >-
+      [DRY RUN] Would scale down operator deployments:
+      {{ (__aap_secret_rotate_operator_deploys | default({})).keys() | list | join(', ') }}
+  when:
+    - aap_secret_rotate_dry_run
+    - __aap_secret_rotate_operator_deploys | default({}) | length > 0
+...
