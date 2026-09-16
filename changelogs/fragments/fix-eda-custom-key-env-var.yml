@@ -1,0 +1,7 @@
+bugfixes:
+  - aap_secret_rotate - Use ``EDA_DB_ROTATION_KEY`` instead of ``EDA_SECRET_KEY``
+    for EDA custom key rotation on operator deployments. The EDA
+    ``rotate_db_encryption_key`` command in AAP 2.7.4+ reads the new key from
+    ``EDA_DB_ROTATION_KEY`` to avoid a Dynaconf conflict where ``EDA_SECRET_KEY``
+    would be loaded as the current ``settings.SECRET_KEY``, preventing decryption
+    of existing data (https://github.com/redhat-cop/aap_utilities/pull/381).
