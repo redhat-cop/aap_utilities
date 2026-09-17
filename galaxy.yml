@@ -27,7 +27,6 @@ build_ignore:
     - .gitleaks.toml
     - .mlc_config.json
     - .yamllint.yml
-    - .ansible-lint
     - '*.tar.gz'
 license:
     - GPL-3.0-or-later
@@ -47,4 +46,5 @@ dependencies:
     "ansible.posix": ">=1.0.0"
     "containers.podman": ">=1.7.0"
     "kubernetes.core": ">=2.2.0"
+    "redhat.openshift": ">=4.0.2"
 ...

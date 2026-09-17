@@ -8,9 +8,14 @@ exclude_paths:
   - .github/
   - changelogs/
 use_default_rules: true
+offline: true
+
+mock_modules:
+  - redhat.openshift.openshift_auth
 # https://github.com/ansible/ansible-lint/issues/808
 #  with verbosity set to 1, its dumping 'unknown file type messages'
 # verbosity: 1
 skip_list:
   - var-naming[no-role-prefix]
+  - yaml[line-length]
 ...
