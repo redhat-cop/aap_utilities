@@ -116,22 +116,40 @@
     - name: Detect ESO-managed secrets
       when: aap_secret_rotate_eso_managed | string | length == 0
       block:
-        - name: Check for ExternalSecret resources targeting AAP secrets
+        - name: Check for ExternalSecret resources (v1)
+          kubernetes.core.k8s_info:
+            api_version: external-secrets.io/v1
+            kind: ExternalSecret
+            namespace: "{{ aap_secret_rotate_namespace }}"
+          register: __aap_secret_rotate_eso_check_v1
+          failed_when: false
+
+        - name: Check for ExternalSecret resources (v1beta1 fallback)
           kubernetes.core.k8s_info:
             api_version: external-secrets.io/v1beta1
             kind: ExternalSecret
             namespace: "{{ aap_secret_rotate_namespace }}"
-          register: __aap_secret_rotate_eso_check
+          register: __aap_secret_rotate_eso_check_v1beta1
           failed_when: false
+          when:
+            - __aap_secret_rotate_eso_check_v1.resources | default([]) | length == 0
+
+        - name: Select ESO API version
+          ansible.builtin.set_fact:
+            __aap_secret_rotate_eso_api_version: >-
+              {{ 'external-secrets.io/v1'
+                 if (__aap_secret_rotate_eso_check_v1.resources | default([]) | length > 0)
+                 else 'external-secrets.io/v1beta1' }}
 
         - name: Collect ESO-managed secret names
           ansible.builtin.set_fact:
             __aap_secret_rotate_eso_managed_secrets: >-
-              {{ __aap_secret_rotate_eso_check.resources | default([])
-                 | map(attribute='spec.target.name', default='')
+              {{ ((__aap_secret_rotate_eso_check_v1.resources | default([]))
+                  + (__aap_secret_rotate_eso_check_v1beta1.resources | default([])))
+                 | selectattr('spec.target.name', 'defined')
+                 | map(attribute='spec.target.name')
                  | select('string')
                  | list }}
-          when: __aap_secret_rotate_eso_check is not failed
 
         - name: Set ESO managed flag
           ansible.builtin.set_fact:

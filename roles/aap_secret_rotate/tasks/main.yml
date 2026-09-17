@@ -37,6 +37,14 @@
     - aap_secret_rotate_deployment_type == 'operator'
     - aap_secret_rotate_eso_managed | bool
 
+# Scale down AAP component operators to prevent them from reverting
+# secret changes during rotation. Operators reconcile their managed
+# secrets and would overwrite the rotated key values.
+- name: Scale down AAP component operators (operator only)
+  ansible.builtin.include_tasks: operator/pause_operators.yml
+  when:
+    - aap_secret_rotate_deployment_type == 'operator'
+
 # ── Rotate each component ───────────────────────────────────────────
 # Controller and Hub are independent, EDA next, Gateway last (sessions).
 # For operator deployments, rotation execs into running pods, updates
@@ -56,6 +64,13 @@
 - name: Rotate gateway
   ansible.builtin.include_tasks: rotate_gateway.yml
   when: "'gateway' in aap_secret_rotate_components"
+
+# Restore AAP component operators before resuming external controllers.
+- name: Scale up AAP component operators (operator only)
+  ansible.builtin.include_tasks: operator/resume_operators.yml
+  when:
+    - aap_secret_rotate_deployment_type == 'operator'
+    - not aap_secret_rotate_dry_run
 
 # ── Resume external controllers (optional) ──────────────────────────
 - name: Resume ESO reconciliation (operator + ESO)

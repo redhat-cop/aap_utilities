@@ -1,0 +1,46 @@
+---
+# Restores AAP component operator controllers to their original replica
+# counts after rotation is complete.
+
+- name: Scale up operator deployments
+  ansible.builtin.command:
+    argv:
+      - "{{ aap_secret_rotate_kubectl_binary }}"
+      - -n
+      - "{{ aap_secret_rotate_namespace }}"
+      - scale
+      - "deploy/{{ item.key }}"
+      - "--replicas={{ item.value }}"
+  loop: "{{ (__aap_secret_rotate_operator_deploys | default({})) | dict2items }}"
+  loop_control:
+    label: "{{ item.key }}"
+  changed_when: true
+  when:
+    - not aap_secret_rotate_dry_run
+    - __aap_secret_rotate_operator_deploys | default({}) | length > 0
+
+- name: Wait for operator pods to be ready
+  ansible.builtin.command:
+    argv:
+      - "{{ aap_secret_rotate_kubectl_binary }}"
+      - -n
+      - "{{ aap_secret_rotate_namespace }}"
+      - rollout
+      - status
+      - "deploy/{{ item.key }}"
+      - --timeout=120s
+  loop: "{{ (__aap_secret_rotate_operator_deploys | default({})) | dict2items }}"
+  loop_control:
+    label: "{{ item.key }}"
+  changed_when: false
+  when:
+    - not aap_secret_rotate_dry_run
+    - __aap_secret_rotate_operator_deploys | default({}) | length > 0
+
+- name: Display restored operators
+  ansible.builtin.debug:
+    msg: >-
+      Restored {{ __aap_secret_rotate_operator_deploys | default({}) | length }}
+      operator deployment(s) to original replicas.
+  when: __aap_secret_rotate_operator_deploys | default({}) | length > 0
+...
