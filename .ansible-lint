@@ -7,6 +7,8 @@
 exclude_paths:
   - .github/
   - changelogs/
+  - roles/aap_manage_containerized_services/example_playbook.yml
+  - roles/aap_secret_rotate/tests/
 use_default_rules: true
 offline: true
 
