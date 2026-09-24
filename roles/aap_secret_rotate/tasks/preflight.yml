@@ -116,22 +116,42 @@
     - name: Detect ESO-managed secrets
       when: aap_secret_rotate_eso_managed | string | length == 0
       block:
-        - name: Check for ExternalSecret resources targeting AAP secrets
+        - name: Check for ExternalSecret resources (v1)
+          kubernetes.core.k8s_info:
+            api_version: external-secrets.io/v1
+            kind: ExternalSecret
+            namespace: "{{ aap_secret_rotate_namespace }}"
+          register: __aap_secret_rotate_eso_check_v1
+          ignore_errors: true
+
+        - name: Check for ExternalSecret resources (v1beta1 fallback)
           kubernetes.core.k8s_info:
             api_version: external-secrets.io/v1beta1
             kind: ExternalSecret
             namespace: "{{ aap_secret_rotate_namespace }}"
-          register: __aap_secret_rotate_eso_check
-          failed_when: false
+          register: __aap_secret_rotate_eso_check_v1beta1
+          ignore_errors: true
+          when:
+            - __aap_secret_rotate_eso_check_v1 is failed
+              or (__aap_secret_rotate_eso_check_v1.resources | default([]) | length == 0)
+
+        - name: Select ESO API version
+          ansible.builtin.set_fact:
+            __aap_secret_rotate_eso_api_version: >-
+              {{ 'external-secrets.io/v1'
+                 if (__aap_secret_rotate_eso_check_v1.resources | default([]) | length > 0)
+                 else 'external-secrets.io/v1beta1' }}
 
         - name: Collect ESO-managed secret names
           ansible.builtin.set_fact:
             __aap_secret_rotate_eso_managed_secrets: >-
-              {{ __aap_secret_rotate_eso_check.resources | default([])
-                 | map(attribute='spec.target.name', default='')
+              {{ ((__aap_secret_rotate_eso_check_v1.resources | default([]))
+                  + (__aap_secret_rotate_eso_check_v1beta1.resources | default([])))
+                 | selectattr('spec.target', 'defined')
+                 | selectattr('spec.target.name', 'defined')
+                 | map(attribute='spec.target.name')
                  | select('string')
                  | list }}
-          when: __aap_secret_rotate_eso_check is not failed
 
         - name: Set ESO managed flag
           ansible.builtin.set_fact:
@@ -144,6 +164,28 @@
               External Secrets Operator detected. ESO-managed secrets in namespace:
               {{ __aap_secret_rotate_eso_managed_secrets | join(', ') }}
           when: aap_secret_rotate_eso_managed | bool
+
+    # Resolve ESO API version when eso_managed is forced true but
+    # auto-detection was skipped.
+    - name: Resolve ESO API version when forced
+      when:
+        - aap_secret_rotate_eso_managed | bool
+        - __aap_secret_rotate_eso_api_version is not defined
+      block:
+        - name: Probe for ExternalSecret v1 API
+          kubernetes.core.k8s_info:
+            api_version: external-secrets.io/v1
+            kind: ExternalSecret
+            namespace: "{{ aap_secret_rotate_namespace }}"
+          register: __aap_secret_rotate_eso_probe_v1
+          ignore_errors: true
+
+        - name: Set ESO API version from probe
+          ansible.builtin.set_fact:
+            __aap_secret_rotate_eso_api_version: >-
+              {{ 'external-secrets.io/v1'
+                 if (__aap_secret_rotate_eso_probe_v1 is not failed)
+                 else 'external-secrets.io/v1beta1' }}
 
     - name: Detect ArgoCD-managed Application
       when:
