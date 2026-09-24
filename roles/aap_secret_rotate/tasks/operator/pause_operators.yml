@@ -23,22 +23,30 @@
 - name: Build operator deployment list
   ansible.builtin.set_fact:
     __aap_secret_rotate_operator_deploys: >-
-      {{ __aap_secret_rotate_operator_deploys | default({}) | combine({
-        item.split('=')[0]: item.split('=')[1] | int
-      }) }}
-  loop: >-
-    {{ __aap_secret_rotate_all_deploys.stdout_lines | default([])
-       | select('search', 'operator.*manager')
-       | list }}
-  loop_control:
-    label: "{{ item }}"
-  when: "'=' in item"
+      {{ dict((__aap_secret_rotate_all_deploys.stdout_lines | default([])
+         | select('search', 'operator.*manager')
+         | select('match', '.*=.*')
+         | map('regex_replace', '^(.+)=(.+)$', '\1,\2')
+         | map('split', ',')
+         | map('list'))
+         | default({})) }}
+
+- name: Fail if no operator deployments were found
+  ansible.builtin.fail:
+    msg: >-
+      No AAP operator deployments matching 'operator.*manager' found in
+      namespace '{{ aap_secret_rotate_namespace }}'. Operator pause cannot
+      proceed. Check that the AAP operator is installed in this namespace
+      or set aap_secret_rotate_deployment_type to 'podman'.
+  when:
+    - __aap_secret_rotate_operator_deploys | default({}) | length == 0
+    - not aap_secret_rotate_dry_run
 
 - name: Display operators to scale down
   ansible.builtin.debug:
     msg: >-
-      Will scale down {{ __aap_secret_rotate_operator_deploys | default({}) | length }}
-      operator deployment(s): {{ (__aap_secret_rotate_operator_deploys | default({})).keys() | list | join(', ') }}
+      Will scale down {{ __aap_secret_rotate_operator_deploys | length }}
+      operator deployment(s): {{ __aap_secret_rotate_operator_deploys.keys() | list | join(', ') }}
 
 - name: Scale down operator deployments
   ansible.builtin.command:
@@ -49,15 +57,13 @@
       - scale
       - "deploy/{{ item.key }}"
       - "--replicas=0"
-  loop: "{{ (__aap_secret_rotate_operator_deploys | default({})) | dict2items }}"
+  loop: "{{ __aap_secret_rotate_operator_deploys | dict2items }}"
   loop_control:
     label: "{{ item.key }}"
-  changed_when: true
-  when:
-    - not aap_secret_rotate_dry_run
-    - __aap_secret_rotate_operator_deploys | default({}) | length > 0
+  changed_when: item.value | int > 0
+  when: not aap_secret_rotate_dry_run
 
-- name: Wait for operator pods to terminate
+- name: Wait for operator rollout to complete
   ansible.builtin.command:
     argv:
       - "{{ aap_secret_rotate_kubectl_binary }}"
@@ -66,21 +72,37 @@
       - rollout
       - status
       - "deploy/{{ item.key }}"
-      - --timeout=120s
-  loop: "{{ (__aap_secret_rotate_operator_deploys | default({})) | dict2items }}"
+      - "--timeout={{ aap_secret_rotate_rollout_timeout }}s"
+  loop: "{{ __aap_secret_rotate_operator_deploys | dict2items }}"
   loop_control:
     label: "{{ item.key }}"
   changed_when: false
-  when:
-    - not aap_secret_rotate_dry_run
-    - __aap_secret_rotate_operator_deploys | default({}) | length > 0
+  when: not aap_secret_rotate_dry_run
+
+- name: Verify operator deployments are at 0 replicas
+  ansible.builtin.command:
+    argv:
+      - "{{ aap_secret_rotate_kubectl_binary }}"
+      - -n
+      - "{{ aap_secret_rotate_namespace }}"
+      - get
+      - "deploy/{{ item.key }}"
+      - -o
+      - jsonpath={.spec.replicas}
+  register: __aap_secret_rotate_op_verify
+  loop: "{{ __aap_secret_rotate_operator_deploys | dict2items }}"
+  loop_control:
+    label: "{{ item.key }}"
+  changed_when: false
+  failed_when: __aap_secret_rotate_op_verify.stdout | default('1') | int != 0
+  when: not aap_secret_rotate_dry_run
 
 - name: Dry run - would scale down operators
   ansible.builtin.debug:
     msg: >-
       [DRY RUN] Would scale down operator deployments:
-      {{ (__aap_secret_rotate_operator_deploys | default({})).keys() | list | join(', ') }}
+      {{ __aap_secret_rotate_operator_deploys.keys() | list | join(', ') }}
   when:
     - aap_secret_rotate_dry_run
-    - __aap_secret_rotate_operator_deploys | default({}) | length > 0
+    - __aap_secret_rotate_operator_deploys | length > 0
 ...

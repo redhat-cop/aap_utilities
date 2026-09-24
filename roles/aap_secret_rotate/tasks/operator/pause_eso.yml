@@ -7,6 +7,9 @@
 # does not reliably prevent re-syncs because ESO detects data-hash
 # mismatches when the Secret data is modified and triggers immediate
 # reconciliation regardless of the annotation.
+#
+# WARNING: ESO controllers are cluster-wide. Scaling them down pauses
+# ALL ExternalSecrets across all namespaces, not just AAP ones.
 
 - name: Find ExternalSecret resources in the AAP namespace
   kubernetes.core.k8s_info:
@@ -19,26 +22,51 @@
   ansible.builtin.set_fact:
     __aap_secret_rotate_eso_to_pause: >-
       {{ __aap_secret_rotate_eso_resources.resources | default([])
+         | selectattr('spec.target', 'defined')
          | selectattr('spec.target.name', 'defined')
          | list }}
+
+# Determine the ESO namespace to search for controller deployments.
+# If explicitly set, use it; otherwise auto-detect.
+- name: Set ESO controller namespace
+  ansible.builtin.set_fact:
+    __aap_secret_rotate_eso_ns: >-
+      {{ aap_secret_rotate_eso_namespace | default('', true) | trim }}
+
+- name: Find ESO controller deployments (explicit namespace)
+  ansible.builtin.command:
+    argv:
+      - "{{ aap_secret_rotate_kubectl_binary }}"
+      - -n
+      - "{{ __aap_secret_rotate_eso_ns }}"
+      - get
+      - deploy
+      - -l
+      - app.kubernetes.io/name=external-secrets
+      - -o
+      - jsonpath={range .items[*]}{.metadata.name}={.spec.replicas}{"\n"}{end}
+  register: __aap_secret_rotate_eso_deploy_explicit
+  changed_when: false
+  when: __aap_secret_rotate_eso_ns | length > 0
 
 - name: Find ESO controller deployments in external-secrets namespace
   ansible.builtin.command:
     argv:
       - "{{ aap_secret_rotate_kubectl_binary }}"
       - -n
-      - "{{ aap_secret_rotate_eso_namespace | default('external-secrets', true) }}"
+      - external-secrets
       - get
       - deploy
       - -l
-      - app.kubernetes.io/instance=external-secrets
+      - app.kubernetes.io/name=external-secrets
       - -o
       - jsonpath={range .items[*]}{.metadata.name}={.spec.replicas}{"\n"}{end}
-  register: __aap_secret_rotate_eso_deploy_check
+  register: __aap_secret_rotate_eso_deploy_community
   changed_when: false
   failed_when: false
+  when: __aap_secret_rotate_eso_ns | length == 0
 
-- name: Try openshift-external-secrets namespace (Red Hat operator)
+- name: Find ESO controller deployments in openshift-external-secrets namespace
   ansible.builtin.command:
     argv:
       - "{{ aap_secret_rotate_kubectl_binary }}"
@@ -47,55 +75,43 @@
       - get
       - deploy
       - -l
-      - app.kubernetes.io/instance=external-secrets
+      - app.kubernetes.io/name=external-secrets
       - -o
       - jsonpath={range .items[*]}{.metadata.name}={.spec.replicas}{"\n"}{end}
-  register: __aap_secret_rotate_eso_deploy_check_rh
-  changed_when: false
-  failed_when: false
-  when: __aap_secret_rotate_eso_deploy_check.stdout | default('') | length == 0
-
-- name: Try openshift-external-secrets namespace without label filter
-  ansible.builtin.command:
-    argv:
-      - "{{ aap_secret_rotate_kubectl_binary }}"
-      - -n
-      - openshift-external-secrets
-      - get
-      - deploy
-      - -o
-      - jsonpath={range .items[*]}{.metadata.name}={.spec.replicas}{"\n"}{end}
-  register: __aap_secret_rotate_eso_deploy_check_rh_nolabel
+  register: __aap_secret_rotate_eso_deploy_rh
   changed_when: false
   failed_when: false
   when:
-    - __aap_secret_rotate_eso_deploy_check.stdout | default('') | length == 0
-    - __aap_secret_rotate_eso_deploy_check_rh.stdout | default('') | length == 0
+    - __aap_secret_rotate_eso_ns | length == 0
+    - __aap_secret_rotate_eso_deploy_community.stdout | default('') | trim | length == 0
 
-- name: Determine ESO namespace and deployments
+- name: Resolve ESO namespace and deployment output
   ansible.builtin.set_fact:
     __aap_secret_rotate_eso_ns: >-
-      {{ (aap_secret_rotate_eso_namespace | default('external-secrets', true))
-         if (__aap_secret_rotate_eso_deploy_check.stdout | default('') | length > 0)
-         else 'openshift-external-secrets' }}
-    __aap_secret_rotate_eso_deployments: >-
-      {{ (__aap_secret_rotate_eso_deploy_check.stdout
-          if (__aap_secret_rotate_eso_deploy_check.stdout | default('') | length > 0)
-          else (__aap_secret_rotate_eso_deploy_check_rh.stdout | default('')
-                if (__aap_secret_rotate_eso_deploy_check_rh.stdout | default('') | length > 0)
-                else __aap_secret_rotate_eso_deploy_check_rh_nolabel.stdout | default('')))
-         | trim }}
+      {% if __aap_secret_rotate_eso_ns | length > 0 %}{{ __aap_secret_rotate_eso_ns }}{% elif (__aap_secret_rotate_eso_deploy_community.stdout | default('') | trim | length > 0) %}external-secrets{% elif (__aap_secret_rotate_eso_deploy_rh.stdout | default('') | trim | length > 0) %}openshift-external-secrets{% else %}{% endif %}
+    __aap_secret_rotate_eso_deploy_output: >-
+      {% if __aap_secret_rotate_eso_ns | length > 0 and __aap_secret_rotate_eso_deploy_explicit is defined %}{{ __aap_secret_rotate_eso_deploy_explicit.stdout | default('') }}{% elif (__aap_secret_rotate_eso_deploy_community.stdout | default('') | trim | length > 0) %}{{ __aap_secret_rotate_eso_deploy_community.stdout }}{% elif (__aap_secret_rotate_eso_deploy_rh.stdout | default('') | trim | length > 0) %}{{ __aap_secret_rotate_eso_deploy_rh.stdout }}{% else %}{% endif %}
 
-- name: Save original ESO controller replica counts
+- name: Fail if ExternalSecrets exist but no ESO controller was found
+  ansible.builtin.fail:
+    msg: >-
+      ExternalSecrets found in namespace '{{ aap_secret_rotate_namespace }}'
+      but no ESO controller deployments were found
+      (searched: {{ __aap_secret_rotate_eso_ns | default('external-secrets, openshift-external-secrets') | trim }}).
+      Set aap_secret_rotate_eso_namespace explicitly or check RBAC permissions.
+  when:
+    - __aap_secret_rotate_eso_to_pause | length > 0
+    - __aap_secret_rotate_eso_deploy_output | default('') | trim | length == 0
+
+- name: Build ESO original replica dict
   ansible.builtin.set_fact:
     __aap_secret_rotate_eso_original_replicas: >-
-      {{ __aap_secret_rotate_eso_original_replicas | default({}) | combine({
-        item.split('=')[0]: item.split('=')[1] | int
-      }) }}
-  loop: "{{ __aap_secret_rotate_eso_deployments.split('\n') | select('string') | reject('equalto', '') | list }}"
-  loop_control:
-    label: "{{ item }}"
-  when: "'=' in item"
+      {{ dict((__aap_secret_rotate_eso_deploy_output | trim).split('\n')
+         | select('string') | reject('equalto', '')
+         | map('regex_replace', '^(.+)=(.+)$', '\1,\2')
+         | map('split', ',')
+         | map('list')) }}
+  when: __aap_secret_rotate_eso_deploy_output | default('') | trim | length > 0
 
 - name: Scale down ESO controller deployments
   ansible.builtin.command:
@@ -109,26 +125,45 @@
   loop: "{{ (__aap_secret_rotate_eso_original_replicas | default({})) | dict2items }}"
   loop_control:
     label: "{{ item.key }}"
-  changed_when: true
+  changed_when: item.value | int > 0
   when:
     - not aap_secret_rotate_dry_run
     - __aap_secret_rotate_eso_original_replicas | default({}) | length > 0
 
-- name: Wait for ESO controller pods to terminate
+- name: Wait for ESO controller rollout to complete
   ansible.builtin.command:
     argv:
       - "{{ aap_secret_rotate_kubectl_binary }}"
       - -n
       - "{{ __aap_secret_rotate_eso_ns | trim }}"
-      - wait
+      - rollout
+      - status
       - "deploy/{{ item.key }}"
-      - --for=jsonpath={.status.availableReplicas}=0
-      - --timeout=120s
+      - "--timeout={{ aap_secret_rotate_rollout_timeout }}s"
   loop: "{{ (__aap_secret_rotate_eso_original_replicas | default({})) | dict2items }}"
   loop_control:
     label: "{{ item.key }}"
   changed_when: false
-  failed_when: false
+  when:
+    - not aap_secret_rotate_dry_run
+    - __aap_secret_rotate_eso_original_replicas | default({}) | length > 0
+
+- name: Verify ESO controller deployments are at 0 replicas
+  ansible.builtin.command:
+    argv:
+      - "{{ aap_secret_rotate_kubectl_binary }}"
+      - -n
+      - "{{ __aap_secret_rotate_eso_ns | trim }}"
+      - get
+      - "deploy/{{ item.key }}"
+      - -o
+      - jsonpath={.spec.replicas}
+  register: __aap_secret_rotate_eso_verify
+  loop: "{{ (__aap_secret_rotate_eso_original_replicas | default({})) | dict2items }}"
+  loop_control:
+    label: "{{ item.key }}"
+  changed_when: false
+  failed_when: __aap_secret_rotate_eso_verify.stdout | default('1') | int != 0
   when:
     - not aap_secret_rotate_dry_run
     - __aap_secret_rotate_eso_original_replicas | default({}) | length > 0
@@ -136,17 +171,22 @@
 - name: Display paused ESO
   ansible.builtin.debug:
     msg: >-
-      Scaled down ESO controller ({{ __aap_secret_rotate_eso_ns | trim }}) to prevent
-      reconciliation during rotation. ExternalSecrets in scope:
+      Scaled down {{ __aap_secret_rotate_eso_original_replicas | default({}) | length }}
+      ESO controller deployment(s) in namespace '{{ __aap_secret_rotate_eso_ns | trim }}'.
+      WARNING: This is a cluster-wide controller; all ExternalSecrets are paused.
+      ExternalSecrets in scope:
       {{ __aap_secret_rotate_eso_to_pause | map(attribute='metadata.name') | list | join(', ') }}
-  when: __aap_secret_rotate_eso_to_pause | length > 0
+  when:
+    - not aap_secret_rotate_dry_run
+    - __aap_secret_rotate_eso_original_replicas | default({}) | length > 0
 
 - name: Dry run - would scale down ESO controller
   ansible.builtin.debug:
     msg: >-
       [DRY RUN] Would scale down ESO controller in
-      {{ __aap_secret_rotate_eso_ns | default('external-secrets') | trim }}
-      to prevent reconciliation. ExternalSecrets:
+      {{ __aap_secret_rotate_eso_ns | default('external-secrets') | trim }}.
+      WARNING: This is a cluster-wide controller.
+      ExternalSecrets:
       {{ __aap_secret_rotate_eso_to_pause | map(attribute='metadata.name') | list | join(', ') }}
   when:
     - aap_secret_rotate_dry_run

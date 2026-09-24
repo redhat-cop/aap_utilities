@@ -95,6 +95,8 @@
     - aap_secret_rotate_deployment_type == 'podman'
     - not (__aap_secret_rotate_eda_use_custom | bool)
 
+# EDA_DB_ROTATION_KEY is supported in AAP 2.7.4+ (eda-server PR 1532).
+# Older builds only support EDA_SECRET_KEY which conflicts with Dynaconf.
 - name: Run EDA rotation with custom key (operator)
   ansible.builtin.include_tasks: "operator/exec_command.yml"
   vars:
