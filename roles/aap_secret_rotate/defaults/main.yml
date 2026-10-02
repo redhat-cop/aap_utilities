@@ -12,6 +12,9 @@ aap_secret_rotate_deployment_type: ""
 # Dry run: report what would change without writing
 aap_secret_rotate_dry_run: false
 
+# TLS certificate verification for post-rotation health checks
+aap_secret_rotate_validate_certs: true
+
 # Skip pre-rotation encryption verification (NOT recommended)
 aap_secret_rotate_skip_preflight: false
 

@@ -1,0 +1,18 @@
+---
+bugfixes:
+  - >-
+    galaxy.yml - declare redhat.openshift as a collection dependency so ansible-builder
+    pulls it into execution environments for aap_ocp_install.
+  - >-
+    aap_password_rotate and aap_secret_rotate - expose validate_certs as a role
+    variable defaulting to true for post-rotation verification tasks.
+minor_changes:
+  - >-
+    README - document Python 3.9+ requirement, align collection dependency table,
+    fix aap_ocp_install role name, and make Automation Hub the primary install path.
+  - >-
+    Ship .ansible-lint in the collection artifact and skip yaml[line-length] and
+    changelogs/ lint noise.
+  - >-
+    meta/ee-requirements.txt - declare pywinrm dependencies for kerberos role execution
+    environments.
