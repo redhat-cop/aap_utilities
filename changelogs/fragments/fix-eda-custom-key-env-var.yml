@@ -1,0 +1,39 @@
+---
+bugfixes:
+  - >-
+    aap_secret_rotate - Use ``EDA_DB_ROTATION_KEY`` instead of ``EDA_SECRET_KEY``
+    for operator custom key rotation to avoid Dynaconf conflict
+    (https://github.com/redhat-cop/aap_utilities/pull/393).
+  - >-
+    aap_secret_rotate - Fix ESO namespace detection when
+    ``aap_secret_rotate_eso_namespace`` defaults to empty string by using
+    ``default('external-secrets', true)`` and a strict namespace lookup that
+    fails when ExternalSecrets exist but no controller is found
+    (https://github.com/redhat-cop/aap_utilities/pull/393).
+  - >-
+    aap_secret_rotate - Switch K8s secret writes (including Hub multi-key)
+    to ``kubectl apply --server-side --force-conflicts`` to persist rotated
+    values when the field is owned by another manager such as ESO. Use
+    ``ansible.builtin.tempfile`` for manifest storage with guaranteed cleanup
+    in an ``always`` block
+    (https://github.com/redhat-cop/aap_utilities/pull/393).
+  - >-
+    aap_secret_rotate - Scale down AAP component operators during rotation
+    and wrap the pause/rotate/resume cycle in ``block``/``always`` so that
+    operators are restored even if rotation fails. Verify replicas reach 0
+    before proceeding with secret writes. Fail if no operator deployments
+    are found instead of silently continuing
+    (https://github.com/redhat-cop/aap_utilities/pull/393).
+  - >-
+    aap_secret_rotate - Fix post-rotation ESO banner to show ``kubectl scale``
+    commands with saved replica counts and detected namespace instead of the
+    obsolete annotation-based instructions. Warn about cluster-wide blast
+    radius and document field-manager hand-off
+    (https://github.com/redhat-cop/aap_utilities/pull/393).
+  - >-
+    aap_secret_rotate - Let ESO discovery API errors propagate instead of
+    silently treating them as ``ESO not installed``. Resolve ESO API version
+    when ``aap_secret_rotate_eso_managed`` is forced true. Drop the unlabeled
+    deployment fallback that could scale every deployment in the ESO namespace
+    (https://github.com/redhat-cop/aap_utilities/pull/393).
+...

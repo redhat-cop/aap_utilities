@@ -58,14 +58,26 @@ argument_specs:
       aap_secret_rotate_eso_managed:
         description: >-
           Whether secrets are managed by External Secrets Operator.
-          Auto-detected if empty. When true, ExternalSecret resources are
-          paused before patching K8s Secrets.
+          Auto-detected if empty. When true, ESO controllers are scaled
+          down before patching K8s Secrets. Note that ESO controllers are
+          cluster-wide; scaling them down pauses ALL ExternalSecrets, not
+          just those in the AAP namespace.
+        type: str
+        default: ""
+      aap_secret_rotate_eso_namespace:
+        description: >-
+          Namespace where the ESO controller runs. Auto-detected if empty
+          (tries external-secrets, then openshift-external-secrets). Set
+          explicitly if your ESO installation uses a different namespace.
         type: str
         default: ""
       aap_secret_rotate_eso_resume_after:
         description: >-
           Whether to resume ESO reconciliation after rotation. If false,
-          ExternalSecrets stay paused until the external store is updated.
+          ESO controllers stay scaled down until the external secret store
+          is updated with the new key values and the operator scales them
+          back up manually. Defaults to false because the external store
+          MUST be updated before ESO resumes.
         type: bool
         default: false
       aap_secret_rotate_argocd_managed:

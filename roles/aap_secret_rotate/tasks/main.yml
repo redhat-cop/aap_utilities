@@ -37,25 +37,59 @@
     - aap_secret_rotate_deployment_type == 'operator'
     - aap_secret_rotate_eso_managed | bool
 
-# ── Rotate each component ───────────────────────────────────────────
-# Controller and Hub are independent, EDA next, Gateway last (sessions).
-# For operator deployments, rotation execs into running pods, updates
-# the K8s Secret, and triggers a rollout restart per component.
-- name: Rotate controller
-  ansible.builtin.include_tasks: rotate_controller.yml
-  when: "'controller' in aap_secret_rotate_components"
+# ── Rotate (with block/always to guarantee operator restore) ────────
+# Operators and rotation are wrapped in block/always so that AAP
+# component operators are restored even if rotation fails partway.
+- name: Rotate components (operator block/always)
+  when: aap_secret_rotate_deployment_type == 'operator'
+  block:
+    # Scale down AAP component operators to prevent them from reverting
+    # secret changes during rotation.
+    - name: Scale down AAP component operators
+      ansible.builtin.include_tasks: operator/pause_operators.yml
 
-- name: Rotate hub
-  ansible.builtin.include_tasks: rotate_hub.yml
-  when: "'hub' in aap_secret_rotate_components"
+    - name: Rotate controller (operator)
+      ansible.builtin.include_tasks: rotate_controller.yml
+      when: "'controller' in aap_secret_rotate_components"
 
-- name: Rotate EDA
-  ansible.builtin.include_tasks: rotate_eda.yml
-  when: "'eda' in aap_secret_rotate_components"
+    - name: Rotate hub (operator)
+      ansible.builtin.include_tasks: rotate_hub.yml
+      when: "'hub' in aap_secret_rotate_components"
 
-- name: Rotate gateway
-  ansible.builtin.include_tasks: rotate_gateway.yml
-  when: "'gateway' in aap_secret_rotate_components"
+    - name: Rotate EDA (operator)
+      ansible.builtin.include_tasks: rotate_eda.yml
+      when: "'eda' in aap_secret_rotate_components"
+
+    - name: Rotate gateway (operator)
+      ansible.builtin.include_tasks: rotate_gateway.yml
+      when: "'gateway' in aap_secret_rotate_components"
+
+  always:
+    # Restore AAP component operators unconditionally so they are never
+    # left scaled to 0 after a failure.
+    - name: Scale up AAP component operators (always)
+      ansible.builtin.include_tasks: operator/resume_operators.yml
+      when: not aap_secret_rotate_dry_run
+
+# Podman rotation (no operator pause/resume needed)
+- name: Rotate components (podman)
+  when: aap_secret_rotate_deployment_type == 'podman'
+  block:
+    - name: Rotate controller (podman)
+      ansible.builtin.include_tasks: rotate_controller.yml
+      when: "'controller' in aap_secret_rotate_components"
+
+    - name: Rotate hub (podman)
+      ansible.builtin.include_tasks: rotate_hub.yml
+      when: "'hub' in aap_secret_rotate_components"
+
+    - name: Rotate EDA (podman)
+      ansible.builtin.include_tasks: rotate_eda.yml
+      when: "'eda' in aap_secret_rotate_components"
+
+    - name: Rotate gateway (podman)
+      ansible.builtin.include_tasks: rotate_gateway.yml
+      when: "'gateway' in aap_secret_rotate_components"
 
 # ── Resume external controllers (optional) ──────────────────────────
 - name: Resume ESO reconciliation (operator + ESO)
@@ -89,15 +123,22 @@
       ╔══════════════════════════════════════════════════════════════════╗
       ║  ACTION REQUIRED: External Secrets Operator                    ║
       ╠══════════════════════════════════════════════════════════════════╣
-      ║  ESO reconciliation has been PAUSED to protect rotated keys.   ║
+      ║  ESO controllers have been SCALED DOWN in namespace            ║
+      ║  '{{ __aap_secret_rotate_eso_ns | default("external-secrets") | trim }}'.  ║
+      ║  This is a cluster-wide controller; all ExternalSecrets are    ║
+      ║  paused, not just the ones in the AAP namespace.               ║
       ║                                                                ║
       ║  You must now:                                                 ║
       ║  1. Update the new key values in your external secret store    ║
       ║     (Vault, AWS Secrets Manager, Azure Key Vault, etc.)        ║
-      ║  2. Resume ESO reconciliation:                                 ║
-      ║     {{ aap_secret_rotate_kubectl_binary }} -n {{ aap_secret_rotate_namespace }} annotate externalsecret --all  ║
-      ║       reconcile.external-secrets.io/disabled=false             ║
-      ║       --overwrite                                              ║
+      ║  2. Hand off field ownership so ESO can manage the fields      ║
+      ║     again. For each rotated secret, re-apply from the          ║
+      ║     external store with the ESO field manager, or remove the   ║
+      ║     'aap-secret-rotate' managedFields entry.                   ║
+      ║  3. Scale ESO back up:                                         ║
+      {% for deploy, replicas in (__aap_secret_rotate_eso_original_replicas | default({})).items() %}
+      ║     {{ aap_secret_rotate_kubectl_binary }} -n {{ __aap_secret_rotate_eso_ns | trim }} scale deploy/{{ deploy }} --replicas={{ replicas }}  ║
+      {% endfor %}
       ║                                                                ║
       ║  New keys are in: {{ aap_secret_rotate_backup_dir }}           ║
       ╚══════════════════════════════════════════════════════════════════╝
@@ -119,8 +160,7 @@
       ║  You must now:                                                 ║
       ║  1. Update your Git repo to reflect the new secret values      ║
       ║     (or sealed/encrypted equivalents)                          ║
-      ║  2. Update spec.idle_aap back to false in Git (if tracked)     ║
-      ║  3. Resume ArgoCD sync:                                        ║
+      ║  2. Resume ArgoCD sync:                                        ║
       ║     argocd app set {{ aap_secret_rotate_argocd_app_name }}     ║
       ║       --sync-policy automated                                  ║
       ╚══════════════════════════════════════════════════════════════════╝
