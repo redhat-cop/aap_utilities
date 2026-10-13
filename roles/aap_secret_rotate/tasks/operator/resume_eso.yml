@@ -29,7 +29,7 @@
       - rollout
       - status
       - "deploy/{{ item.key }}"
-      - --timeout=120s
+      - "--timeout={{ aap_secret_rotate_rollout_timeout }}s"
   loop: "{{ (__aap_secret_rotate_eso_original_replicas | default({})) | dict2items }}"
   loop_control:
     label: "{{ item.key }}"

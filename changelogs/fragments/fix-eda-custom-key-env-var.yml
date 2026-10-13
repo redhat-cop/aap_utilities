@@ -2,38 +2,49 @@
 bugfixes:
   - >-
     aap_secret_rotate - Use ``EDA_DB_ROTATION_KEY`` instead of ``EDA_SECRET_KEY``
-    for operator custom key rotation to avoid Dynaconf conflict
+    for operator custom key rotation to avoid Dynaconf conflict. Detect
+    support at runtime and fail early on builds older than AAP 2.7.4
     (https://github.com/redhat-cop/aap_utilities/pull/393).
   - >-
-    aap_secret_rotate - Fix ESO namespace detection when
-    ``aap_secret_rotate_eso_namespace`` defaults to empty string by using
-    ``default('external-secrets', true)`` and a strict namespace lookup that
-    fails when ExternalSecrets exist but no controller is found
+    aap_secret_rotate - Fix ESO discovery to distinguish a missing CRD
+    (``api_found: false``) from real API errors (auth, connectivity). Let
+    auth and connectivity errors fail the play instead of silently treating
+    them as ``ESO not installed``. Check ``api_found`` when
+    ``aap_secret_rotate_eso_managed`` is forced true to select the correct
+    API version
     (https://github.com/redhat-cop/aap_utilities/pull/393).
   - >-
-    aap_secret_rotate - Switch K8s secret writes (including Hub multi-key)
-    to ``kubectl apply --server-side --force-conflicts`` to persist rotated
-    values when the field is owned by another manager such as ESO. Use
-    ``ansible.builtin.tempfile`` for manifest storage with guaranteed cleanup
-    in an ``always`` block
+    aap_secret_rotate - Resolve implicit ExternalSecret target names.
+    When ``spec.target.name`` is absent, the effective target defaults to
+    the ExternalSecret's own ``metadata.name``. Match only against
+    component secrets actually being rotated to avoid pausing ESO for
+    unrelated ExternalSecrets
     (https://github.com/redhat-cop/aap_utilities/pull/393).
   - >-
-    aap_secret_rotate - Scale down AAP component operators during rotation
-    and wrap the pause/rotate/resume cycle in ``block``/``always`` so that
-    operators are restored even if rotation fails. Verify replicas reach 0
-    before proceeding with secret writes. Fail if no operator deployments
-    are found instead of silently continuing
+    aap_secret_rotate - Wait for controller pods to fully terminate (not
+    just ``spec.replicas=0``) before proceeding with secret writes. A
+    remaining controller pod can still reconcile during rotation
     (https://github.com/redhat-cop/aap_utilities/pull/393).
   - >-
-    aap_secret_rotate - Fix post-rotation ESO banner to show ``kubectl scale``
-    commands with saved replica counts and detected namespace instead of the
-    obsolete annotation-based instructions. Warn about cluster-wide blast
-    radius and document field-manager hand-off
+    aap_secret_rotate - Tighten operator selection from broad
+    ``operator.*manager`` regex to known AAP operator deployment name
+    prefixes per component. Exclude unrelated operators and validate
+    coverage for the requested components
     (https://github.com/redhat-cop/aap_utilities/pull/393).
   - >-
-    aap_secret_rotate - Let ESO discovery API errors propagate instead of
-    silently treating them as ``ESO not installed``. Resolve ESO API version
-    when ``aap_secret_rotate_eso_managed`` is forced true. Drop the unlabeled
-    deployment fallback that could scale every deployment in the ESO namespace
+    aap_secret_rotate - Move ESO pause inside the ``block``/``always``
+    structure. Restore ESO when no secrets were written (safe resume).
+    Emit explicit recovery instructions with controller names, namespaces,
+    and original replica counts when ESO must stay paused after failure
+    (https://github.com/redhat-cop/aap_utilities/pull/393).
+  - >-
+    aap_secret_rotate - Use ``kubernetes.core.k8s`` server-side apply with
+    ``force_conflicts`` and base64 ``data`` instead of shell ``kubectl``
+    with ``stringData``. Protect the apply task with ``no_log: true``
+    (https://github.com/redhat-cop/aap_utilities/pull/393).
+  - >-
+    aap_secret_rotate - Wrap operator rotation in ``block``/``always`` so
+    operators are restored even if rotation fails partway. Verify replicas
+    reach 0 and pods terminate before proceeding with secret writes
     (https://github.com/redhat-cop/aap_utilities/pull/393).
 ...
