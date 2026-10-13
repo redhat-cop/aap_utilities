@@ -113,6 +113,10 @@
 - name: Detect External Secrets Operator (ESO) and ArgoCD (operator only)
   when: aap_secret_rotate_deployment_type == 'operator'
   block:
+    # ── ESO detection ──────────────────────────────────────────────────
+    # Probe v1 first, fall back to v1beta1 only when the CRD is absent
+    # (api_found: false). Auth, connectivity, and other API errors must
+    # fail the play so we never silently skip ESO when it is present.
     - name: Detect ESO-managed secrets
       when: aap_secret_rotate_eso_managed | string | length == 0
       block:
@@ -122,7 +126,6 @@
             kind: ExternalSecret
             namespace: "{{ aap_secret_rotate_namespace }}"
           register: __aap_secret_rotate_eso_check_v1
-          ignore_errors: true
 
         - name: Check for ExternalSecret resources (v1beta1 fallback)
           kubernetes.core.k8s_info:
@@ -130,47 +133,84 @@
             kind: ExternalSecret
             namespace: "{{ aap_secret_rotate_namespace }}"
           register: __aap_secret_rotate_eso_check_v1beta1
-          ignore_errors: true
-          when:
-            - __aap_secret_rotate_eso_check_v1 is failed
-              or (__aap_secret_rotate_eso_check_v1.resources | default([]) | length == 0)
+          when: not (__aap_secret_rotate_eso_check_v1.api_found | default(true))
 
         - name: Select ESO API version
           ansible.builtin.set_fact:
             __aap_secret_rotate_eso_api_version: >-
               {{ 'external-secrets.io/v1'
-                 if (__aap_secret_rotate_eso_check_v1.resources | default([]) | length > 0)
-                 else 'external-secrets.io/v1beta1' }}
+                 if (__aap_secret_rotate_eso_check_v1.api_found | default(false))
+                 else 'external-secrets.io/v1beta1'
+                    if (__aap_secret_rotate_eso_check_v1beta1.api_found | default(false))
+                 else 'none' }}
 
-        - name: Collect ESO-managed secret names
+        # Resolve effective target name: spec.target.name when set,
+        # otherwise the ExternalSecret's own metadata.name (K8s default).
+        # Uses to_json to ensure the result is a proper list, not a string.
+        - name: Resolve effective ExternalSecret target names
           ansible.builtin.set_fact:
             __aap_secret_rotate_eso_managed_secrets: >-
-              {{ ((__aap_secret_rotate_eso_check_v1.resources | default([]))
-                  + (__aap_secret_rotate_eso_check_v1beta1.resources | default([])))
-                 | selectattr('spec.target', 'defined')
-                 | selectattr('spec.target.name', 'defined')
-                 | map(attribute='spec.target.name')
-                 | select('string')
+              {{ _eso_target_names | from_json }}
+          vars:
+            _eso_all: >-
+              {{ (__aap_secret_rotate_eso_check_v1.resources | default([]))
+                 + (__aap_secret_rotate_eso_check_v1beta1.resources | default([])) }}
+            _eso_target_names: >-
+              {% set ns = [] -%}
+              {% for es in _eso_all -%}
+              {%   set tgt = es.get('spec', {}).get('target', {}).get('name', '') | default('', true) -%}
+              {%   set _ = ns.append(tgt if tgt | length > 0 else es.metadata.name) -%}
+              {% endfor -%}
+              {{ ns | to_json }}
+          when: __aap_secret_rotate_eso_api_version != 'none'
+
+        # Build the list of component secrets the role will rotate.
+        - name: Build AAP component secret name list
+          ansible.builtin.set_fact:
+            __aap_secret_rotate_component_secrets: >-
+              {{ aap_secret_rotate_components
+                 | map('extract', __aap_secret_rotate_components)
+                 | map(attribute='k8s_secret')
                  | list }}
 
+        # Only mark ESO-managed if at least one ESO target matches a
+        # component secret the role will actually rotate.
         - name: Set ESO managed flag
           ansible.builtin.set_fact:
             aap_secret_rotate_eso_managed: >-
-              {{ (__aap_secret_rotate_eso_managed_secrets | default([]) | length > 0) | bool }}
+              {{ (__aap_secret_rotate_eso_managed_secrets | default([])
+                  | intersect(__aap_secret_rotate_component_secrets | default([]))
+                  | length > 0) | bool }}
+            __aap_secret_rotate_eso_relevant_secrets: >-
+              {{ __aap_secret_rotate_eso_managed_secrets | default([])
+                 | intersect(__aap_secret_rotate_component_secrets | default([])) }}
 
         - name: Display ESO detection result
           ansible.builtin.debug:
             msg: >-
-              External Secrets Operator detected. ESO-managed secrets in namespace:
-              {{ __aap_secret_rotate_eso_managed_secrets | join(', ') }}
+              External Secrets Operator detected ({{ __aap_secret_rotate_eso_api_version }}).
+              ESO-managed AAP secrets: {{ __aap_secret_rotate_eso_relevant_secrets | join(', ') }}
           when: aap_secret_rotate_eso_managed | bool
 
+        - name: Display ESO not detected
+          ansible.builtin.debug:
+            msg: >-
+              {% if __aap_secret_rotate_eso_api_version == 'none' %}
+              ExternalSecret CRD not found; ESO is not installed.
+              {% else %}
+              ESO installed ({{ __aap_secret_rotate_eso_api_version }}) but no
+              ExternalSecrets target the AAP component secrets being rotated.
+              {% endif %}
+          when: not (aap_secret_rotate_eso_managed | bool)
+
     # Resolve ESO API version when eso_managed is forced true but
-    # auto-detection was skipped.
+    # auto-detection was skipped. Check api_found to confirm the CRD
+    # actually exists before selecting a version.
     - name: Resolve ESO API version when forced
       when:
         - aap_secret_rotate_eso_managed | bool
         - __aap_secret_rotate_eso_api_version is not defined
+          or __aap_secret_rotate_eso_api_version == 'none'
       block:
         - name: Probe for ExternalSecret v1 API
           kubernetes.core.k8s_info:
@@ -178,14 +218,31 @@
             kind: ExternalSecret
             namespace: "{{ aap_secret_rotate_namespace }}"
           register: __aap_secret_rotate_eso_probe_v1
-          ignore_errors: true
+
+        - name: Probe for ExternalSecret v1beta1 API
+          kubernetes.core.k8s_info:
+            api_version: external-secrets.io/v1beta1
+            kind: ExternalSecret
+            namespace: "{{ aap_secret_rotate_namespace }}"
+          register: __aap_secret_rotate_eso_probe_v1beta1
+          when: not (__aap_secret_rotate_eso_probe_v1.api_found | default(false))
 
         - name: Set ESO API version from probe
           ansible.builtin.set_fact:
             __aap_secret_rotate_eso_api_version: >-
               {{ 'external-secrets.io/v1'
-                 if (__aap_secret_rotate_eso_probe_v1 is not failed)
-                 else 'external-secrets.io/v1beta1' }}
+                 if (__aap_secret_rotate_eso_probe_v1.api_found | default(false))
+                 else 'external-secrets.io/v1beta1'
+                    if (__aap_secret_rotate_eso_probe_v1beta1.api_found | default(false))
+                 else 'none' }}
+
+        - name: Fail if ESO is forced but CRD is absent
+          ansible.builtin.fail:
+            msg: >-
+              aap_secret_rotate_eso_managed is true but neither
+              external-secrets.io/v1 nor external-secrets.io/v1beta1 CRDs
+              were found on the cluster. Check that ESO is installed.
+          when: __aap_secret_rotate_eso_api_version == 'none'
 
     - name: Detect ArgoCD-managed Application
       when:

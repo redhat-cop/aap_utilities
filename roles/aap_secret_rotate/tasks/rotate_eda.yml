@@ -97,6 +97,47 @@
 
 # EDA_DB_ROTATION_KEY is supported in AAP 2.7.4+ (eda-server PR 1532).
 # Older builds only support EDA_SECRET_KEY which conflicts with Dynaconf.
+# Detect support by checking if the rotation command source references
+# EDA_DB_ROTATION_KEY.
+- name: Detect EDA_DB_ROTATION_KEY support (operator + custom key)
+  ansible.builtin.command:
+    argv:
+      - "{{ aap_secret_rotate_kubectl_binary }}"
+      - -n
+      - "{{ aap_secret_rotate_namespace }}"
+      - exec
+      - "deploy/{{ __aap_secret_rotate_k8s_exec.eda.deployment }}"
+      - -c
+      - "{{ __aap_secret_rotate_k8s_exec.eda.container }}"
+      - --
+      - python3
+      - -c
+      - >-
+        import inspect;
+        from aap_eda.core.management.commands.rotate_db_encryption_key import Command;
+        src = inspect.getsource(Command.handle);
+        print('EDA_DB_ROTATION_KEY_SUPPORTED' if 'EDA_DB_ROTATION_KEY' in src else 'EDA_DB_ROTATION_KEY_UNSUPPORTED')
+  register: __aap_secret_rotate_eda_env_probe
+  changed_when: false
+  when:
+    - aap_secret_rotate_deployment_type == 'operator'
+    - __aap_secret_rotate_eda_use_custom | bool
+    - not aap_secret_rotate_dry_run
+
+- name: Fail if EDA build does not support EDA_DB_ROTATION_KEY
+  ansible.builtin.fail:
+    msg: >-
+      Custom EDA key rotation on operator deployments requires AAP 2.7.4+
+      (eda-server with EDA_DB_ROTATION_KEY support). This build does not
+      support it. Either upgrade to AAP 2.7.4+ or omit aap_secret_rotate_eda_key
+      to use auto-generated keys instead.
+  when:
+    - aap_secret_rotate_deployment_type == 'operator'
+    - __aap_secret_rotate_eda_use_custom | bool
+    - not aap_secret_rotate_dry_run
+    - __aap_secret_rotate_eda_env_probe is defined
+    - "'EDA_DB_ROTATION_KEY_SUPPORTED' not in (__aap_secret_rotate_eda_env_probe.stdout | default(''))"
+
 - name: Run EDA rotation with custom key (operator)
   ansible.builtin.include_tasks: "operator/exec_command.yml"
   vars:

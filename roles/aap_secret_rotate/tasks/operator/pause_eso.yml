@@ -18,16 +18,30 @@
     namespace: "{{ aap_secret_rotate_namespace }}"
   register: __aap_secret_rotate_eso_resources
 
+# Resolve effective target name: spec.target.name when set, otherwise
+# the ExternalSecret's own metadata.name (Kubernetes default behaviour).
 - name: Build list of ExternalSecrets that target AAP component secrets
   ansible.builtin.set_fact:
     __aap_secret_rotate_eso_to_pause: >-
-      {{ __aap_secret_rotate_eso_resources.resources | default([])
-         | selectattr('spec.target', 'defined')
-         | selectattr('spec.target.name', 'defined')
-         | list }}
+      {{ _matched | from_json }}
+  vars:
+    _comp_secrets: >-
+      {{ aap_secret_rotate_components
+         | map('extract', __aap_secret_rotate_components)
+         | map(attribute='k8s_secret') | list }}
+    _matched: >-
+      {% set result = [] -%}
+      {% for es in (__aap_secret_rotate_eso_resources.resources | default([])) -%}
+      {%   set tgt = es.get('spec', {}).get('target', {}).get('name', '') | default('', true) -%}
+      {%   set eff = tgt if tgt | length > 0 else es.metadata.name -%}
+      {%   if eff in _comp_secrets -%}
+      {%     set _ = result.append(es) -%}
+      {%   endif -%}
+      {% endfor -%}
+      {{ result | to_json }}
 
 # Determine the ESO namespace to search for controller deployments.
-# If explicitly set, use it; otherwise auto-detect.
+# If explicitly set, search only that namespace and fail on error.
 - name: Set ESO controller namespace
   ansible.builtin.set_fact:
     __aap_secret_rotate_eso_ns: >-
@@ -90,7 +104,7 @@
     __aap_secret_rotate_eso_ns: >-
       {% if __aap_secret_rotate_eso_ns | length > 0 %}{{ __aap_secret_rotate_eso_ns }}{% elif (__aap_secret_rotate_eso_deploy_community.stdout | default('') | trim | length > 0) %}external-secrets{% elif (__aap_secret_rotate_eso_deploy_rh.stdout | default('') | trim | length > 0) %}openshift-external-secrets{% else %}{% endif %}
     __aap_secret_rotate_eso_deploy_output: >-
-      {% if __aap_secret_rotate_eso_ns | length > 0 and __aap_secret_rotate_eso_deploy_explicit is defined %}{{ __aap_secret_rotate_eso_deploy_explicit.stdout | default('') }}{% elif (__aap_secret_rotate_eso_deploy_community.stdout | default('') | trim | length > 0) %}{{ __aap_secret_rotate_eso_deploy_community.stdout }}{% elif (__aap_secret_rotate_eso_deploy_rh.stdout | default('') | trim | length > 0) %}{{ __aap_secret_rotate_eso_deploy_rh.stdout }}{% else %}{% endif %}
+      {% if __aap_secret_rotate_eso_ns | length > 0 and __aap_secret_rotate_eso_deploy_explicit is defined and __aap_secret_rotate_eso_deploy_explicit is not skipped %}{{ __aap_secret_rotate_eso_deploy_explicit.stdout | default('') }}{% elif (__aap_secret_rotate_eso_deploy_community.stdout | default('') | trim | length > 0) %}{{ __aap_secret_rotate_eso_deploy_community.stdout }}{% elif (__aap_secret_rotate_eso_deploy_rh.stdout | default('') | trim | length > 0) %}{{ __aap_secret_rotate_eso_deploy_rh.stdout }}{% else %}{% endif %}
 
 - name: Fail if ExternalSecrets exist but no ESO controller was found
   ansible.builtin.fail:
@@ -168,11 +182,56 @@
     - not aap_secret_rotate_dry_run
     - __aap_secret_rotate_eso_original_replicas | default({}) | length > 0
 
+# Wait for all ESO controller pods to actually terminate. rollout status
+# and spec.replicas=0 do not guarantee the pods have stopped; a
+# remaining pod can still reconcile secrets during rotation.
+- name: Wait for ESO controller pods to terminate
+  ansible.builtin.command:
+    argv:
+      - "{{ aap_secret_rotate_kubectl_binary }}"
+      - -n
+      - "{{ __aap_secret_rotate_eso_ns | trim }}"
+      - wait
+      - --for=delete
+      - pod
+      - -l
+      - app.kubernetes.io/name=external-secrets,app.kubernetes.io/instance={{ item.key }}
+      - "--timeout={{ aap_secret_rotate_rollout_timeout }}s"
+  loop: "{{ (__aap_secret_rotate_eso_original_replicas | default({})) | dict2items }}"
+  loop_control:
+    label: "{{ item.key }}"
+  changed_when: false
+  failed_when: false
+  when:
+    - not aap_secret_rotate_dry_run
+    - __aap_secret_rotate_eso_original_replicas | default({}) | length > 0
+    - item.value | int > 0
+
+# Broad fallback: confirm no pods remain for any ESO controller deployment.
+- name: Verify no ESO controller pods remain
+  ansible.builtin.command:
+    argv:
+      - "{{ aap_secret_rotate_kubectl_binary }}"
+      - -n
+      - "{{ __aap_secret_rotate_eso_ns | trim }}"
+      - get
+      - pods
+      - -l
+      - app.kubernetes.io/name=external-secrets
+      - --no-headers
+  register: __aap_secret_rotate_eso_pod_check
+  changed_when: false
+  failed_when: (__aap_secret_rotate_eso_pod_check.stdout_lines | default([]) | length) > 0
+  when:
+    - not aap_secret_rotate_dry_run
+    - __aap_secret_rotate_eso_original_replicas | default({}) | length > 0
+
 - name: Display paused ESO
   ansible.builtin.debug:
     msg: >-
       Scaled down {{ __aap_secret_rotate_eso_original_replicas | default({}) | length }}
       ESO controller deployment(s) in namespace '{{ __aap_secret_rotate_eso_ns | trim }}'.
+      All controller pods have terminated.
       WARNING: This is a cluster-wide controller; all ExternalSecrets are paused.
       ExternalSecrets in scope:
       {{ __aap_secret_rotate_eso_to_pause | map(attribute='metadata.name') | list | join(', ') }}
