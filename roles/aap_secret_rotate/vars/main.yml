@@ -55,6 +55,19 @@ __aap_secret_rotate_components:
     custom_key_var: "{{ aap_secret_rotate_hub_key }}"
     supports_dry_run: false
 
+# OLM-managed operator deployment name prefixes per component.
+# Used by pause_operators.yml to select only the operators that
+# reconcile secrets for the requested components. The resource-operator
+# is always included because it reconciles the top-level
+# AnsibleAutomationPlatform CR.
+__aap_secret_rotate_operator_prefixes:
+  controller: "automation-controller-operator"
+  hub: "automation-hub-operator"
+  eda: "eda-server-operator"
+  gateway: "aap-gateway-operator"
+  _always:
+    - "resource-operator"
+
 __aap_secret_rotate_podman_containers:
   controller:
     - "automation-controller-task"

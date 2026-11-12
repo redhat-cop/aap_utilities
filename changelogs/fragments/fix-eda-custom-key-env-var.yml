@@ -1,0 +1,50 @@
+---
+bugfixes:
+  - >-
+    aap_secret_rotate - Use ``EDA_DB_ROTATION_KEY`` instead of ``EDA_SECRET_KEY``
+    for operator custom key rotation to avoid Dynaconf conflict. Detect
+    support at runtime and fail early on builds older than AAP 2.7.4
+    (https://github.com/redhat-cop/aap_utilities/pull/393).
+  - >-
+    aap_secret_rotate - Fix ESO discovery to distinguish a missing CRD
+    (``api_found: false``) from real API errors (auth, connectivity). Let
+    auth and connectivity errors fail the play instead of silently treating
+    them as ``ESO not installed``. Check ``api_found`` when
+    ``aap_secret_rotate_eso_managed`` is forced true to select the correct
+    API version
+    (https://github.com/redhat-cop/aap_utilities/pull/393).
+  - >-
+    aap_secret_rotate - Resolve implicit ExternalSecret target names.
+    When ``spec.target.name`` is absent, the effective target defaults to
+    the ExternalSecret's own ``metadata.name``. Match only against
+    component secrets actually being rotated to avoid pausing ESO for
+    unrelated ExternalSecrets
+    (https://github.com/redhat-cop/aap_utilities/pull/393).
+  - >-
+    aap_secret_rotate - Wait for controller pods to fully terminate (not
+    just ``spec.replicas=0``) before proceeding with secret writes. A
+    remaining controller pod can still reconcile during rotation
+    (https://github.com/redhat-cop/aap_utilities/pull/393).
+  - >-
+    aap_secret_rotate - Tighten operator selection from broad
+    ``operator.*manager`` regex to known AAP operator deployment name
+    prefixes per component. Exclude unrelated operators and validate
+    coverage for the requested components
+    (https://github.com/redhat-cop/aap_utilities/pull/393).
+  - >-
+    aap_secret_rotate - Move ESO pause inside the ``block``/``always``
+    structure. Restore ESO when no secrets were written (safe resume).
+    Emit explicit recovery instructions with controller names, namespaces,
+    and original replica counts when ESO must stay paused after failure
+    (https://github.com/redhat-cop/aap_utilities/pull/393).
+  - >-
+    aap_secret_rotate - Use ``kubernetes.core.k8s`` server-side apply with
+    ``force_conflicts`` and base64 ``data`` instead of shell ``kubectl``
+    with ``stringData``. Protect the apply task with ``no_log: true``
+    (https://github.com/redhat-cop/aap_utilities/pull/393).
+  - >-
+    aap_secret_rotate - Wrap operator rotation in ``block``/``always`` so
+    operators are restored even if rotation fails partway. Verify replicas
+    reach 0 and pods terminate before proceeding with secret writes
+    (https://github.com/redhat-cop/aap_utilities/pull/393).
+...
