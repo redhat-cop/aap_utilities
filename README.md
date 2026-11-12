@@ -24,19 +24,22 @@ We are on the Ansible Forums and Matrix, if you want to discuss something, ask f
 
 ## Requirements
 
-The following collections are required to use this collection if you are using the Openshift specific roles.
+* Python 3.9 or later on the Ansible control node.
 
-| Name             | Minimum Version |
-|------------------|:---------------:|
-| ansible.posix    | 1.0.0           |
-| kubernetes.core  | 2.2.0           |
-| redhat.openshift | 4.0.2           |
+The following collections are required to use this collection if you are using the OpenShift specific roles.
+
+| Name              | Minimum Version |
+|-------------------|:---------------:|
+| ansible.posix     | 1.0.0           |
+| containers.podman | 1.7.0           |
+| kubernetes.core   | 2.2.0           |
+| redhat.openshift  | 4.0.2           |
 
 > ⚠️ **IMPORTANT**
 >
 > To install this collection ensure that access to Automation Hub is configured or required collections are already installed.
 
-The `aap_install_ocp` role requires the `kubernetes` (version 12.0.0 or later) Python module to be installed.
+The `aap_ocp_install` role requires the `kubernetes` (version 12.0.0 or later) Python module to be installed.
 
 ## Links to Ansible Automation Platform Collections
 
@@ -65,20 +68,28 @@ Click the `Content` button to see the list of content included in this collectio
 
 ## Installing this collection
 
-You can install the redhat\_cop aap\_utilities collection with the Ansible Galaxy CLI:
+Red Hat customers should install this certified collection from Red Hat Ansible Automation Hub:
 
 ```bash
-ansible-galaxy collection install infra.aap_utilities
+ansible-galaxy collection install infra.aap_utilities \
+  -s 'https://console.redhat.com/api/automation-hub/content/published/'
 ```
 
-You can also include it in a `requirements.yml` file and install it with `ansible-galaxy collection install -r requirements.yml`, using the format:
+You can also include it in a `requirements.yml` file and install it with `ansible-galaxy collection install -r requirements.yml`:
 
 ```yaml
 ---
 collections:
   - name: infra.aap_utilities
+    source: https://console.redhat.com/api/automation-hub/
     # If you need a specific version of the collection, you can specify like this:
     # version: ...
+```
+
+The collection is also available from Ansible Galaxy:
+
+```bash
+ansible-galaxy collection install infra.aap_utilities
 ```
 
 ## Using this collection

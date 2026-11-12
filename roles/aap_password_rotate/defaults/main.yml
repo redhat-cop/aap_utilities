@@ -17,6 +17,9 @@ aap_password_rotate_components:
 # Dry run: report what would change without writing
 aap_password_rotate_dry_run: false
 
+# TLS certificate verification for post-rotation API checks
+aap_password_rotate_validate_certs: true
+
 # Backup directory for current passwords (on the control node)
 aap_password_rotate_backup_dir: "{{ playbook_dir }}/password_backups/{{ ansible_date_time.date | default(lookup('pipe', 'date +%Y-%m-%d')) }}"
 

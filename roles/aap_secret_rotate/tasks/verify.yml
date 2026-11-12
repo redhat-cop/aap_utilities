@@ -8,7 +8,7 @@
     - name: Wait for Gateway to respond
       ansible.builtin.uri:
         url: "https://localhost/api/gateway/v1/ping/"
-        validate_certs: false
+        validate_certs: "{{ aap_secret_rotate_validate_certs }}"
         status_code: [200]
       register: _health_check
       retries: 30

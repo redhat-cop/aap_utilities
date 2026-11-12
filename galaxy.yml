@@ -27,7 +27,6 @@ build_ignore:
     - .gitleaks.toml
     - .mlc_config.json
     - .yamllint.yml
-    - .ansible-lint
     - '*.tar.gz'
 license:
     - GPL-3.0-or-later

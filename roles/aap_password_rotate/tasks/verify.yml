@@ -39,7 +39,7 @@
 - name: Verify Gateway ping
   ansible.builtin.uri:
     url: "{{ __pw_gateway_url }}/api/gateway/v1/ping/"
-    validate_certs: false
+    validate_certs: "{{ aap_password_rotate_validate_certs }}"
     status_code: [200]
   register: __pw_gw_ping
   retries: 30
@@ -50,7 +50,7 @@
 - name: Verify admin authentication
   ansible.builtin.uri:
     url: "{{ __pw_gateway_url }}/api/gateway/v1/me/"
-    validate_certs: false
+    validate_certs: "{{ aap_password_rotate_validate_certs }}"
     user: admin
     password: "{{ __pw_verify_admin_password }}"
     force_basic_auth: true
@@ -66,7 +66,7 @@
 - name: Verify Controller API
   ansible.builtin.uri:
     url: "{{ __pw_gateway_url }}/api/controller/v2/ping/"
-    validate_certs: false
+    validate_certs: "{{ aap_password_rotate_validate_certs }}"
     status_code: [200]
   register: __pw_ctrl_ping
   retries: 15
@@ -78,7 +78,7 @@
 - name: Verify Hub API
   ansible.builtin.uri:
     url: "{{ __pw_gateway_url }}/api/galaxy/pulp/api/v3/status/"
-    validate_certs: false
+    validate_certs: "{{ aap_password_rotate_validate_certs }}"
     status_code: [200]
   register: __pw_hub_ping
   retries: 15
@@ -91,7 +91,7 @@
 - name: Verify EDA API
   ansible.builtin.uri:
     url: "{{ __pw_gateway_url }}/api/eda/v1/users/me/"
-    validate_certs: false
+    validate_certs: "{{ aap_password_rotate_validate_certs }}"
     user: admin
     password: "{{ __pw_verify_admin_password }}"
     force_basic_auth: true

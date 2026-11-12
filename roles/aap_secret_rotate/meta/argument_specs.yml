@@ -28,6 +28,12 @@ argument_specs:
         description: Report what would change without writing.
         type: bool
         default: false
+      aap_secret_rotate_validate_certs:
+        description: >-
+          Whether to verify TLS certificates during post-rotation health checks.
+          Set to false for clusters using self-signed certificates.
+        type: bool
+        default: true
       aap_secret_rotate_backup_dir:
         description: Directory on the control node for key backups.
         type: str
