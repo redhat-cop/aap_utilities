@@ -7,12 +7,12 @@ repos:
       - id: trailing-whitespace
 
   - repo: https://github.com/DavidAnson/markdownlint-cli2
-    rev: v0.23.3
+    rev: v0.24.0
     hooks:
       - id: markdownlint-cli2
 
   - repo: https://github.com/djdanielsson/ansible-content-prek-actions
-    rev: v26.8.1
+    rev: v26.10.2
     hooks:
       - id: ansible-lint
       - id: changelog
