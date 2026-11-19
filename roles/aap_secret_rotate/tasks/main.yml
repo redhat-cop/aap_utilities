@@ -48,6 +48,18 @@
     - name: Scale down AAP component operators
       ansible.builtin.include_tasks: operator/pause_operators.yml
 
+    # Validate server-side apply before any database re-encryption so
+    # client, RBAC, or admission failures leave DB and Secret in sync.
+    - name: Probe server-side apply for each component secret
+      ansible.builtin.include_tasks: operator/probe_secret_write.yml
+      vars:
+        _component: "{{ item }}"
+        _component_config: "{{ __aap_secret_rotate_components[item] }}"
+        _secret_value: "{{ __aap_secret_rotate_new_keys[item] }}"
+      loop: "{{ aap_secret_rotate_components }}"
+      loop_control:
+        label: "{{ item }}"
+
     - name: Rotate controller (operator)
       ansible.builtin.include_tasks: rotate_controller.yml
       when: "'controller' in aap_secret_rotate_components"
@@ -69,46 +81,50 @@
         __aap_secret_rotate_block_completed: true
 
   always:
-    # Restore AAP component operators unconditionally so they are never
-    # left scaled to 0 after a failure.
-    - name: Scale up AAP component operators (always)
-      ansible.builtin.include_tasks: operator/resume_operators.yml
-      when: not aap_secret_rotate_dry_run
+    # Nested block/always so ESO restore and recovery instructions still
+    # run if resume_operators.yml fails (for example waiting on a rollout).
+    - name: Restore operators and ESO independently
+      block:
+        # Restore AAP component operators unconditionally so they are never
+        # left scaled to 0 after a failure.
+        - name: Scale up AAP component operators (always)
+          ansible.builtin.include_tasks: operator/resume_operators.yml
+          when: not aap_secret_rotate_dry_run
+      always:
+        # Restore ESO if no secrets were written (safe to resume because
+        # nothing changed). After a successful or partial write, ESO must
+        # stay paused until the external store is updated.
+        - name: Restore ESO when no secrets were written (always)
+          ansible.builtin.include_tasks: operator/resume_eso.yml
+          when:
+            - aap_secret_rotate_eso_managed | default(false) | bool
+            - not (__aap_secret_rotate_any_secret_written | default(false) | bool)
+            - not aap_secret_rotate_dry_run
+            - __aap_secret_rotate_eso_original_replicas | default({}) | length > 0
 
-    # Restore ESO if no secrets were written (safe to resume because
-    # nothing changed). After a successful or partial write, ESO must
-    # stay paused until the external store is updated.
-    - name: Restore ESO when no secrets were written (always)
-      ansible.builtin.include_tasks: operator/resume_eso.yml
-      when:
-        - aap_secret_rotate_eso_managed | default(false) | bool
-        - not (__aap_secret_rotate_any_secret_written | default(false) | bool)
-        - not aap_secret_rotate_dry_run
-        - __aap_secret_rotate_eso_original_replicas | default({}) | length > 0
-
-    # Emit recovery instructions when ESO stays paused after a failure
-    # (secrets were written but rotation did not complete).
-    - name: Display ESO recovery instructions on failure
-      ansible.builtin.debug:
-        msg: |-
-          ╔══════════════════════════════════════════════════════════════════╗
-          ║  WARNING: ESO controllers remain SCALED DOWN                   ║
-          ╠══════════════════════════════════════════════════════════════════╣
-          ║  Namespace: {{ __aap_secret_rotate_eso_ns | default('external-secrets') | trim }}
-          ║  Rotation did not complete. ESO is paused to protect           ║
-          ║  partially-rotated secrets.                                    ║
-          ║                                                                ║
-          ║  To restore ESO after investigating the failure:               ║
-          {% for deploy, replicas in (__aap_secret_rotate_eso_original_replicas | default({})).items() %}
-          ║  {{ aap_secret_rotate_kubectl_binary }} -n {{ __aap_secret_rotate_eso_ns | trim }} scale deploy/{{ deploy }} --replicas={{ replicas }}
-          {% endfor %}
-          ╚══════════════════════════════════════════════════════════════════╝
-      when:
-        - not (__aap_secret_rotate_block_completed | default(false) | bool)
-        - aap_secret_rotate_eso_managed | default(false) | bool
-        - __aap_secret_rotate_any_secret_written | default(false) | bool
-        - __aap_secret_rotate_eso_original_replicas | default({}) | length > 0
-        - not aap_secret_rotate_dry_run
+        # Emit recovery instructions when ESO stays paused after a failure
+        # (secrets were written but rotation did not complete).
+        - name: Display ESO recovery instructions on failure
+          ansible.builtin.debug:
+            msg: |-
+              ╔══════════════════════════════════════════════════════════════════╗
+              ║  WARNING: ESO controllers remain SCALED DOWN                   ║
+              ╠══════════════════════════════════════════════════════════════════╣
+              ║  Namespace: {{ __aap_secret_rotate_eso_ns | default('external-secrets') | trim }}
+              ║  Rotation did not complete. ESO is paused to protect           ║
+              ║  partially-rotated secrets.                                    ║
+              ║                                                                ║
+              ║  To restore ESO after investigating the failure:               ║
+              {% for deploy, replicas in (__aap_secret_rotate_eso_original_replicas | default({})).items() %}
+              ║  {{ aap_secret_rotate_kubectl_binary }} -n {{ __aap_secret_rotate_eso_ns | trim }} scale deploy/{{ deploy }} --replicas={{ replicas }}
+              {% endfor %}
+              ╚══════════════════════════════════════════════════════════════════╝
+          when:
+            - not (__aap_secret_rotate_block_completed | default(false) | bool)
+            - aap_secret_rotate_eso_managed | default(false) | bool
+            - __aap_secret_rotate_any_secret_written | default(false) | bool
+            - __aap_secret_rotate_eso_original_replicas | default({}) | length > 0
+            - not aap_secret_rotate_dry_run
 
 # Podman rotation (no operator pause/resume needed)
 - name: Rotate components (podman)

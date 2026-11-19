@@ -29,7 +29,7 @@ The following collections are required to use this collection if you are using t
 | Name             | Minimum Version |
 |------------------|:---------------:|
 | ansible.posix    | 1.0.0           |
-| kubernetes.core  | 2.2.0           |
+| kubernetes.core  | 6.0.0           |
 | redhat.openshift | 4.0.2           |
 
 > ⚠️ **IMPORTANT**

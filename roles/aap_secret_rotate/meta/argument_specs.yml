@@ -48,9 +48,17 @@ argument_specs:
         type: str
         default: ""
       aap_secret_rotate_namespace:
-        description: Kubernetes namespace (operator deployments).
+        description: Kubernetes namespace containing the AAP workloads.
         type: str
         default: aap
+      aap_secret_rotate_operator_namespace:
+        description: >-
+          Namespace where AAP component operator Deployments run. Defaults
+          to aap_secret_rotate_namespace when empty. Set this when operators
+          are installed in a separate namespace from the workloads (for
+          example aap-operators with workloads in aap).
+        type: str
+        default: ""
       aap_secret_rotate_cr_name:
         description: AnsibleAutomationPlatform CR name (operator deployments).
         type: str

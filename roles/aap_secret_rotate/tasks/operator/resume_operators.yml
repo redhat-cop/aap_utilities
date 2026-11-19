@@ -7,7 +7,7 @@
     argv:
       - "{{ aap_secret_rotate_kubectl_binary }}"
       - -n
-      - "{{ aap_secret_rotate_namespace }}"
+      - "{{ __aap_secret_rotate_operator_ns | default(aap_secret_rotate_namespace) }}"
       - scale
       - "deploy/{{ item.key }}"
       - "--replicas={{ item.value }}"
@@ -24,7 +24,7 @@
     argv:
       - "{{ aap_secret_rotate_kubectl_binary }}"
       - -n
-      - "{{ aap_secret_rotate_namespace }}"
+      - "{{ __aap_secret_rotate_operator_ns | default(aap_secret_rotate_namespace) }}"
       - rollout
       - status
       - "deploy/{{ item.key }}"
@@ -41,6 +41,8 @@
   ansible.builtin.debug:
     msg: >-
       Restored {{ __aap_secret_rotate_operator_deploys | default({}) | length }}
-      operator deployment(s) to original replicas.
+      operator deployment(s) in namespace
+      '{{ __aap_secret_rotate_operator_ns | default(aap_secret_rotate_namespace) }}'
+      to original replicas.
   when: __aap_secret_rotate_operator_deploys | default({}) | length > 0
 ...

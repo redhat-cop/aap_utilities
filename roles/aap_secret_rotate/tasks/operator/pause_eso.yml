@@ -177,7 +177,10 @@
   loop_control:
     label: "{{ item.key }}"
   changed_when: false
-  failed_when: __aap_secret_rotate_eso_verify.stdout | default('1') | int != 0
+  failed_when:
+    - (__aap_secret_rotate_eso_verify.rc | default(1)) != 0
+    - (__aap_secret_rotate_eso_verify.stdout | default('') | trim | length == 0)
+    - (__aap_secret_rotate_eso_verify.stdout | default('1') | int) != 0
   when:
     - not aap_secret_rotate_dry_run
     - __aap_secret_rotate_eso_original_replicas | default({}) | length > 0
@@ -221,7 +224,9 @@
       - --no-headers
   register: __aap_secret_rotate_eso_pod_check
   changed_when: false
-  failed_when: (__aap_secret_rotate_eso_pod_check.stdout_lines | default([]) | length) > 0
+  failed_when:
+    - (__aap_secret_rotate_eso_pod_check.rc | default(1)) != 0
+    - (__aap_secret_rotate_eso_pod_check.stdout_lines | default([]) | length) > 0
   when:
     - not aap_secret_rotate_dry_run
     - __aap_secret_rotate_eso_original_replicas | default({}) | length > 0

@@ -40,11 +40,23 @@ bugfixes:
   - >-
     aap_secret_rotate - Use ``kubernetes.core.k8s`` server-side apply with
     ``force_conflicts`` and base64 ``data`` instead of shell ``kubectl``
-    with ``stringData``. Protect the apply task with ``no_log: true``
+    with ``stringData``. Protect the apply task with ``no_log: true``.
+    Raise the ``kubernetes.core`` dependency floor to ``>=6.0.0`` and
+    probe server-side apply in check mode before any database
+    re-encryption
     (https://github.com/redhat-cop/aap_utilities/pull/393).
   - >-
     aap_secret_rotate - Wrap operator rotation in ``block``/``always`` so
-    operators are restored even if rotation fails partway. Verify replicas
-    reach 0 and pods terminate before proceeding with secret writes
+    operators are restored even if rotation fails partway. Nest ESO
+    restore in an independent ``always`` so a failed operator resume
+    cannot leave ESO scaled down when no secrets were written. Verify
+    replicas reach 0 and pods terminate before proceeding with secret
+    writes, requiring ``rc == 0`` on pause verification commands
+    (https://github.com/redhat-cop/aap_utilities/pull/393).
+  - >-
+    aap_secret_rotate - Add ``aap_secret_rotate_operator_namespace`` for
+    layouts where AAP operators run in a different namespace from the
+    workloads. Move the ``EDA_DB_ROTATION_KEY`` capability probe into
+    preflight so unsupported images fail before any pause or rotation
     (https://github.com/redhat-cop/aap_utilities/pull/393).
 ...

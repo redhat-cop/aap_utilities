@@ -51,7 +51,8 @@ If left empty, a new Fernet-compatible key is auto-generated per component.
 
 | Variable | Default | Description |
 | --- | --- | --- |
-| `aap_secret_rotate_namespace` | `aap` | Kubernetes namespace containing the AAP installation |
+| `aap_secret_rotate_namespace` | `aap` | Kubernetes namespace containing the AAP workloads |
+| `aap_secret_rotate_operator_namespace` | `""` (same as workload NS) | Namespace where AAP component operator Deployments run. Set when operators are installed separately (for example `aap-operators`) from the workloads. |
 | `aap_secret_rotate_cr_name` | `aap` | Name of the `AnsibleAutomationPlatform` CR |
 | `aap_secret_rotate_idle_timeout` | `300` | Seconds to wait for pods to terminate after idling |
 | `aap_secret_rotate_rollout_timeout` | `300` | Seconds to wait for pods to become ready after un-idling |
@@ -116,6 +117,19 @@ If left empty, a new Fernet-compatible key is auto-generated per component.
       aap_secret_rotate_deployment_type: operator
       aap_secret_rotate_namespace: my-aap
       aap_secret_rotate_cr_name: my-aap
+```
+
+When AAP operators run in a different namespace from the workloads:
+
+```yaml
+- name: AAP Secret Key Rotation (split operator namespace)
+  hosts: localhost
+  connection: local
+  roles:
+    - role: infra.aap_utilities.aap_secret_rotate
+      aap_secret_rotate_deployment_type: operator
+      aap_secret_rotate_namespace: aap
+      aap_secret_rotate_operator_namespace: aap-operators
 ```
 
 ### Operator with ESO and ArgoCD (enterprise GitOps)

@@ -29,6 +29,11 @@ aap_secret_rotate_hub_key: ""
 
 # ── Operator-specific ──────────────────────────────────────────────────
 aap_secret_rotate_namespace: "aap"
+# Namespace where AAP component operator Deployments run. Empty means
+# the same as aap_secret_rotate_namespace. Set when operators are
+# installed in a separate namespace (for example aap-operators) from
+# the workload namespace.
+aap_secret_rotate_operator_namespace: ""
 aap_secret_rotate_cr_name: "aap"
 aap_secret_rotate_idle_timeout: 300
 aap_secret_rotate_rollout_timeout: 300

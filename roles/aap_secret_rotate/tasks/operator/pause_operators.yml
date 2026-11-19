@@ -8,6 +8,15 @@
 # This avoids scaling unrelated operators that happen to share the
 # namespace.
 
+# Resolve the namespace where AAP operator Deployments live. Defaults to
+# the workload namespace so co-located installs keep working; override
+# with aap_secret_rotate_operator_namespace for split layouts.
+- name: Resolve AAP operator namespace
+  ansible.builtin.set_fact:
+    __aap_secret_rotate_operator_ns: >-
+      {{ aap_secret_rotate_operator_namespace
+         | default(aap_secret_rotate_namespace, true) | trim }}
+
 # Build the list of operator prefixes for the requested components,
 # always including the resource-operator.
 - name: Build operator prefix list for requested components
@@ -19,12 +28,12 @@
           | list)
          + (__aap_secret_rotate_operator_prefixes._always | default([])) }}
 
-- name: List deployments in AAP namespace
+- name: List deployments in operator namespace
   ansible.builtin.command:
     argv:
       - "{{ aap_secret_rotate_kubectl_binary }}"
       - -n
-      - "{{ aap_secret_rotate_namespace }}"
+      - "{{ __aap_secret_rotate_operator_ns }}"
       - get
       - deploy
       - -o
@@ -52,11 +61,13 @@
   ansible.builtin.fail:
     msg: >-
       No AAP operator deployments found in namespace
-      '{{ aap_secret_rotate_namespace }}' matching prefixes:
+      '{{ __aap_secret_rotate_operator_ns }}' matching prefixes:
       {{ __aap_secret_rotate_operator_match_prefixes | join(', ') }}.
-      Check that the AAP operator is installed in this namespace.
-      Override with aap_secret_rotate_deployment_type: podman if operators
-      are not in the same namespace.
+      Workload namespace is '{{ aap_secret_rotate_namespace }}'.
+      If operators are installed in a different namespace, set
+      aap_secret_rotate_operator_namespace to that namespace.
+      Override with aap_secret_rotate_deployment_type: podman for
+      containerised installs without operators.
   when:
     - __aap_secret_rotate_operator_deploys | default({}) | length == 0
     - not aap_secret_rotate_dry_run
@@ -72,7 +83,7 @@
     argv:
       - "{{ aap_secret_rotate_kubectl_binary }}"
       - -n
-      - "{{ aap_secret_rotate_namespace }}"
+      - "{{ __aap_secret_rotate_operator_ns }}"
       - scale
       - "deploy/{{ item.key }}"
       - "--replicas=0"
@@ -87,7 +98,7 @@
     argv:
       - "{{ aap_secret_rotate_kubectl_binary }}"
       - -n
-      - "{{ aap_secret_rotate_namespace }}"
+      - "{{ __aap_secret_rotate_operator_ns }}"
       - rollout
       - status
       - "deploy/{{ item.key }}"
@@ -103,7 +114,7 @@
     argv:
       - "{{ aap_secret_rotate_kubectl_binary }}"
       - -n
-      - "{{ aap_secret_rotate_namespace }}"
+      - "{{ __aap_secret_rotate_operator_ns }}"
       - get
       - "deploy/{{ item.key }}"
       - -o
@@ -113,7 +124,10 @@
   loop_control:
     label: "{{ item.key }}"
   changed_when: false
-  failed_when: __aap_secret_rotate_op_verify.stdout | default('1') | int != 0
+  failed_when:
+    - (__aap_secret_rotate_op_verify.rc | default(1)) != 0
+    - (__aap_secret_rotate_op_verify.stdout | default('') | trim | length == 0)
+    - (__aap_secret_rotate_op_verify.stdout | default('1') | int) != 0
   when: not aap_secret_rotate_dry_run
 
 # Wait for all operator pods to actually terminate. spec.replicas=0 and
@@ -124,7 +138,7 @@
     argv:
       - "{{ aap_secret_rotate_kubectl_binary }}"
       - -n
-      - "{{ aap_secret_rotate_namespace }}"
+      - "{{ __aap_secret_rotate_operator_ns }}"
       - wait
       - --for=delete
       - pod
@@ -146,13 +160,14 @@
     argv:
       - "{{ aap_secret_rotate_kubectl_binary }}"
       - -n
-      - "{{ aap_secret_rotate_namespace }}"
+      - "{{ __aap_secret_rotate_operator_ns }}"
       - get
       - pods
       - -o
       - jsonpath={range .items[*]}{.metadata.name}{"\n"}{end}
   register: __aap_secret_rotate_op_pods_check
   changed_when: false
+  failed_when: (__aap_secret_rotate_op_pods_check.rc | default(1)) != 0
   when: not aap_secret_rotate_dry_run
 
 - name: Assert all operator pods have terminated
