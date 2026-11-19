@@ -240,9 +240,16 @@
     - aap_ocp_install_eda is defined
     - aap_ocp_install_eda['install'] is defined
     - aap_ocp_install_eda['install'] | bool
-    - not ((__aap_ocp_install_platform_component_deployment | default('unified')) == 'individual')
+    - >-
+      (__aap_ocp_install_gateway_only | bool)
+      or ((__aap_ocp_install_platform_component_deployment | default('unified')) != 'individual')
   ansible.builtin.uri:
-    url: "{{ aap_ocp_install_eda_route }}{{ '/api/eda/' if (__aap_ocp_install_gateway_only | bool) else '/api' }}"
+    url: >-
+      {{
+        (aap_ocp_install_platform_route ~ '/api/eda/v1/status/')
+        if (__aap_ocp_install_gateway_only | bool)
+        else (aap_ocp_install_eda_route ~ '/api')
+      }}
     validate_certs: "{{ aap_ocp_install_connection['validate_certs'] | default(omit) }}"
     ca_path: "{{ aap_ocp_install_connection['ca_cert'] | default(omit) }}"
     method: GET
@@ -251,6 +258,9 @@
   register: _aap_ocp_install_eda_available
   until:
     - _aap_ocp_install_eda_available['status'] == 200
+    - >-
+      not (__aap_ocp_install_gateway_only | bool)
+      or (_aap_ocp_install_eda_available['json']['status'] | default('')) == 'good'
     - (__aap_ocp_install_gateway_only | bool) or ('migrations_notran' not in _aap_ocp_install_eda_available['url'])
   retries: 120
   delay: 15

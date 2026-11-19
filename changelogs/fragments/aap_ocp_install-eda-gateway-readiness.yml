@@ -1,0 +1,8 @@
+---
+bugfixes:
+  - >-
+    aap_ocp_install - Check EDA readiness through the platform gateway status
+    endpoint in unified and individual deployments and wait for HTTP 200 with a
+    good health status
+    (https://github.com/redhat-cop/aap_utilities/issues/402).
+...
