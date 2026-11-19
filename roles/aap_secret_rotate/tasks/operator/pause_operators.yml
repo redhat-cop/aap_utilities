@@ -124,10 +124,9 @@
   loop_control:
     label: "{{ item.key }}"
   changed_when: false
-  failed_when:
-    - (__aap_secret_rotate_op_verify.rc | default(1)) != 0
-    - (__aap_secret_rotate_op_verify.stdout | default('') | trim | length == 0)
-    - (__aap_secret_rotate_op_verify.stdout | default('1') | int) != 0
+  failed_when: >-
+    (__aap_secret_rotate_op_verify.rc | default(1)) != 0
+    or (__aap_secret_rotate_op_verify.stdout | default('') | trim) != '0'
   when: not aap_secret_rotate_dry_run
 
 # Wait for all operator pods to actually terminate. spec.replicas=0 and
