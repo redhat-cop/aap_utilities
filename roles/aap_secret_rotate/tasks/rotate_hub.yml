@@ -63,23 +63,17 @@
     - aap_secret_rotate_deployment_type == 'podman'
     - not aap_secret_rotate_dry_run
 
-# Operator: write multi-key to K8s Secret, rollout restart Hub so pods
-# mount the file with both keys, then run rotate-db-key.
+# Operator: write multi-key to K8s Secret via server-side apply (same path
+# as single-key writes), then rollout restart Hub so pods mount the file
+# with both keys, then run rotate-db-key.
 - name: Write multi-key to K8s Secret for Hub (operator)
-  kubernetes.core.k8s:
-    state: present
-    definition: |
-      apiVersion: v1
-      kind: Secret
-      metadata:
-        name: {{ __aap_secret_rotate_components.hub.k8s_secret }}
-        namespace: {{ aap_secret_rotate_namespace }}
-      stringData:
-        {{ __aap_secret_rotate_components.hub.k8s_secret_field }}: {{ (__aap_secret_rotate_new_keys.hub ~ '\n' ~ __aap_secret_rotate_hub_old_key) | to_json }}
-  no_log: true
+  ansible.builtin.include_tasks: "operator/write_secret.yml"
+  vars:
+    _component: "hub"
+    _component_config: "{{ __aap_secret_rotate_components.hub }}"
+    _secret_value: "{{ __aap_secret_rotate_new_keys.hub ~ '\n' ~ __aap_secret_rotate_hub_old_key }}"
   when:
     - aap_secret_rotate_deployment_type == 'operator'
-    - not aap_secret_rotate_dry_run
 
 - name: Rollout restart Hub to pick up multi-key file (operator)
   ansible.builtin.include_tasks: "operator/rollout_restart.yml"
